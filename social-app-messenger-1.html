@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>পোস্টবই</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a24;
+    --card: #21212e;
+    --border: #2e2e42;
+    --accent: #7c6ef7;
+    --accent2: #f76e8f;
+    --accent3: #6ef7c8;
+    --text: #e8e8f0;
+    --muted: #888899;
+    --like: #f76e8f;
+    --comment: #7c6ef7;
+    --share: #6ef7c8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(124,110,247,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(247,110,143,0.06) 0%, transparent 50%);
+  }
+
+  /* ── Auth Screen ── */
+  #authScreen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .auth-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2rem 1.75rem;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(30px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .auth-logo {
+    text-align: center; margin-bottom: 0.5rem;
+    font-size: 2rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .auth-subtitle { text-align: center; color: var(--muted); font-size: 0.88rem; margin-bottom: 1.75rem; }
+  .auth-tabs { display: flex; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .auth-tab { flex: 1; padding: 0.65rem; text-align: center; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--muted); transition: all 0.2s; background: none; border: none; font-family: inherit; }
+  .auth-tab.active { background: var(--accent); color: white; }
+  .auth-field { margin-bottom: 1rem; }
+  .auth-field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; letter-spacing: 0.3px; }
+  .auth-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1rem; color: var(--text); font-family: inherit; font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,110,247,0.15); }
+  .auth-input::placeholder { color: var(--muted); }
+  .auth-btn { width: 100%; padding: 0.85rem; background: linear-gradient(135deg, var(--accent), #9b8bf8); color: white; border: none; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; transition: all 0.2s; letter-spacing: 0.3px; }
+  .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,110,247,0.4); }
+  .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .auth-error { background: rgba(247,110,143,0.12); border: 1px solid rgba(247,110,143,0.3); color: var(--accent2); border-radius: 10px; padding: 0.65rem 0.9rem; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+  .auth-error.show { display: block; }
+  .pass-wrap { position: relative; }
+  .pass-toggle { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0; }
+
+  /* ── Multi-step Registration ── */
+  .reg-step { display: none; }
+  .reg-step.active { display: block; animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1); }
+
+  /* Progress dots */
+  .reg-progress {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; margin-bottom: 1.5rem;
+  }
+  .reg-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); transition: all 0.3s;
+  }
+  .reg-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
+  .reg-dot.done   { background: var(--accent3); }
+
+  /* Step title */
+  .reg-step-title {
+    font-size: 1.15rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .reg-step-sub {
+    font-size: 0.83rem; color: var(--muted); margin-bottom: 1.4rem; line-height: 1.5;
+  }
+
+  /* Name row */
+  .name-row { display: flex; gap: 0.6rem; }
+  .name-row .auth-field { flex: 1; }
+
+  /* Gender selector */
+  .gender-options { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+  .gender-opt {
+    flex: 1; padding: 0.75rem 0.5rem; border-radius: 12px;
+    border: 2px solid var(--border); background: var(--surface);
+    color: var(--muted); font-family: inherit; font-size: 0.88rem;
+    font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s;
+  }
+  .gender-opt.selected { border-color: var(--accent); background: rgba(124,110,247,0.12); color: var(--accent); }
+
+  /* DOB row */
+  .dob-row { display: flex; gap: 0.5rem; }
+  .dob-row select {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.75rem 0.6rem; color: var(--text);
+    font-family: inherit; font-size: 0.9rem; outline: none; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .dob-row select:focus { border-color: var(--accent); }
+  .dob-row select option { background: var(--card); }
+
+  /* Contact method toggle */
+  .contact-toggle {
+    display: flex; border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; margin-bottom: 1rem;
+  }
+  .contact-tab {
+    flex: 1; padding: 0.6rem; text-align: center; cursor: pointer;
+    font-size: 0.88rem; font-weight: 600; color: var(--muted);
+    background: none; border: none; font-family: inherit; transition: all 0.2s;
+  }
+  .contact-tab.active { background: var(--accent); color: white; }
+
+  /* Back button */
+  .reg-back-btn {
+    width: 100%; padding: 0.75rem;
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--muted); border-radius: 12px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; margin-top: 0.6rem; transition: all 0.2s;
+  }
+  .reg-back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Privacy note */
+  .privacy-note {
+    font-size: 0.75rem; color: var(--muted); text-align: center;
+    margin-top: 0.75rem; line-height: 1.5;
+  }
+  .privacy-note span { color: var(--accent); }
+
+  /* ── Header ── */
+  #appScreen { display: none; }
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,19,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .logo { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; cursor: pointer; }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background 0.3s; }
+  .conn-dot.online { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .user-menu-wrap { position: relative; }
+  .header-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: 2px solid var(--border); transition: border-color 0.2s; color: white; overflow: hidden; }
+  .header-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .header-avatar:hover { border-color: var(--accent); }
+  .user-dropdown { position: absolute; right: 0; top: calc(100% + 8px); background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; z-index: 200; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); display: none; }
+  .user-dropdown.open { display: block; }
+  .user-info-row { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+  .user-info-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+  .user-info-email { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .dropdown-menu-item { width: 100%; padding: 0.7rem 1rem; background: none; border: none; color: var(--text); font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 0.5rem; transition: background 0.15s; }
+  .dropdown-menu-item:hover { background: rgba(124,110,247,0.08); }
+  .logout-btn { width: 100%; padding: 0.7rem 1rem; background: none; border: none; color: var(--accent2); font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 0.5rem; transition: background 0.15s; border-top: 1px solid var(--border); }
+  .logout-btn:hover { background: rgba(247,110,143,0.08); }
+
+  /* ── Main Layout ── */
+  .layout { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 5.5rem; }
+
+  /* ── Pages ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Composer ── */
+  .composer { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 1.25rem; margin-bottom: 1.5rem; transition: border-color 0.3s; }
+  .composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,110,247,0.1); }
+  .composer-top { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; color: white; box-shadow: 0 4px 12px rgba(124,110,247,0.3); overflow: hidden; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .avatar.sm { width: 36px; height: 36px; font-size: 0.85rem; }
+  textarea { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: inherit; font-size: 1rem; resize: none; min-height: 80px; line-height: 1.6; }
+  textarea::placeholder { color: var(--muted); }
+  .composer-bottom { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .char-count { font-size: 0.8rem; color: var(--muted); }
+  .char-count.warn { color: #f7b56e; }
+  .char-count.over { color: var(--accent2); }
+  .post-btn { background: linear-gradient(135deg, var(--accent), #9b8bf8); color: white; border: none; padding: 0.55rem 1.4rem; border-radius: 50px; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; }
+  .post-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,110,247,0.4); }
+  .post-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── Feed ── */
+  .feed-label { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1rem; }
+  .post-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 1.25rem; margin-bottom: 1rem; animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); transition: border-color 0.2s; }
+  .post-card:hover { border-color: rgba(124,110,247,0.3); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .post-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .post-meta { flex: 1; }
+  .post-name { font-weight: 600; font-size: 0.95rem; color: var(--text); cursor: pointer; }
+  .post-name:hover { color: var(--accent); }
+  .post-time { font-size: 0.78rem; color: var(--muted); margin-top: 1px; }
+  .post-menu { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; position: relative; }
+  .post-menu:hover { background: var(--border); color: var(--text); }
+  .post-body { font-size: 1rem; line-height: 1.7; color: var(--text); margin-bottom: 1.1rem; word-break: break-word; }
+  .post-actions { display: flex; gap: 0; border-top: 1px solid var(--border); padding-top: 0.9rem; margin-top: 0.5rem; }
+  .action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.45rem; background: none; border: none; color: var(--muted); font-family: inherit; font-size: 0.85rem; cursor: pointer; padding: 0.5rem 0; border-radius: 10px; transition: all 0.2s; font-weight: 500; }
+  .action-btn:hover { background: rgba(255,255,255,0.05); }
+  .action-btn.liked { color: var(--like); }
+  .action-btn.liked .action-icon { animation: pop 0.35s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  .action-btn:hover.like-btn { color: var(--like); }
+  .action-btn:hover.cmt-btn  { color: var(--comment); }
+  .action-btn:hover.share-btn{ color: var(--share); }
+  .action-icon { font-size: 1.1rem; }
+  .comment-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); display: none; animation: fadeIn 0.3s ease; }
+  .comment-section.open { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .comment-input-row { display: flex; gap: 0.7rem; align-items: flex-start; }
+  .comment-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.6rem 0.9rem; color: var(--text); font-family: inherit; font-size: 0.9rem; resize: none; outline: none; min-height: 40px; transition: border-color 0.2s; line-height: 1.5; }
+  .comment-input:focus { border-color: var(--accent); }
+  .comment-input::placeholder { color: var(--muted); }
+  .send-btn { background: var(--accent); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; margin-top: 2px; }
+  .send-btn:hover { background: #9b8bf8; transform: scale(1.08); }
+  .comments-list { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .comment-item { display: flex; gap: 0.65rem; animation: slideIn 0.3s ease; }
+  .comment-bubble { background: var(--surface); border-radius: 12px; padding: 0.6rem 0.85rem; flex: 1; }
+  .comment-author { font-weight: 600; font-size: 0.82rem; color: var(--accent); margin-bottom: 2px; }
+  .comment-text { font-size: 0.9rem; line-height: 1.5; color: var(--text); }
+
+  /* ── Profile Page ── */
+  .profile-cover {
+    height: 180px; border-radius: 20px; overflow: hidden; position: relative;
+    background: linear-gradient(135deg, #2a1f6e, #6e1f4a, #1f4a6e);
+    margin-bottom: 0; cursor: pointer;
+  }
+  .profile-cover img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-cover-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  .profile-cover:hover .profile-cover-overlay { opacity: 1; }
+  .profile-cover-overlay span { color: white; font-size: 0.9rem; font-weight: 600; background: rgba(0,0,0,0.5); padding: 0.4rem 0.9rem; border-radius: 20px; }
+
+  .profile-header-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 1.25rem;
+    margin-top: -40px; position: relative; z-index: 2;
+  }
+  .profile-top-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1rem; }
+  .profile-avatar-wrap { position: relative; }
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 2rem; color: white;
+    border: 4px solid var(--card);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    overflow: hidden; cursor: pointer;
+    margin-top: -50px;
+  }
+  .profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .profile-avatar-edit {
+    position: absolute; bottom: 0; right: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--card);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; cursor: pointer; color: white;
+  }
+  .profile-actions { display: flex; gap: 0.6rem; }
+  .btn-follow {
+    padding: 0.5rem 1.2rem; border-radius: 50px; font-family: inherit;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    border: 2px solid var(--accent); background: var(--accent); color: white;
+  }
+  .btn-follow.following {
+    background: transparent; color: var(--accent);
+  }
+  .btn-follow:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(124,110,247,0.3); }
+  .btn-edit-profile {
+    padding: 0.5rem 1.2rem; border-radius: 50px; font-family: inherit;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    border: 2px solid var(--border); background: transparent; color: var(--text);
+  }
+  .btn-edit-profile:hover { border-color: var(--accent); color: var(--accent); }
+
+  .profile-name { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+  .profile-username { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+  .profile-bio { font-size: 0.92rem; color: var(--text); line-height: 1.6; margin: 0.75rem 0; opacity: 0.85; }
+  .profile-bio-empty { font-size: 0.88rem; color: var(--muted); font-style: italic; margin: 0.75rem 0; }
+
+  .profile-stats {
+    display: flex; gap: 0; border-top: 1px solid var(--border);
+    padding-top: 1rem; margin-top: 0.5rem;
+  }
+  .stat-item { flex: 1; text-align: center; cursor: pointer; padding: 0.4rem; border-radius: 10px; transition: background 0.15s; }
+  .stat-item:hover { background: rgba(124,110,247,0.08); }
+  .stat-num { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── Photo Grid ── */
+  .profile-section-title {
+    font-size: 0.8rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin: 1.5rem 0 0.75rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .add-photo-btn {
+    font-size: 0.78rem; font-weight: 600; color: var(--accent);
+    background: none; border: 1px solid var(--accent);
+    border-radius: 20px; padding: 0.25rem 0.7rem;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .add-photo-btn:hover { background: var(--accent); color: white; }
+  .photo-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 4px; border-radius: 14px; overflow: hidden;
+  }
+  .photo-item {
+    aspect-ratio: 1; background: var(--surface);
+    overflow: hidden; cursor: pointer; position: relative;
+  }
+  .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .photo-item:hover img { transform: scale(1.05); }
+  .photo-item .photo-del {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(0,0,0,0.6); color: white; border: none;
+    border-radius: 50%; width: 22px; height: 22px; font-size: 0.65rem;
+    cursor: pointer; display: none; align-items: center; justify-content: center;
+  }
+  .photo-item:hover .photo-del { display: flex; }
+
+  /* ── Profile Edit Modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 300; display: none; align-items: center; justify-content: center;
+    padding: 1rem; backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 1.75rem; width: 100%; max-width: 460px;
+    max-height: 90vh; overflow-y: auto;
+    animation: fadeUp 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; line-height: 1; }
+  .modal-close:hover { color: var(--text); }
+  .form-field { margin-bottom: 1rem; }
+  .form-field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
+  .form-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.7rem 1rem; color: var(--text); font-family: inherit; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--accent); }
+  .form-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.7rem 1rem; color: var(--text); font-family: inherit; font-size: 0.95rem; outline: none; resize: none; min-height: 90px; line-height: 1.6; }
+  .form-textarea:focus { border-color: var(--accent); }
+  .save-btn { width: 100%; padding: 0.8rem; background: linear-gradient(135deg, var(--accent), #9b8bf8); color: white; border: none; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; transition: all 0.2s; }
+  .save-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,110,247,0.4); }
+
+  /* ── Followers Modal ── */
+  .follow-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 60vh; overflow-y: auto; }
+  .follow-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: 12px; cursor: pointer; transition: background 0.15s; }
+  .follow-item:hover { background: rgba(124,110,247,0.08); }
+  .follow-item-name { font-weight: 600; font-size: 0.92rem; }
+  .follow-item-sub { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── Lightbox ── */
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 400; display: none; align-items: center; justify-content: center; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 92vw; max-height: 88vh; border-radius: 12px; object-fit: contain; }
+  .lightbox-close { position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.15); border: none; color: white; font-size: 1.5rem; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* ── Toast ── */
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--card); border: 1px solid var(--share); color: var(--share); padding: 0.7rem 1.4rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); pointer-events: none; z-index: 999; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; opacity: 0.5; }
+  .empty-text { font-size: 1rem; }
+  .dropdown { position: absolute; right: 0; top: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; z-index: 50; min-width: 130px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); display: none; }
+  .dropdown.open { display: block; }
+  .dropdown-item { padding: 0.65rem 1rem; font-size: 0.88rem; cursor: pointer; color: var(--text); transition: background 0.15s; display: flex; align-items: center; gap: 0.5rem; }
+  .dropdown-item:hover { background: var(--border); }
+  .dropdown-item.danger { color: var(--like); }
+  .menu-wrap { position: relative; }
+  .loading-spinner { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── Friends Page ── */
+  .friends-search-wrap {
+    position: relative; margin-bottom: 1.25rem;
+  }
+  .friends-search {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 0.75rem 1rem 0.75rem 2.8rem;
+    color: var(--text); font-family: inherit; font-size: 0.95rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .friends-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,110,247,0.12); }
+  .friends-search::placeholder { color: var(--muted); }
+  .friends-search-icon {
+    position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%);
+    font-size: 1rem; pointer-events: none;
+  }
+  .friends-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  @media (max-width: 420px) { .friends-grid { grid-template-columns: 1fr; } }
+  .friend-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 1.25rem 1rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    cursor: pointer; transition: border-color 0.2s, transform 0.2s;
+    animation: slideIn 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .friend-card:hover { border-color: rgba(124,110,247,0.45); transform: translateY(-2px); }
+  .friend-avatar-lg {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.5rem; color: white;
+    box-shadow: 0 4px 14px rgba(124,110,247,0.3);
+    overflow: hidden; flex-shrink: 0;
+  }
+  .friend-avatar-lg img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .friend-card-name { font-weight: 700; font-size: 0.95rem; color: var(--text); text-align: center; }
+  .friend-card-sub { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: -2px; }
+  .friend-card-btn {
+    margin-top: 0.25rem; padding: 0.4rem 1.1rem;
+    border-radius: 50px; font-family: inherit;
+    font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    border: 1.5px solid var(--accent); background: var(--accent); color: white;
+  }
+  .friend-card-btn.following { background: transparent; color: var(--accent); }
+  .friend-card-btn:hover { box-shadow: 0 4px 14px rgba(124,110,247,0.35); transform: translateY(-1px); }
+  .friends-count-label {
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+  }
+  .nav-tabs {
+    display: flex; gap: 0; background: var(--card);
+    border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; margin-bottom: 1.25rem;
+  }
+  .nav-tab {
+    flex: 1; padding: 0.6rem 0.5rem; text-align: center;
+    font-family: inherit; font-size: 0.85rem; font-weight: 600;
+    color: var(--muted); background: none; border: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-tab.active { background: var(--accent); color: white; }
+
+  /* ── Notifications ── */
+  .notif-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1rem 1.1rem;
+    display: flex; align-items: flex-start; gap: 0.85rem;
+    margin-bottom: 0.75rem; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    animation: slideIn 0.35s cubic-bezier(0.16,1,0.3,1);
+    position: relative;
+  }
+  .notif-item:hover { border-color: rgba(124,110,247,0.4); background: rgba(124,110,247,0.04); }
+  .notif-item.unread { border-left: 3px solid var(--accent); }
+  .notif-item.admin-notif { border-color: rgba(247,110,143,0.4); background: rgba(247,110,143,0.04); }
+  .notif-item.admin-notif.unread { border-left: 3px solid var(--accent2); }
+  .notif-icon-wrap {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+    background: var(--surface);
+  }
+  .notif-icon-wrap.like    { background: rgba(247,110,143,0.15); }
+  .notif-icon-wrap.comment { background: rgba(124,110,247,0.15); }
+  .notif-icon-wrap.follow  { background: rgba(110,247,200,0.15); }
+  .notif-icon-wrap.admin   { background: rgba(247,183,110,0.15); }
+  .notif-body { flex: 1; min-width: 0; }
+  .notif-text { font-size: 0.9rem; line-height: 1.5; color: var(--text); }
+  .notif-text strong { color: var(--accent); font-weight: 700; }
+  .notif-time { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+  .notif-unread-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 6px;
+  }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--accent2); color: white;
+    font-size: 0.65rem; font-weight: 700;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--bg);
+  }
+  .notif-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .notif-header-title { font-size: 1rem; font-weight: 700; }
+  .mark-all-read {
+    font-size: 0.8rem; color: var(--accent); background: none;
+    border: none; cursor: pointer; font-family: inherit; font-weight: 600;
+    padding: 0;
+  }
+  .mark-all-read:hover { opacity: 0.75; }
+
+  /* ── Admin Panel ── */
+  .admin-panel {
+    background: var(--card); border: 1px solid rgba(247,110,143,0.35);
+    border-radius: 18px; padding: 1.25rem; margin-bottom: 1.25rem;
+  }
+  .admin-panel-title {
+    font-size: 0.8rem; font-weight: 700; color: var(--accent2);
+    text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .admin-textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.75rem 1rem; color: var(--text);
+    font-family: inherit; font-size: 0.95rem; resize: none; outline: none;
+    min-height: 80px; line-height: 1.6; transition: border-color 0.2s;
+  }
+  .admin-textarea:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(247,110,143,0.12); }
+  .admin-textarea::placeholder { color: var(--muted); }
+  .admin-send-btn {
+    margin-top: 0.75rem; width: 100%; padding: 0.75rem;
+    background: linear-gradient(135deg, var(--accent2), #f76eae);
+    color: white; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .admin-send-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(247,110,143,0.4); }
+  .admin-send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* notif bell badge on nav */
+  .nav-notif-wrap { position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+  .nav-notif-badge {
+    position: absolute; top: -2px; right: -6px;
+    background: var(--accent2); color: white;
+    font-size: 0.6rem; font-weight: 700;
+    min-width: 16px; height: 16px; border-radius: 50%;
+    display: none; align-items: center; justify-content: center;
+    border: 2px solid var(--bg); padding: 0 2px;
+  }
+  .nav-notif-badge.show { display: flex; }
+
+  /* ── Post Image ── */
+  .post-image-wrap {
+    margin: 0.75rem 0 0.25rem;
+    border-radius: 14px; overflow: hidden;
+    background: var(--surface);
+    max-height: 420px; display: flex; align-items: center; justify-content: center;
+  }
+  .post-image-wrap img {
+    width: 100%; max-height: 420px;
+    object-fit: cover; border-radius: 14px;
+    cursor: pointer; transition: transform 0.3s;
+    display: block;
+  }
+  .post-image-wrap img:hover { transform: scale(1.01); }
+
+  /* multi image grid */
+  .post-images-grid {
+    display: grid; gap: 3px; border-radius: 14px; overflow: hidden;
+    margin: 0.75rem 0 0.25rem;
+  }
+  .post-images-grid.count-2 { grid-template-columns: 1fr 1fr; }
+  .post-images-grid.count-3 { grid-template-columns: 1fr 1fr; }
+  .post-images-grid.count-3 .img-item:first-child { grid-column: 1 / -1; }
+  .post-images-grid.count-4 { grid-template-columns: 1fr 1fr; }
+  .img-item { overflow: hidden; max-height: 240px; cursor: pointer; position: relative; }
+  .img-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+  .img-item:hover img { transform: scale(1.04); }
+  .img-item.more-overlay::after {
+    content: attr(data-more); position: absolute; inset: 0;
+    background: rgba(0,0,0,0.55); color: white;
+    font-size: 1.6rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Composer image preview ── */
+  .composer-img-preview {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 0.75rem; padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .preview-item {
+    position: relative; width: 80px; height: 80px;
+    border-radius: 10px; overflow: hidden; flex-shrink: 0;
+  }
+  .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+  .preview-del {
+    position: absolute; top: 3px; right: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(0,0,0,0.7); color: white;
+    border: none; cursor: pointer; font-size: 0.65rem;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .composer-actions {
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .img-attach-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--border);
+    color: var(--muted); font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .img-attach-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(124,110,247,0.08); }
+
+  /* ── Story Bar ── */
+  .story-bar {
+    display: flex; gap: 0.75rem; overflow-x: auto; padding: 0.25rem 0 1rem;
+    margin-bottom: 0.25rem; scrollbar-width: none;
+  }
+  .story-bar::-webkit-scrollbar { display: none; }
+  .story-item {
+    display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+    flex-shrink: 0; cursor: pointer;
+  }
+  .story-ring {
+    width: 62px; height: 62px; border-radius: 50%;
+    padding: 2.5px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    position: relative;
+  }
+  .story-ring.seen {
+    background: var(--border);
+  }
+  .story-ring-inner {
+    width: 100%; height: 100%; border-radius: 50%;
+    background: var(--card); padding: 2px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .story-ring-inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .story-ring-inner .story-initials {
+    font-size: 1.3rem; font-weight: 700; color: white;
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 50%;
+  }
+  .story-add-ring {
+    width: 62px; height: 62px; border-radius: 50%;
+    background: var(--surface); border: 2px dashed var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .story-add-ring:hover { border-color: var(--accent); color: var(--accent); }
+  .story-name {
+    font-size: 0.72rem; color: var(--muted); font-weight: 600;
+    max-width: 62px; text-align: center; overflow: hidden;
+    white-space: nowrap; text-overflow: ellipsis;
+  }
+  .story-name.me { color: var(--accent); }
+
+  /* ── Story Viewer Modal ── */
+  .story-viewer {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.95);
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .story-viewer.open { display: flex; }
+  .story-viewer-inner {
+    position: relative; width: 100%; max-width: 420px; height: 100%;
+    max-height: 100vh; display: flex; flex-direction: column;
+  }
+  .story-progress-bar {
+    display: flex; gap: 3px; padding: 0.75rem 0.75rem 0.4rem; position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  }
+  .story-prog-seg {
+    flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.3); overflow: hidden;
+  }
+  .story-prog-fill {
+    height: 100%; background: white; width: 0%; transition: width linear;
+  }
+  .story-viewer-header {
+    position: absolute; top: 40px; left: 0; right: 0; z-index: 10;
+    display: flex; align-items: center; gap: 0.75rem; padding: 0 0.85rem;
+  }
+  .story-viewer-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 2px solid white; overflow: hidden; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;
+  }
+  .story-viewer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .story-viewer-meta { flex: 1; }
+  .story-viewer-name { font-size: 0.9rem; font-weight: 700; color: white; }
+  .story-viewer-time { font-size: 0.72rem; color: rgba(255,255,255,0.65); }
+  .story-viewer-close {
+    width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.15);
+    border: none; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .story-viewer-content {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .story-viewer-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .story-viewer-text-only {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    padding: 2rem 1.5rem; text-align: center;
+    font-size: 1.3rem; line-height: 1.7; font-weight: 600; color: white;
+    background: linear-gradient(135deg, #1a0e3a, #3a0e28);
+  }
+  .story-tap-area {
+    position: absolute; inset: 0; display: flex;
+  }
+  .story-tap-prev { flex: 1; } /* tap left = prev */
+  .story-tap-next { flex: 1; } /* tap right = next */
+  .story-delete-btn {
+    position: absolute; bottom: 1.5rem; right: 1rem; z-index: 20;
+    background: rgba(247,110,143,0.85); color: white; border: none;
+    border-radius: 50px; padding: 0.5rem 1rem; font-family: inherit;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  }
+
+  /* ── Story Composer Modal ── */
+  .story-composer-modal {
+    position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .story-composer-modal.open { display: flex; }
+  .story-composer-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 1.75rem; width: 100%; max-width: 420px;
+    animation: fadeUp 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  .story-composer-title {
+    font-size: 1.05rem; font-weight: 700; margin-bottom: 1.25rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .story-img-preview {
+    width: 100%; height: 180px; border-radius: 14px; object-fit: cover;
+    margin-bottom: 0.85rem; display: none;
+  }
+  .story-img-preview.show { display: block; }
+  .story-upload-area {
+    width: 100%; height: 120px; border-radius: 14px;
+    border: 2px dashed var(--border); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.4rem;
+    cursor: pointer; color: var(--muted); font-size: 0.88rem; font-weight: 600;
+    margin-bottom: 0.85rem; transition: all 0.2s;
+  }
+  .story-upload-area:hover { border-color: var(--accent); color: var(--accent); }
+  .story-text-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.7rem 1rem; color: var(--text);
+    font-family: inherit; font-size: 0.95rem; outline: none; resize: none;
+    min-height: 80px; line-height: 1.6; margin-bottom: 0.85rem;
+    transition: border-color 0.2s;
+  }
+  .story-text-input:focus { border-color: var(--accent); }
+  .story-text-input::placeholder { color: var(--muted); }
+  .story-post-btn {
+    width: 100%; padding: 0.8rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .story-post-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,110,247,0.4); }
+  .story-post-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ══ MESSENGER ══════════════════════════════════════════════════ */
+  /* Inbox list */
+  .inbox-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .inbox-title  { font-size:1.1rem; font-weight:700; color:var(--text); }
+  .inbox-list   { display:flex; flex-direction:column; gap:0.5rem; }
+  .inbox-item {
+    display:flex; align-items:center; gap:0.85rem;
+    padding:0.85rem 1rem; background:var(--card);
+    border:1px solid var(--border); border-radius:16px;
+    cursor:pointer; transition:border-color 0.2s;
+  }
+  .inbox-item:hover { border-color:rgba(124,110,247,0.4); }
+  .inbox-item.unread { border-left:3px solid var(--accent); }
+  .inbox-avatar {
+    width:46px; height:46px; border-radius:50%; flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:1rem; color:white; overflow:hidden;
+  }
+  .inbox-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .inbox-info { flex:1; min-width:0; }
+  .inbox-name { font-weight:700; font-size:0.92rem; color:var(--text); }
+  .inbox-preview { font-size:0.8rem; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .inbox-meta  { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .inbox-time  { font-size:0.72rem; color:var(--muted); }
+  .inbox-badge { background:var(--accent); color:white; border-radius:50%; width:18px; height:18px; font-size:0.68rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+
+  /* Chat window (full-screen modal) */
+  .chat-window {
+    position:fixed; inset:0; z-index:300;
+    background:var(--bg); display:none; flex-direction:column;
+  }
+  .chat-window.open { display:flex; }
+  .chat-header {
+    display:flex; align-items:center; gap:0.75rem;
+    padding:0.75rem 1rem; border-bottom:1px solid var(--border);
+    background:rgba(15,15,19,0.95); backdrop-filter:blur(20px);
+    flex-shrink:0;
+  }
+  .chat-back {
+    background:none; border:none; color:var(--text); font-size:1.3rem;
+    cursor:pointer; padding:0.25rem 0.5rem 0.25rem 0; line-height:1;
+  }
+  .chat-peer-avatar {
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:0.9rem; color:white; overflow:hidden;
+  }
+  .chat-peer-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .chat-peer-info { flex:1; }
+  .chat-peer-name { font-weight:700; font-size:0.95rem; color:var(--text); }
+  .chat-peer-status { font-size:0.75rem; color:var(--accent3); }
+  .chat-call-btns { display:flex; gap:0.5rem; }
+  .call-btn {
+    width:36px; height:36px; border-radius:50%;
+    background:rgba(124,110,247,0.15); border:none;
+    color:var(--accent); font-size:1rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s;
+  }
+  .call-btn:hover { background:rgba(124,110,247,0.3); }
+  .call-btn.video { background:rgba(110,247,200,0.15); color:var(--accent3); }
+  .call-btn.video:hover { background:rgba(110,247,200,0.3); }
+
+  /* Messages area */
+  .chat-messages {
+    flex:1; overflow-y:auto; padding:1rem;
+    display:flex; flex-direction:column; gap:0.6rem;
+    scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+  }
+  .msg-row { display:flex; gap:0.5rem; align-items:flex-end; }
+  .msg-row.mine { flex-direction:row-reverse; }
+  .msg-bubble {
+    max-width:72%; padding:0.6rem 0.9rem;
+    border-radius:18px; font-size:0.9rem; line-height:1.5;
+    word-break:break-word; position:relative;
+  }
+  .msg-bubble.theirs {
+    background:var(--card); border:1px solid var(--border);
+    color:var(--text); border-bottom-left-radius:4px;
+  }
+  .msg-bubble.mine {
+    background:linear-gradient(135deg,var(--accent),#9b8bf8);
+    color:white; border-bottom-right-radius:4px;
+  }
+  .msg-img { max-width:200px; border-radius:12px; cursor:pointer; display:block; margin-bottom:4px; }
+  .msg-time { font-size:0.65rem; opacity:0.6; margin-top:3px; display:block; }
+  .msg-time.mine { text-align:right; }
+  .msg-seen { font-size:0.65rem; color:var(--accent3); text-align:right; margin-top:1px; }
+  .chat-date-divider {
+    text-align:center; font-size:0.72rem; color:var(--muted);
+    margin:0.5rem 0; font-weight:600;
+  }
+
+  /* Input bar */
+  .chat-input-bar {
+    display:flex; align-items:flex-end; gap:0.5rem;
+    padding:0.75rem 1rem; border-top:1px solid var(--border);
+    background:rgba(15,15,19,0.95); backdrop-filter:blur(20px);
+    flex-shrink:0;
+  }
+  .chat-attach-btn {
+    width:36px; height:36px; border-radius:50%;
+    background:var(--surface); border:1.5px solid var(--border);
+    color:var(--muted); font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0; transition:all 0.2s;
+  }
+  .chat-attach-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .chat-text-input {
+    flex:1; background:var(--surface); border:1px solid var(--border);
+    border-radius:22px; padding:0.55rem 1rem;
+    color:var(--text); font-family:inherit; font-size:0.92rem;
+    outline:none; resize:none; max-height:100px; line-height:1.5;
+    transition:border-color 0.2s;
+  }
+  .chat-text-input:focus { border-color:var(--accent); }
+  .chat-text-input::placeholder { color:var(--muted); }
+  .chat-send-btn {
+    width:38px; height:38px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),#9b8bf8);
+    border:none; color:white; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0; transition:transform 0.2s;
+  }
+  .chat-send-btn:hover { transform:scale(1.08); }
+  .chat-send-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+  /* ── Emoji Picker ── */
+  .emoji-picker {
+    position: absolute; bottom: 60px; left: 0;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 0.75rem;
+    display: none; flex-wrap: wrap; gap: 6px;
+    width: 260px; z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    animation: fadeUp 0.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .emoji-picker.open { display: flex; }
+  .emoji-btn-pick {
+    font-size: 1.6rem; background: none; border: none;
+    cursor: pointer; border-radius: 10px; padding: 4px 6px;
+    transition: transform 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .emoji-btn-pick:hover { transform: scale(1.25); background: rgba(124,110,247,0.15); }
+  .chat-emoji-toggle {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--border);
+    color: var(--muted); font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: all 0.2s;
+  }
+  .chat-emoji-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .emoji-picker-wrap { position: relative; }
+
+  /* Call modal overlay */
+  .call-modal {
+    position:fixed; inset:0; z-index:600;
+    background:rgba(10,10,16,0.97);
+    display:none; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:1.5rem;
+  }
+  .call-modal.open { display:flex; }
+  .call-modal-avatar {
+    width:100px; height:100px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.5rem; font-weight:700; color:white;
+    box-shadow:0 0 0 8px rgba(124,110,247,0.2),0 0 0 16px rgba(124,110,247,0.08);
+    overflow:hidden;
+    animation: callPulse 2s infinite;
+  }
+  .call-modal-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  @keyframes callPulse {
+    0%,100% { box-shadow:0 0 0 8px rgba(124,110,247,0.2),0 0 0 16px rgba(124,110,247,0.08); }
+    50%      { box-shadow:0 0 0 12px rgba(124,110,247,0.25),0 0 0 24px rgba(124,110,247,0.1); }
+  }
+  .call-modal-name   { font-size:1.4rem; font-weight:700; color:white; }
+  .call-modal-status { font-size:0.9rem; color:rgba(255,255,255,0.55); }
+  .call-modal-timer  { font-size:1.1rem; font-weight:600; color:var(--accent3); font-variant-numeric:tabular-nums; }
+
+  /* video area */
+  .call-video-area {
+    width:100%; max-width:480px; position:relative;
+    border-radius:20px; overflow:hidden; background:#000;
+    display:none;
+  }
+  .call-video-area.active { display:block; }
+  .call-video-area video { width:100%; display:block; }
+  .call-self-video {
+    position:absolute; top:12px; right:12px;
+    width:90px; border-radius:12px; overflow:hidden;
+    border:2px solid rgba(255,255,255,0.3);
+  }
+  .call-self-video video { width:100%; display:block; }
+
+  .call-controls { display:flex; gap:1.5rem; align-items:center; }
+  .call-ctrl-btn {
+    width:56px; height:56px; border-radius:50%; border:none;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; cursor:pointer; transition:transform 0.2s;
+  }
+  .call-ctrl-btn:hover { transform:scale(1.1); }
+  .call-ctrl-btn.mute   { background:rgba(255,255,255,0.15); color:white; }
+  .call-ctrl-btn.cam    { background:rgba(255,255,255,0.15); color:white; }
+  .call-ctrl-btn.end    { background:#e53e3e; color:white; width:64px; height:64px; font-size:1.6rem; }
+  .call-ctrl-btn.muted  { background:rgba(247,110,143,0.3); color:var(--accent2); }
+  .call-ctrl-btn.cam-off{ background:rgba(247,110,143,0.3); color:var(--accent2); }
+
+  /* nav badge for messages */
+  .msg-nav-badge {
+    position:absolute; top:6px; right:10px;
+    background:var(--accent2); color:white; border-radius:50%;
+    width:16px; height:16px; font-size:0.62rem; font-weight:700;
+    display:none; align-items:center; justify-content:center;
+  }
+  .msg-nav-badge.show { display:flex; }
+
+  /* Message button in profile */
+  .btn-message {
+    padding:0.5rem 1.2rem; border-radius:50px; font-family:inherit;
+    font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s;
+    border:2px solid var(--accent2); background:var(--accent2); color:white;
+  }
+  .btn-message:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(247,110,143,0.3); }
+
+  /* Empty inbox */
+  .inbox-empty { text-align:center; padding:3rem 1rem; color:var(--muted); }
+  .inbox-empty .empty-icon { font-size:3rem; margin-bottom:0.75rem; }
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH SCREEN ══ -->
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">✦ পোস্টবই</div>
+
+    <!-- Login / Register tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin">লগইন</button>
+      <button class="auth-tab" id="tabRegister">নিবন্ধন</button>
+    </div>
+
+    <div class="auth-error" id="authError"></div>
+
+    <!-- ══ LOGIN PANEL ══ -->
+    <div id="loginPanel">
+      <div class="auth-subtitle" style="margin-bottom:1rem">আপনার অ্যাকাউন্টে প্রবেশ করুন</div>
+      <div class="auth-field">
+        <label>ইমেইল বা মোবাইল নম্বর</label>
+        <input class="auth-input" id="loginIdentifier" type="text" placeholder="ইমেইল বা নম্বর" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label>পাসওয়ার্ড</label>
+        <div class="pass-wrap">
+          <input class="auth-input" id="authPassword" type="password" placeholder="পাসওয়ার্ড দিন" autocomplete="current-password">
+          <button class="pass-toggle" id="passToggleBtn" type="button">👁️</button>
+        </div>
+      </div>
+      <button class="auth-btn" id="authBtn">লগইন করুন</button>
+    </div>
+
+    <!-- ══ REGISTER MULTI-STEP ══ -->
+    <div id="registerPanel" style="display:none">
+
+      <!-- Progress dots: 4 steps -->
+      <div class="reg-progress" id="regProgress">
+        <div class="reg-dot active" id="dot0"></div>
+        <div class="reg-dot" id="dot1"></div>
+        <div class="reg-dot" id="dot2"></div>
+        <div class="reg-dot" id="dot3"></div>
+        <div class="reg-dot" id="dot4"></div>
+      </div>
+
+      <!-- STEP 0 — নাম -->
+      <div class="reg-step active" id="regStep0">
+        <div class="reg-step-title">আপনার নাম কী?</div>
+        <div class="reg-step-sub">নতুন অ্যাকাউন্ট খুলতে আপনার আসল নাম দিন।</div>
+        <div class="name-row">
+          <div class="auth-field">
+            <label>প্রথম নাম</label>
+            <input class="auth-input" id="regFirstName" type="text" placeholder="যেমন: রাহেলা" autocomplete="given-name">
+          </div>
+          <div class="auth-field">
+            <label>শেষের নাম</label>
+            <input class="auth-input" id="regLastName" type="text" placeholder="যেমন: আক্তার" autocomplete="family-name">
+          </div>
+        </div>
+        <button class="auth-btn" id="step0Next">পরবর্তী →</button>
+      </div>
+
+      <!-- STEP 1 — জন্মদিন ও লিঙ্গ -->
+      <div class="reg-step" id="regStep1">
+        <div class="reg-step-title">জন্মতারিখ ও লিঙ্গ</div>
+        <div class="reg-step-sub">এই তথ্য অন্য কেউ দেখতে পাবে না।</div>
+        <div class="auth-field">
+          <label>জন্মতারিখ</label>
+          <div class="dob-row">
+            <select id="dobDay"><option value="">দিন</option></select>
+            <select id="dobMonth">
+              <option value="">মাস</option>
+              <option value="01">জানুয়ারি</option><option value="02">ফেব্রুয়ারি</option>
+              <option value="03">মার্চ</option><option value="04">এপ্রিল</option>
+              <option value="05">মে</option><option value="06">জুন</option>
+              <option value="07">জুলাই</option><option value="08">আগস্ট</option>
+              <option value="09">সেপ্টেম্বর</option><option value="10">অক্টোবর</option>
+              <option value="11">নভেম্বর</option><option value="12">ডিসেম্বর</option>
+            </select>
+            <select id="dobYear"><option value="">সাল</option></select>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>আপনি কে?</label>
+          <div class="gender-options">
+            <button class="gender-opt" id="gMale" type="button">👨 পুরুষ</button>
+            <button class="gender-opt" id="gFemale" type="button">👩 মহিলা</button>
+            <button class="gender-opt" id="gOther" type="button">🌈 অন্যান্য</button>
+          </div>
+        </div>
+        <button class="auth-btn" id="step1Next">পরবর্তী →</button>
+        <button class="reg-back-btn" id="step1Back">← পেছনে</button>
+      </div>
+
+      <!-- STEP 2 — নম্বর বা ইমেইল -->
+      <div class="reg-step" id="regStep2">
+        <div class="reg-step-title">যোগাযোগের তথ্য</div>
+        <div class="reg-step-sub">নম্বর বা ইমেইল — যেটি দিয়ে অ্যাকাউন্ট খুলতে চান।<br>এই তথ্য <span style="color:var(--accent)">শুধু আপনি দেখতে পাবেন</span>, অন্য কেউ না।</div>
+        <div class="contact-toggle">
+          <button class="contact-tab active" id="ctPhone" type="button">📱 মোবাইল নম্বর</button>
+          <button class="contact-tab" id="ctEmail" type="button">✉️ ইমেইল</button>
+        </div>
+        <div id="contactPhoneField" class="auth-field">
+          <label>মোবাইল নম্বর</label>
+          <input class="auth-input" id="regPhone" type="tel" placeholder="01XXXXXXXXX" autocomplete="tel">
+        </div>
+        <div id="contactEmailField" class="auth-field" style="display:none">
+          <label>ইমেইল আইডি</label>
+          <input class="auth-input" id="regEmail" type="email" placeholder="example@gmail.com" autocomplete="email">
+        </div>
+        <p class="privacy-note">🔒 আপনার <span>নম্বর বা ইমেইল লুকানো থাকবে</span> — প্রোফাইলে অন্য ইউজার দেখতে পাবে না।</p>
+        <button class="auth-btn" id="step2Next">পরবর্তী →</button>
+        <button class="reg-back-btn" id="step2Back">← পেছনে</button>
+      </div>
+
+      <!-- STEP 3 — পাসওয়ার্ড -->
+      <div class="reg-step" id="regStep3">
+        <div class="reg-step-title">পাসওয়ার্ড তৈরি করুন</div>
+        <div class="reg-step-sub">কমপক্ষে ৬টি অক্ষর দিন। সংখ্যা ও বিশেষ চিহ্ন ব্যবহার করলে আরও ভালো।</div>
+        <div class="auth-field">
+          <label>নতুন পাসওয়ার্ড</label>
+          <div class="pass-wrap">
+            <input class="auth-input" id="regPassword" type="password" placeholder="পাসওয়ার্ড লিখুন" autocomplete="new-password">
+            <button class="pass-toggle" id="regPassToggle" type="button">👁️</button>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>পাসওয়ার্ড নিশ্চিত করুন</label>
+          <div class="pass-wrap">
+            <input class="auth-input" id="regPassword2" type="password" placeholder="আবার লিখুন" autocomplete="new-password">
+            <button class="pass-toggle" id="regPassToggle2" type="button">👁️</button>
+          </div>
+        </div>
+        <button class="auth-btn" id="step3Next">পরবর্তী →</button>
+        <button class="reg-back-btn" id="step3Back">← পেছনে</button>
+      </div>
+
+      <!-- STEP 4 — সারসংক্ষেপ ও নিশ্চিত করুন -->
+      <div class="reg-step" id="regStep4">
+        <div class="reg-step-title">সব ঠিক আছে তো? ✅</div>
+        <div class="reg-step-sub">নিচের তথ্য দেখুন, সব ঠিক থাকলে অ্যাকাউন্ট খুলুন।</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem;margin-bottom:1rem;display:flex;flex-direction:column;gap:0.6rem;font-size:0.9rem;">
+          <div><span style="color:var(--muted)">নাম:</span> <strong id="summName">—</strong></div>
+          <div><span style="color:var(--muted)">জন্মতারিখ:</span> <strong id="summDob">—</strong></div>
+          <div><span style="color:var(--muted)">লিঙ্গ:</span> <strong id="summGender">—</strong></div>
+          <div><span style="color:var(--muted)">যোগাযোগ:</span> <strong id="summContact">🔒 গোপন</strong></div>
+        </div>
+        <button class="auth-btn" id="finalRegBtn">🎉 অ্যাকাউন্ট খুলুন</button>
+        <button class="reg-back-btn" id="step4Back">← পেছনে</button>
+      </div>
+
+    </div><!-- /registerPanel -->
+  </div>
+</div>
+
+<!-- ══ APP SCREEN ══ -->
+<div id="appScreen">
+  <header>
+    <div class="logo" onclick="showPage('feed')">✦ পোস্টবই</div>
+    <div class="header-right">
+      <div class="conn-dot" id="connDot" title="Firebase সংযোগ"></div>
+      <div class="user-menu-wrap">
+        <div class="header-avatar" id="headerAvatar" onclick="toggleUserMenu()">আ</div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-info-row">
+            <div class="user-info-name" id="dropdownName">—</div>
+            <div class="user-info-email" id="dropdownEmail">—</div>
+          </div>
+          <button class="dropdown-menu-item" onclick="goToMyProfile()">👤 আমার প্রোফাইল</button>
+          <button class="dropdown-menu-item" onclick="showPage('friends');loadFriends()">👥 ফ্রেন্ডস</button>
+          <button class="dropdown-menu-item" onclick="showPage('notifications');loadNotifications()">🔔 নোটিফিকেশন</button>
+          <button class="logout-btn" onclick="handleLogout()">🚪 লগআউট</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ═══ FEED PAGE ═══ -->
+    <div id="pageFeed" class="page active">
+
+      <!-- Story Bar -->
+      <div class="story-bar" id="storyBar">
+        <!-- Add Story button -->
+        <div class="story-item" onclick="openStoryComposer()">
+          <div class="story-add-ring">＋</div>
+          <div class="story-name me">স্টোরি</div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="composer-top">
+          <div class="avatar" id="composerAvatar">আ</div>
+          <textarea id="postInput" placeholder="আপনার মনের কথা লিখুন..." maxlength="500"></textarea>
+        </div>
+        <!-- Image preview strip -->
+        <div class="composer-img-preview" id="imgPreview" style="display:none"></div>
+        <div class="composer-bottom">
+          <div class="composer-actions">
+            <button class="img-attach-btn" title="ছবি যোগ করুন" onclick="document.getElementById('postImgInput').click()">📷</button>
+            <span class="char-count" id="charCount">০ / ৫০০</span>
+          </div>
+          <button class="post-btn" id="postBtn" disabled onclick="createPost()">পোস্ট করুন</button>
+        </div>
+      </div>
+      <input type="file" id="postImgInput" accept="image/*" multiple style="display:none" onchange="handlePostImages(event)">
+      <div class="feed-label">সাম্প্রতিক পোস্ট</div>
+      <div id="feed">
+        <div class="loading-spinner" id="loadingState">⏳ লোড হচ্ছে...</div>
+      </div>
+    </div>
+
+    <!-- ═══ PROFILE PAGE ═══ -->
+    <div id="pageProfile" class="page">
+
+      <!-- Cover Photo -->
+      <div class="profile-cover" id="profileCover" onclick="triggerCoverUpload()">
+        <div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>
+      </div>
+      <input type="file" id="coverInput" accept="image/*" style="display:none" onchange="uploadCover(event)">
+      <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
+      <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="uploadPhotos(event)">
+
+      <!-- Profile Header Card -->
+      <div class="profile-header-card">
+        <div class="profile-top-row">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profileAvatar">আ</div>
+            <div class="profile-avatar-edit" id="avatarEditBtn" style="display:none" onclick="document.getElementById('avatarInput').click()">✏️</div>
+          </div>
+          <div class="profile-actions" id="profileActions"></div>
+        </div>
+        <div class="profile-name" id="profileName">—</div>
+        <div class="profile-username" id="profileUsername">@—</div>
+        <div id="profileBioWrap"></div>
+        <div class="profile-stats">
+          <div class="stat-item" onclick="showFollowers()">
+            <div class="stat-num" id="statFollowers">০</div>
+            <div class="stat-label">ফলোয়ার</div>
+          </div>
+          <div class="stat-item" onclick="showFollowing()">
+            <div class="stat-num" id="statFollowing">০</div>
+            <div class="stat-label">ফলোয়িং</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" id="statPosts">০</div>
+            <div class="stat-label">পোস্ট</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photos Section -->
+      <div id="photosSection">
+        <div class="profile-section-title">
+          <span>📷 ছবি</span>
+          <button class="add-photo-btn" id="addPhotoBtn" style="display:none" onclick="document.getElementById('photoInput').click()">+ ছবি যোগ</button>
+        </div>
+        <div class="photo-grid" id="photoGrid"></div>
+      </div>
+
+      <!-- Posts Section -->
+      <div class="profile-section-title" style="margin-top:1.5rem">
+        <span>📝 পোস্টসমূহ</span>
+      </div>
+      <div id="profileFeed">
+        <div class="loading-spinner">⏳ লোড হচ্ছে...</div>
+      </div>
+
+    </div>
+
+    <!-- ═══ FRIENDS PAGE ═══ -->
+    <div id="pageFriends" class="page">
+      <div class="nav-tabs">
+        <button class="nav-tab active" id="friendsTabAll" onclick="switchFriendsTab('all')">🌐 সবাই</button>
+        <button class="nav-tab" id="friendsTabFollowing" onclick="switchFriendsTab('following')">✓ ফলোয়িং</button>
+        <button class="nav-tab" id="friendsTabFollowers" onclick="switchFriendsTab('followers')">👥 ফলোয়ার</button>
+      </div>
+      <div class="friends-search-wrap">
+        <span class="friends-search-icon">🔍</span>
+        <input class="friends-search" id="friendsSearch" type="text" placeholder="নাম দিয়ে খুঁজুন..." oninput="filterFriends()">
+      </div>
+      <div class="friends-count-label" id="friendsCountLabel">লোড হচ্ছে...</div>
+      <div class="friends-grid" id="friendsGrid">
+        <div class="loading-spinner" style="grid-column:1/-1">⏳ লোড হচ্ছে...</div>
+      </div>
+    </div>
+
+    <!-- ═══ NOTIFICATIONS PAGE ═══ -->
+    <div id="pageNotifications" class="page">
+
+      <!-- Admin Panel — only shown to admin -->
+      <div class="admin-panel" id="adminPanel" style="display:none">
+        <div class="admin-panel-title">🛡️ অ্যাডমিন — ব্রডকাস্ট নোটিফিকেশন</div>
+        <textarea class="admin-textarea" id="adminMsg" placeholder="সবার কাছে বার্তা পাঠান..." maxlength="300"></textarea>
+        <button class="admin-send-btn" id="adminSendBtn" onclick="sendAdminNotif()">📢 সবাইকে পাঠান</button>
+      </div>
+
+      <div class="notif-header-row">
+        <div class="notif-header-title">🔔 নোটিফিকেশন</div>
+        <button class="mark-all-read" onclick="markAllRead()">সব পড়া হয়েছে</button>
+      </div>
+
+      <div id="notifList">
+        <div class="loading-spinner">⏳ লোড হচ্ছে...</div>
+      </div>
+    </div>
+
+    <!-- ═══ MESSAGES PAGE ═══ -->
+    <div id="pageMessages" class="page">
+      <div class="inbox-header">
+        <div class="inbox-title">💬 মেসেজ</div>
+      </div>
+      <div class="inbox-list" id="inboxList">
+        <div class="loading-spinner">⏳ লোড হচ্ছে...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Bottom Nav ── -->
+  <nav style="position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,19,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;z-index:99;">
+    <button onclick="showPage('feed');updateBottomNav('feed')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navFeed">
+      <span style="font-size:1.2rem">🏠</span>ফিড
+    </button>
+    <button onclick="showPage('friends');loadFriends();updateBottomNav('friends')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navFriends">
+      <span style="font-size:1.2rem">👥</span>ফ্রেন্ডস
+    </button>
+    <button onclick="showPage('messages');loadInbox();updateBottomNav('messages')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;position:relative;" id="navMessages">
+      <span style="font-size:1.2rem">💬</span>
+      <span class="msg-nav-badge" id="msgNavBadge"></span>
+      মেসেজ
+    </button>
+    <button onclick="showPage('notifications');loadNotifications();updateBottomNav('notifications')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;position:relative;" id="navNotifications">
+      <div class="nav-notif-wrap">
+        <span style="font-size:1.2rem">🔔</span>
+        <span class="nav-notif-badge" id="navNotifBadge">0</span>
+      </div>নোটিফিকেশন
+    </button>
+    <button onclick="goToMyProfile();updateBottomNav('profile')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navProfile">
+      <span style="font-size:1.2rem">👤</span>প্রোফাইল
+    </button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ CHAT WINDOW ══ -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <button class="chat-back" onclick="closeChatWindow()">←</button>
+    <div class="chat-peer-avatar" id="chatPeerAvatar">আ</div>
+    <div class="chat-peer-info">
+      <div class="chat-peer-name" id="chatPeerName">—</div>
+      <div class="chat-peer-status" id="chatPeerStatus">অনলাইন</div>
+    </div>
+    <div class="chat-call-btns">
+      <button class="call-btn" onclick="startCall('audio')" title="অডিও কল">📞</button>
+      <button class="call-btn video" onclick="startCall('video')" title="ভিডিও কল">📹</button>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input-bar" style="position:relative;">
+    <button class="chat-attach-btn" onclick="document.getElementById('chatImgInput').click()" title="ছবি পাঠান">📷</button>
+    <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="sendImage(event)">
+    <!-- Emoji Picker Wrap -->
+    <div class="emoji-picker-wrap">
+      <button class="chat-emoji-toggle" id="emojiToggleBtn" onclick="toggleEmojiPicker(event)" title="ইমোজি">😊</button>
+      <div class="emoji-picker" id="emojiPicker">
+        <button class="emoji-btn-pick" onclick="insertEmoji('😭')">😭</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😍')">😍</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🎉')">🎉</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💔')">💔</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('👌')">👌</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🙏')">🙏</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💋')">💋</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😷')">😷</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🌝')">🌝</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('❤️‍🔥')">❤️‍🔥</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🦴')">🦴</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('❤️')">❤️</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😂')">😂</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🥺')">🥺</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😊')">😊</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🔥')">🔥</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💯')">💯</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😘')">😘</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🤣')">🤣</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💀')">💀</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🥰')">🥰</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😤')">😤</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🤔')">🤔</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('👏')">👏</button>
+      </div>
+    </div>
+    <textarea class="chat-text-input" id="chatTextInput" placeholder="মেসেজ লিখুন..." rows="1"
+      oninput="autoResize(this)"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+    <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ══ AUDIO/VIDEO CALL MODAL ══ -->
+<div class="call-modal" id="callModal">
+  <div class="call-video-area" id="callVideoArea">
+    <video id="remoteVideo" autoplay playsinline></video>
+    <div class="call-self-video"><video id="localVideo" autoplay playsinline muted></video></div>
+  </div>
+  <div class="call-modal-avatar" id="callModalAvatar">আ</div>
+  <div class="call-modal-name" id="callModalName">—</div>
+  <div class="call-modal-status" id="callModalStatus">কল হচ্ছে...</div>
+  <div class="call-modal-timer" id="callTimer" style="display:none">০০:০০</div>
+  <div class="call-controls">
+    <button class="call-ctrl-btn mute" id="muteBtn" onclick="toggleMute()" title="মিউট">🎤</button>
+    <button class="call-ctrl-btn cam" id="camBtn" onclick="toggleCam()" title="ক্যামেরা" style="display:none">📷</button>
+    <button class="call-ctrl-btn end" onclick="endCall()" title="কল শেষ">📵</button>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="editProfileModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      প্রোফাইল সম্পাদনা
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="form-field">
+      <label>নাম</label>
+      <input class="form-input" id="editName" type="text" placeholder="আপনার নাম">
+    </div>
+    <div class="form-field">
+      <label>বায়ো (নিজের সম্পর্কে লিখুন)</label>
+      <textarea class="form-textarea" id="editBio" placeholder="যেমন: 📍 ঢাকা | 📚 পড়তে ভালোবাসি | ☕ চা-প্রেমী"></textarea>
+    </div>
+    <div class="form-field">
+      <label>লিঙ্ক (ওয়েবসাইট / সোশ্যাল)</label>
+      <input class="form-input" id="editLink" type="url" placeholder="https://...">
+    </div>
+    <button class="save-btn" onclick="saveProfile()">💾 সেভ করুন</button>
+  </div>
+</div>
+
+<!-- Followers/Following Modal -->
+<div class="modal-overlay" id="followListModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="followListTitle">ফলোয়ার</span>
+      <button class="modal-close" onclick="document.getElementById('followListModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="follow-list" id="followListContainer"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Story Composer Modal -->
+<div class="story-composer-modal" id="storyComposerModal">
+  <div class="story-composer-box">
+    <div class="story-composer-title">
+      <span>✨ নতুন স্টোরি</span>
+      <button class="modal-close" onclick="closeStoryComposer()">✕</button>
+    </div>
+    <img class="story-img-preview" id="storyImgPreview" src="" alt="">
+    <div class="story-upload-area" id="storyUploadArea" onclick="document.getElementById('storyImgInput').click()">
+      <span style="font-size:1.5rem">🖼️</span>
+      <span>ছবি বেছে নিন (ঐচ্ছিক)</span>
+    </div>
+    <input type="file" id="storyImgInput" accept="image/*" style="display:none" onchange="handleStoryImage(event)">
+    <textarea class="story-text-input" id="storyTextInput" placeholder="কিছু লিখুন... (ছবি ছাড়াও হবে)" maxlength="200"></textarea>
+    <button class="story-post-btn" id="storyPostBtn" onclick="publishStory()">🌟 স্টোরি পোস্ট করুন</button>
+  </div>
+</div>
+
+<!-- Story Viewer -->
+<div class="story-viewer" id="storyViewer">
+  <div class="story-viewer-inner">
+    <div class="story-progress-bar" id="storyProgressBar"></div>
+    <div class="story-viewer-header">
+      <div class="story-viewer-avatar" id="svAvatar">আ</div>
+      <div class="story-viewer-meta">
+        <div class="story-viewer-name" id="svName">—</div>
+        <div class="story-viewer-time" id="svTime">এইমাত্র</div>
+      </div>
+      <button class="story-viewer-close" onclick="closeStoryViewer()">✕</button>
+    </div>
+    <div class="story-viewer-content" id="svContent">
+      <div class="story-tap-area">
+        <div class="story-tap-prev" onclick="storyNav(-1)"></div>
+        <div class="story-tap-next" onclick="storyNav(1)"></div>
+      </div>
+    </div>
+    <button class="story-delete-btn" id="svDeleteBtn" style="display:none" onclick="deleteCurrentStory()">🗑️ মুছুন</button>
+  </div>
+</div>
+
+<!-- Firebase Compat SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  // ── Firebase Config ──────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyDzMgxH_R4EoX-br9TKvgbr3Pdzis2UkjI",
+    authDomain: "milon-b6d68.firebaseapp.com",
+    databaseURL: "https://milon-b6d68-default-rtdb.firebaseio.com",
+    projectId: "milon-b6d68",
+    storageBucket: "milon-b6d68.firebasestorage.app",
+    messagingSenderId: "362426990668",
+    appId: "1:362426990668:web:6c681dba77d5e50a1bf4e9",
+    measurementId: "G-476NNE6TXL"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db   = firebase.database();
+  const postsRef = db.ref('posts');
+
+  let currentUser = null;
+  let currentMode = 'login';
+  let viewingUid  = null;
+
+  // ── Helpers ──────────────────────────────────────────────────────
+  function toBengaliNum(n) {
+    return String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+  }
+  function escHtml(t) {
+    return String(t||'')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+  function timeLabel(ts) {
+    if (!ts) return 'এইমাত্র';
+    const diff = Math.floor((Date.now() - ts) / 1000);
+    if (diff < 60)    return 'এইমাত্র';
+    if (diff < 3600)  return toBengaliNum(Math.floor(diff/60)) + ' মিনিট আগে';
+    if (diff < 86400) return toBengaliNum(Math.floor(diff/3600)) + ' ঘণ্টা আগে';
+    return toBengaliNum(Math.floor(diff/86400)) + ' দিন আগে';
+  }
+  function showToast(msg, color) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.borderColor = color || 'var(--share)';
+    t.style.color       = color || 'var(--share)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+  function showError(msg) {
+    const el = document.getElementById('authError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideError() {
+    document.getElementById('authError').classList.remove('show');
+  }
+  function getInitial(name) {
+    if (!name) return 'আ';
+    return name.trim()[0].toUpperCase();
+  }
+
+  // ── Pages ────────────────────────────────────────────────────────
+  window.showPage = function(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
+    document.getElementById('userDropdown').classList.remove('open');
+    updateBottomNav(page);
+  };
+
+  window.goToMyProfile = function() {
+    if (currentUser) openProfile(currentUser.uid);
+    document.getElementById('userDropdown').classList.remove('open');
+    updateBottomNav('profile');
+  };
+
+  // ── Image to Base64 ───────────────────────────────────────────────
+  function fileToBase64(file, maxW=800) {
+    return new Promise(res => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > maxW) { h = h * maxW / w; w = maxW; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          res(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── Tab Switch ────────────────────────────────────────────────────
+  function switchTab(mode) {
+    currentMode = mode;
+    hideError();
+    const isReg = mode === 'register';
+    document.getElementById('tabLogin').className    = 'auth-tab' + (isReg ? '' : ' active');
+    document.getElementById('tabRegister').className = 'auth-tab' + (isReg ? ' active' : '');
+    document.getElementById('loginPanel').style.display    = isReg ? 'none'  : 'block';
+    document.getElementById('registerPanel').style.display = isReg ? 'block' : 'none';
+    if (isReg) { regStep = 0; showRegStep(0); }
+  }
+
+  // ── Login Handler ─────────────────────────────────────────────────
+  async function handleAuth() {
+    hideError();
+    const identifier = document.getElementById('loginIdentifier').value.trim();
+    const password   = document.getElementById('authPassword').value;
+    const btn        = document.getElementById('authBtn');
+    if (!identifier || !password) { showError('ইমেইল/নম্বর ও পাসওয়ার্ড দিন।'); return; }
+
+    const isEmail = identifier.includes('@');
+    btn.disabled = true; btn.textContent = 'লগইন হচ্ছে...';
+    try {
+      let emailToUse = identifier;
+      if (!isEmail) {
+        const snap = await db.ref('users').once('value');
+        const users = snap.val() || {};
+        const match = Object.values(users).find(u => u.phone === identifier);
+        if (!match) { showError('এই নম্বরে কোনো অ্যাকাউন্ট নেই।'); btn.disabled=false; btn.textContent='লগইন করুন'; return; }
+        emailToUse = match.authEmail || match.email;
+      }
+      await auth.signInWithEmailAndPassword(emailToUse, password);
+      showToast('✓ লগইন সফল!');
+    } catch(e) {
+      let msg = 'একটি সমস্যা হয়েছে।';
+      if (e.code === 'auth/user-not-found')     msg = 'এই ইমেইল/নম্বরে কোনো অ্যাকাউন্ট নেই।';
+      else if (e.code === 'auth/wrong-password')     msg = 'পাসওয়ার্ড সঠিক নয়।';
+      else if (e.code === 'auth/invalid-email')      msg = 'ইমেইল আইডি সঠিক নয়।';
+      else if (e.code === 'auth/invalid-credential') msg = 'ইমেইল/নম্বর বা পাসওয়ার্ড সঠিক নয়।';
+      else if (e.code === 'auth/too-many-requests')  msg = 'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পর চেষ্টা করুন।';
+      showError(msg);
+      btn.disabled = false; btn.textContent = 'লগইন করুন';
+    }
+  }
+
+  // ── Multi-step Registration ───────────────────────────────────────
+  let regStep = 0;
+  let regData = {};
+  let selectedGender = '';
+  let contactMethod = 'phone';
+
+  (function buildDobOptions() {
+    const dayEl  = document.getElementById('dobDay');
+    const yearEl = document.getElementById('dobYear');
+    for (let d = 1; d <= 31; d++) {
+      const o = document.createElement('option');
+      o.value = String(d).padStart(2,'0');
+      o.textContent = d;
+      dayEl.appendChild(o);
+    }
+    const thisYear = new Date().getFullYear();
+    for (let y = thisYear; y >= 1940; y--) {
+      const o = document.createElement('option');
+      o.value = y; o.textContent = y;
+      yearEl.appendChild(o);
+    }
+  })();
+
+  function showRegStep(n) {
+    document.querySelectorAll('.reg-step').forEach((el,i) => {
+      el.classList.toggle('active', i === n);
+    });
+    document.querySelectorAll('.reg-dot').forEach((dot,i) => {
+      dot.classList.remove('active','done');
+      if (i < n) dot.classList.add('done');
+      else if (i === n) dot.classList.add('active');
+    });
+    hideError();
+  }
+
+  // Gender buttons
+  ['gMale','gFemale','gOther'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      document.querySelectorAll('.gender-opt').forEach(b => b.classList.remove('selected'));
+      document.getElementById(id).classList.add('selected');
+      selectedGender = { gMale:'পুরুষ', gFemale:'মহিলা', gOther:'অন্যান্য' }[id];
+    });
+  });
+
+  // Contact method toggle
+  document.getElementById('ctPhone').addEventListener('click', () => {
+    contactMethod = 'phone';
+    document.getElementById('ctPhone').classList.add('active');
+    document.getElementById('ctEmail').classList.remove('active');
+    document.getElementById('contactPhoneField').style.display = 'block';
+    document.getElementById('contactEmailField').style.display = 'none';
+  });
+  document.getElementById('ctEmail').addEventListener('click', () => {
+    contactMethod = 'email';
+    document.getElementById('ctEmail').classList.add('active');
+    document.getElementById('ctPhone').classList.remove('active');
+    document.getElementById('contactPhoneField').style.display = 'none';
+    document.getElementById('contactEmailField').style.display = 'block';
+  });
+
+  // Password toggles
+  document.getElementById('regPassToggle').addEventListener('click', () => {
+    const el = document.getElementById('regPassword');
+    el.type = el.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('regPassToggle2').addEventListener('click', () => {
+    const el = document.getElementById('regPassword2');
+    el.type = el.type === 'password' ? 'text' : 'password';
+  });
+
+  // Step navigation
+  document.getElementById('step0Next').addEventListener('click', () => {
+    const first = document.getElementById('regFirstName').value.trim();
+    const last  = document.getElementById('regLastName').value.trim();
+    if (!first) { showError('প্রথম নাম দিন।'); return; }
+    regData.firstName = first; regData.lastName = last;
+    regData.name = (first + ' ' + last).trim();
+    regStep = 1; showRegStep(1);
+  });
+
+  document.getElementById('step1Back').addEventListener('click', () => { regStep=0; showRegStep(0); });
+  document.getElementById('step1Next').addEventListener('click', () => {
+    const d = document.getElementById('dobDay').value;
+    const m = document.getElementById('dobMonth').value;
+    const y = document.getElementById('dobYear').value;
+    if (!d || !m || !y) { showError('জন্মতারিখ সম্পূর্ণ দিন।'); return; }
+    if (!selectedGender) { showError('লিঙ্গ বেছে নিন।'); return; }
+    regData.dob = d+'/'+m+'/'+y; regData.gender = selectedGender;
+    regStep = 2; showRegStep(2);
+  });
+
+  document.getElementById('step2Back').addEventListener('click', () => { regStep=1; showRegStep(1); });
+  document.getElementById('step2Next').addEventListener('click', async () => {
+    hideError();
+    if (contactMethod === 'phone') {
+      const phone = document.getElementById('regPhone').value.trim();
+      if (!phone || phone.length < 10) { showError('সঠিক মোবাইল নম্বর দিন।'); return; }
+      const snap = await db.ref('users').once('value');
+      const users = snap.val() || {};
+      if (Object.values(users).find(u => u.phone === phone)) {
+        showError('এই নম্বরে আগেই অ্যাকাউন্ট আছে।'); return;
+      }
+      regData.phone = phone; regData.contactBy = 'phone';
+      regData.authEmail = phone.replace(/\D/g,'') + '@postbook.app';
+    } else {
+      const email = document.getElementById('regEmail').value.trim();
+      if (!email || !email.includes('@')) { showError('সঠিক ইমেইল আইডি দিন।'); return; }
+      const snap = await db.ref('users').once('value');
+      const users = snap.val() || {};
+      if (Object.values(users).find(u => u.email === email)) {
+        showError('এই ইমেইলে আগেই অ্যাকাউন্ট আছে।'); return;
+      }
+      regData.email = email; regData.contactBy = 'email'; regData.authEmail = email;
+    }
+    regStep = 3; showRegStep(3);
+  });
+
+  document.getElementById('step3Back').addEventListener('click', () => { regStep=2; showRegStep(2); });
+  document.getElementById('step3Next').addEventListener('click', () => {
+    const p1 = document.getElementById('regPassword').value;
+    const p2 = document.getElementById('regPassword2').value;
+    if (p1.length < 6) { showError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।'); return; }
+    if (p1 !== p2)     { showError('পাসওয়ার্ড দুটো মিলছে না।'); return; }
+    regData.password = p1;
+    document.getElementById('summName').textContent   = regData.name;
+    document.getElementById('summDob').textContent    = regData.dob;
+    document.getElementById('summGender').textContent = regData.gender;
+    document.getElementById('summContact').textContent = '🔒 গোপন রাখা হবে';
+    regStep = 4; showRegStep(4);
+  });
+
+  document.getElementById('step4Back').addEventListener('click', () => { regStep=3; showRegStep(3); });
+  document.getElementById('finalRegBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('finalRegBtn');
+    btn.disabled = true; btn.textContent = '⏳ অ্যাকাউন্ট তৈরি হচ্ছে...';
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(regData.authEmail, regData.password);
+      await cred.user.updateProfile({ displayName: regData.name });
+      await db.ref('users/' + cred.user.uid).set({
+        name: regData.name, firstName: regData.firstName, lastName: regData.lastName,
+        dob: regData.dob, gender: regData.gender,
+        phone: regData.phone || '', email: regData.email || '',
+        contactBy: regData.contactBy, authEmail: regData.authEmail,
+        bio: '', link: '', createdAt: Date.now()
+      });
+      showToast('🎉 স্বাগতম ' + regData.firstName + '! অ্যাকাউন্ট তৈরি হয়েছে।');
+    } catch(e) {
+      let msg = 'একটি সমস্যা হয়েছে।';
+      if (e.code === 'auth/email-already-in-use') msg = 'এই তথ্যে আগেই অ্যাকাউন্ট আছে।';
+      showError(msg);
+      btn.disabled = false; btn.textContent = '🎉 অ্যাকাউন্ট খুলুন';
+    }
+  });
+
+  window.handleLogout = async function() {
+    await auth.signOut();
+    document.getElementById('userDropdown').classList.remove('open');
+    regStep = 0; regData = {}; selectedGender = ''; contactMethod = 'phone';
+    switchTab('login');
+    showToast('👋 লগআউট হয়েছে');
+  };
+
+  window.toggleUserMenu = function() {
+    document.getElementById('userDropdown').classList.toggle('open');
+  };
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.user-menu-wrap'))
+      document.getElementById('userDropdown')?.classList.remove('open');
+    if (!e.target.closest('.menu-wrap'))
+      document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+  });
+
+  // ── Auth State ────────────────────────────────────────────────────
+  auth.onAuthStateChanged(async function(user) {
+    if (user) {
+      currentUser = user;
+      const name = user.displayName || user.email.split('@')[0];
+      const init = getInitial(name);
+      document.getElementById('authScreen').style.display  = 'none';
+      document.getElementById('appScreen').style.display   = 'block';
+      document.getElementById('dropdownName').textContent  = name;
+      document.getElementById('dropdownEmail').textContent = user.email;
+
+      const snap = await db.ref('users/' + user.uid + '/avatar').once('value');
+      const av = snap.val();
+      if (av) {
+        document.getElementById('headerAvatar').innerHTML  = '<img src="' + av + '" alt="">';
+        document.getElementById('composerAvatar').innerHTML = '<img src="' + av + '" alt="">';
+      } else {
+        document.getElementById('headerAvatar').textContent  = init;
+        document.getElementById('composerAvatar').textContent = init;
+      }
+      startApp();
+      startNotifListener();
+      startMsgBadgeListener();
+      cleanExpiredStories().then(() => loadStories());
+    } else {
+      currentUser = null;
+      document.getElementById('authScreen').style.display = 'flex';
+      document.getElementById('appScreen').style.display  = 'none';
+    }
+  });
+
+  // ── Start App ─────────────────────────────────────────────────────
+  function startApp() {
+    db.ref('.info/connected').on('value', snap => {
+      document.getElementById('connDot').className = 'conn-dot' + (snap.val() ? ' online' : '');
+    });
+
+    const input     = document.getElementById('postInput');
+    const charCount = document.getElementById('charCount');
+    input.addEventListener('input', () => {
+      const total = input.value.length;
+      charCount.textContent = toBengaliNum(total) + ' / ৫০০';
+      charCount.className = 'char-count' + (total > 450 ? (total > 490 ? ' over' : ' warn') : '');
+      updatePostBtnState();
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey) createPost();
+    });
+
+    postsRef.on('value', snap => {
+      const feed = document.getElementById('feed');
+      document.getElementById('loadingState')?.remove();
+      const data = snap.val();
+      if (!data) {
+        feed.innerHTML = '<div class="empty-state"><div class="empty-icon">✍️</div><div class="empty-text">এখনো কোনো পোস্ট নেই।</div></div>';
+        return;
+      }
+      const posts = Object.entries(data)
+        .map(([id, v]) => ({ id, ...v }))
+        .sort((a, b) => (b.timestamp||0) - (a.timestamp||0));
+      feed.innerHTML = '';
+      posts.forEach(post => renderPost(post, feed));
+    });
+  }
+
+  // ── Build Post Images HTML ────────────────────────────────────────
+  function buildPostImages(post) {
+    const imgs = post.images;
+    if (!imgs || !imgs.length) return '';
+    const count = imgs.length;
+    if (count === 1) {
+      return '<div class="post-image-wrap"><img src="' + imgs[0] + '" alt="" onclick="openLightbox(\'' + imgs[0] + '\')"></div>';
+    }
+    const show = Math.min(count, 4);
+    const items = imgs.slice(0, show).map((src, i) => {
+      const isLast = i === show - 1 && count > 4;
+      return '<div class="img-item' + (isLast ? ' more-overlay' : '') + '" ' + (isLast ? 'data-more="+' + (count-4) + '"' : '') + '><img src="' + src + '" alt="" onclick="openLightbox(\'' + src + '\')"></div>';
+    }).join('');
+    return '<div class="post-images-grid count-' + show + '">' + items + '</div>';
+  }
+
+  // ── Render Post ───────────────────────────────────────────────────
+  function renderPost(post, feed, isOwnerOverride) {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.id = 'card-' + post.id;
+
+    const uid        = currentUser ? currentUser.uid : '';
+    const likedByMe  = post.likedBy && post.likedBy[uid];
+    const likeCount  = post.likes || 0;
+    const shareCount = post.shares || 0;
+    const isOwner    = isOwnerOverride !== undefined ? isOwnerOverride : post.authorUid === uid;
+    const comments   = post.comments ? Object.values(post.comments) : [];
+
+    const avatarHTML = post.authorAvatar
+      ? '<div class="avatar" style="cursor:pointer" onclick="openProfile(\'' + post.authorUid + '\')"><img src="' + post.authorAvatar + '" alt=""></div>'
+      : '<div class="avatar" style="cursor:pointer" onclick="openProfile(\'' + post.authorUid + '\')">' + getInitial(post.author) + '</div>';
+
+    const commentsHTML = comments.map(c =>
+      '<div class="comment-item"><div class="avatar sm">' + getInitial(c.author) + '</div><div class="comment-bubble"><div class="comment-author">' + escHtml(c.author||'ব্যবহারকারী') + '</div><div class="comment-text">' + escHtml(c.text) + '</div></div></div>'
+    ).join('');
+
+    const menuHTML = isOwner ? '<div class="menu-wrap"><button class="post-menu" onclick="toggleMenu(\'' + post.id + '\')">⋯</button><div class="dropdown" id="menu-' + post.id + '"><div class="dropdown-item danger" onclick="deletePost(\'' + post.id + '\')">🗑️ মুছে ফেলুন</div><div class="dropdown-item" onclick="copyPostText(\'' + post.id + '\')">📋 কপি করুন</div></div></div>' : '';
+
+    card.innerHTML =
+      '<div class="post-header">' + avatarHTML +
+      '<div class="post-meta"><div class="post-name" onclick="openProfile(\'' + post.authorUid + '\')">' + escHtml(post.author||'ব্যবহারকারী') + '</div><div class="post-time">' + timeLabel(post.timestamp) + '</div></div>' + menuHTML + '</div>' +
+      '<div class="post-body"' + (!post.text ? ' style="display:none"' : '') + '>' + escHtml(post.text) + '</div>' +
+      buildPostImages(post) +
+      '<div class="post-actions">' +
+        '<button class="action-btn like-btn ' + (likedByMe?'liked':'') + '" onclick="toggleLike(\'' + post.id + '\',' + (!!likedByMe) + ',' + likeCount + ')"><span class="action-icon">' + (likedByMe?'❤️':'🤍') + '</span><span>' + (likeCount > 0 ? toBengaliNum(likeCount)+' লাইক' : 'লাইক') + '</span></button>' +
+        '<button class="action-btn cmt-btn" onclick="toggleComments(\'' + post.id + '\')"><span class="action-icon">💬</span><span>' + (comments.length>0?toBengaliNum(comments.length)+' ':'') + 'মন্তব্য</span></button>' +
+        '<button class="action-btn share-btn" onclick="sharePost(\'' + post.id + '\',' + shareCount + ',\'' + encodeURIComponent(post.text||'') + '\')"><span class="action-icon">↗️</span><span>' + (shareCount>0?toBengaliNum(shareCount)+' শেয়ার':'শেয়ার') + '</span></button>' +
+      '</div>' +
+      '<div class="comment-section" id="cmts-' + post.id + '">' +
+        '<div class="comment-input-row"><div class="avatar sm">' + getInitial(currentUser ? currentUser.displayName : '') + '</div>' +
+        '<textarea class="comment-input" id="cmt-input-' + post.id + '" placeholder="মন্তব্য করুন..." rows="1" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();submitComment(\'' + post.id + '\')}" oninput="autoResize(this)"></textarea>' +
+        '<button class="send-btn" onclick="submitComment(\'' + post.id + '\')">➤</button></div>' +
+        '<div class="comments-list">' + commentsHTML + '</div></div>';
+
+    feed.appendChild(card);
+  }
+
+  // ── Open Profile ──────────────────────────────────────────────────
+  window.openProfile = async function(uid) {
+    if (!uid) return;
+    viewingUid = uid;
+    showPage('profile');
+    const isMe = uid === (currentUser ? currentUser.uid : '');
+
+    document.getElementById('avatarEditBtn').style.display = isMe ? 'flex' : 'none';
+    document.getElementById('addPhotoBtn').style.display   = isMe ? 'block' : 'none';
+
+    const cover = document.getElementById('profileCover');
+    cover.style.cursor = isMe ? 'pointer' : 'default';
+    cover.onclick = isMe ? () => document.getElementById('coverInput').click() : null;
+
+    const snap = await db.ref('users/' + uid).once('value');
+    const data = snap.val() || {};
+    const name = data.name || 'ব্যবহারকারী';
+
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('profileUsername').textContent = '@' + name.toLowerCase().replace(/\s/g,'_');
+
+    const bioWrap = document.getElementById('profileBioWrap');
+    if (data.bio) {
+      bioWrap.innerHTML = '<div class="profile-bio">' + escHtml(data.bio) + '</div>';
+      if (data.link) bioWrap.innerHTML += '<div style="margin-top:4px"><a href="' + escHtml(data.link) + '" target="_blank" style="color:var(--accent);font-size:0.85rem;text-decoration:none">🔗 ' + escHtml(data.link) + '</a></div>';
+    } else {
+      bioWrap.innerHTML = isMe ? '<div class="profile-bio-empty">বায়ো যোগ করুন...</div>' : '';
+    }
+
+    const av = document.getElementById('profileAvatar');
+    av.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(name);
+
+    const coverEl = document.getElementById('profileCover');
+    if (data.cover) {
+      coverEl.innerHTML = '<img src="' + data.cover + '" alt=""><div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>';
+    } else {
+      coverEl.innerHTML = '<div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>';
+    }
+
+    const actionsEl = document.getElementById('profileActions');
+    if (isMe) {
+      actionsEl.innerHTML = '<button class="btn-edit-profile" onclick="openEditModal()">✏️ সম্পাদনা</button>';
+    } else {
+      const followSnap = await db.ref('users/' + currentUser.uid + '/following/' + uid).once('value');
+      const isFollowing = !!followSnap.val();
+      actionsEl.innerHTML = '<button class="btn-follow ' + (isFollowing?'following':'') + '" id="followBtn" onclick="toggleFollow(\'' + uid + '\',' + isFollowing + ')">' + (isFollowing?'✓ ফলোয়িং':'+ ফলো করুন') + '</button>' +
+        (isFollowing ? '<button class="btn-message" onclick="openChat(\'' + uid + '\')" style="margin-left:0.5rem">💬 মেসেজ</button>' : '');
+    }
+
+    const followersSnap = await db.ref('users/' + uid + '/followers').once('value');
+    const followingSnap = await db.ref('users/' + uid + '/following').once('value');
+    const followersCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
+    const followingCount = followingSnap.val() ? Object.keys(followingSnap.val()).length : 0;
+    document.getElementById('statFollowers').textContent = toBengaliNum(followersCount);
+    document.getElementById('statFollowing').textContent = toBengaliNum(followingCount);
+
+    loadPhotos(uid, isMe);
+
+    const profileFeed = document.getElementById('profileFeed');
+    profileFeed.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+    const allSnap = await postsRef.once('value');
+    const allData = allSnap.val() || {};
+    const userPosts = Object.entries(allData)
+      .map(([id, v]) => ({ id, ...v }))
+      .filter(p => p.authorUid === uid)
+      .sort((a, b) => (b.timestamp||0) - (a.timestamp||0));
+
+    document.getElementById('statPosts').textContent = toBengaliNum(userPosts.length);
+    profileFeed.innerHTML = '';
+    if (!userPosts.length) {
+      profileFeed.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">কোনো পোস্ট নেই</div></div>';
+    } else {
+      userPosts.forEach(p => renderPost(p, profileFeed, isMe));
+    }
+  };
+
+  // ── Load Photos ───────────────────────────────────────────────────
+  async function loadPhotos(uid, isMe) {
+    const snap = await db.ref('users/' + uid + '/photos').once('value');
+    const grid = document.getElementById('photoGrid');
+    grid.innerHTML = '';
+    if (!snap.val()) return;
+    const photos = Object.entries(snap.val());
+    photos.sort((a,b) => (b[1].ts||0) - (a[1].ts||0));
+    photos.forEach(([pid, pdata]) => {
+      const div = document.createElement('div');
+      div.className = 'photo-item';
+      div.innerHTML = '<img src="' + pdata.url + '" alt="" onclick="openLightbox(\'' + pdata.url + '\')">' +
+        (isMe ? '<button class="photo-del" onclick="deletePhoto(\'' + uid + '\',\'' + pid + '\',event)">✕</button>' : '');
+      grid.appendChild(div);
+    });
+  }
+
+  window.deletePhoto = async function(uid, pid, e) {
+    e.stopPropagation();
+    if (!confirm('এই ছবিটি মুছে ফেলবেন?')) return;
+    await db.ref('users/' + uid + '/photos/' + pid).remove();
+    loadPhotos(uid, true);
+    showToast('🗑️ ছবি মুছে ফেলা হয়েছে');
+  };
+
+  // ── Follow / Unfollow ─────────────────────────────────────────────
+  window.toggleFollow = async function(targetUid, isFollowing) {
+    const myUid = currentUser.uid;
+    const btn = document.getElementById('followBtn');
+    if (isFollowing) {
+      await db.ref('users/' + myUid + '/following/' + targetUid).remove();
+      await db.ref('users/' + targetUid + '/followers/' + myUid).remove();
+      btn.textContent = '+ ফলো করুন';
+      btn.classList.remove('following');
+      btn.onclick = () => toggleFollow(targetUid, false);
+      showToast('আনফলো করা হয়েছে');
+    } else {
+      await db.ref('users/' + myUid + '/following/' + targetUid).set(true);
+      await db.ref('users/' + targetUid + '/followers/' + myUid).set(true);
+      btn.textContent = '✓ ফলোয়িং';
+      btn.classList.add('following');
+      btn.onclick = () => toggleFollow(targetUid, true);
+      const myName = currentUser.displayName || currentUser.email.split('@')[0];
+      await db.ref('notifications/' + targetUid).push({ type: 'follow', fromUid: myUid, fromName: myName, ts: Date.now(), read: false });
+      // Show message button
+      if (!document.getElementById('profileMsgBtn')) {
+        const msgBtn = document.createElement('button');
+        msgBtn.className = 'btn-message'; msgBtn.id = 'profileMsgBtn';
+        msgBtn.textContent = '💬 মেসেজ'; msgBtn.style.marginLeft = '0.5rem';
+        msgBtn.onclick = () => openChat(targetUid);
+        btn.parentNode.appendChild(msgBtn);
+      }
+      showToast('✓ ফলো করা হয়েছে!');
+    }
+    const fs = await db.ref('users/' + targetUid + '/followers').once('value');
+    document.getElementById('statFollowers').textContent = toBengaliNum(fs.val() ? Object.keys(fs.val()).length : 0);
+  };
+
+  window.showFollowers = async function() {
+    document.getElementById('followListTitle').textContent = 'ফলোয়ার';
+    const snap = await db.ref('users/' + viewingUid + '/followers').once('value');
+    renderFollowList(snap.val());
+    document.getElementById('followListModal').classList.add('open');
+  };
+  window.showFollowing = async function() {
+    document.getElementById('followListTitle').textContent = 'ফলোয়িং';
+    const snap = await db.ref('users/' + viewingUid + '/following').once('value');
+    renderFollowList(snap.val());
+    document.getElementById('followListModal').classList.add('open');
+  };
+  async function renderFollowList(uidsObj) {
+    const container = document.getElementById('followListContainer');
+    container.innerHTML = '';
+    if (!uidsObj) { container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem">কেউ নেই</div>'; return; }
+    for (const uid of Object.keys(uidsObj)) {
+      const snap = await db.ref('users/' + uid).once('value');
+      const data = snap.val() || {};
+      const div = document.createElement('div');
+      div.className = 'follow-item';
+      div.onclick = () => { document.getElementById('followListModal').classList.remove('open'); openProfile(uid); };
+      const avatarHTML = data.avatar ? '<div class="avatar sm"><img src="' + data.avatar + '" alt=""></div>' : '<div class="avatar sm">' + getInitial(data.name) + '</div>';
+      div.innerHTML = avatarHTML + '<div><div class="follow-item-name">' + escHtml(data.name||'ব্যবহারকারী') + '</div><div class="follow-item-sub">@' + escHtml((data.name||'user').toLowerCase().replace(/\s/g,'_')) + '</div></div>';
+      container.appendChild(div);
+    }
+  }
+
+  // ── Edit Profile ──────────────────────────────────────────────────
+  window.openEditModal = async function() {
+    const snap = await db.ref('users/' + currentUser.uid).once('value');
+    const data = snap.val() || {};
+    document.getElementById('editName').value = data.name || '';
+    document.getElementById('editBio').value  = data.bio  || '';
+    document.getElementById('editLink').value = data.link || '';
+    document.getElementById('editProfileModal').classList.add('open');
+  };
+  window.closeEditModal = function() { document.getElementById('editProfileModal').classList.remove('open'); };
+  window.saveProfile = async function() {
+    const name = document.getElementById('editName').value.trim();
+    const bio  = document.getElementById('editBio').value.trim();
+    const link = document.getElementById('editLink').value.trim();
+    if (!name) { showToast('নাম দিন', 'var(--like)'); return; }
+    await db.ref('users/' + currentUser.uid).update({ name, bio, link });
+    await currentUser.updateProfile({ displayName: name });
+    closeEditModal();
+    showToast('✓ প্রোফাইল আপডেট হয়েছে!');
+    openProfile(currentUser.uid);
+    document.getElementById('dropdownName').textContent = name;
+  };
+
+  // ── Cover & Avatar Upload ─────────────────────────────────────────
+  window.triggerCoverUpload = function() {
+    if (viewingUid === (currentUser ? currentUser.uid : '')) document.getElementById('coverInput').click();
+  };
+  window.uploadCover = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    showToast('⏳ কভার আপলোড হচ্ছে...');
+    const b64 = await fileToBase64(file, 1200);
+    await db.ref('users/' + currentUser.uid).update({ cover: b64 });
+    showToast('✓ কভার আপডেট হয়েছে!');
+    openProfile(currentUser.uid); e.target.value = '';
+  };
+  window.uploadAvatar = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    const b64 = await fileToBase64(file, 400);
+    await db.ref('users/' + currentUser.uid).update({ avatar: b64 });
+    document.getElementById('headerAvatar').innerHTML  = '<img src="' + b64 + '" alt="">';
+    document.getElementById('composerAvatar').innerHTML = '<img src="' + b64 + '" alt="">';
+    showToast('✓ প্রোফাইল ছবি আপডেট হয়েছে!');
+    openProfile(currentUser.uid); e.target.value = '';
+  };
+  window.uploadPhotos = async function(e) {
+    const files = Array.from(e.target.files); if (!files.length) return;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    for (const file of files) {
+      const b64 = await fileToBase64(file, 900);
+      await db.ref('users/' + currentUser.uid + '/photos').push({ url: b64, ts: Date.now() });
+    }
+    showToast('✓ ' + toBengaliNum(files.length) + 'টি ছবি যোগ হয়েছে!');
+    loadPhotos(currentUser.uid, true); e.target.value = '';
+  };
+
+  // ── Lightbox ──────────────────────────────────────────────────────
+  window.openLightbox = function(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  };
+  window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+
+  // ── Post Actions ──────────────────────────────────────────────────
+  let pendingImages = [];
+
+  function updatePostBtnState() {
+    const text = document.getElementById('postInput').value.trim();
+    document.getElementById('postBtn').disabled = text.length === 0 && pendingImages.length === 0;
+  }
+
+  window.handlePostImages = async function(e) {
+    const files = Array.from(e.target.files); if (!files.length) return;
+    showToast('⏳ ছবি প্রস্তুত হচ্ছে...');
+    for (const file of files) {
+      if (pendingImages.length >= 4) { showToast('সর্বোচ্চ ৪টি ছবি দেওয়া যাবে', 'var(--like)'); break; }
+      pendingImages.push(await fileToBase64(file, 1100));
+    }
+    e.target.value = ''; renderImagePreview(); updatePostBtnState(); showToast('✓ ছবি যোগ হয়েছে');
+  };
+
+  function renderImagePreview() {
+    const wrap = document.getElementById('imgPreview');
+    if (!pendingImages.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    wrap.style.display = 'flex'; wrap.innerHTML = '';
+    pendingImages.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      item.innerHTML = '<img src="' + src + '" alt=""><button class="preview-del" onclick="removePreviewImg(' + i + ')">✕</button>';
+      wrap.appendChild(item);
+    });
+  }
+
+  window.removePreviewImg = function(i) { pendingImages.splice(i, 1); renderImagePreview(); updatePostBtnState(); };
+
+  window.createPost = async function() {
+    if (!currentUser) return;
+    const input   = document.getElementById('postInput');
+    const postBtn = document.getElementById('postBtn');
+    const text = input.value.trim();
+    if (!text && pendingImages.length === 0) return;
+    postBtn.disabled = true; postBtn.textContent = 'পোস্ট হচ্ছে...';
+    try {
+      const name = currentUser.displayName || currentUser.email.split('@')[0];
+      const snapA = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
+      await postsRef.push({
+        text: text || '', images: pendingImages.length ? pendingImages : null,
+        author: name, authorUid: currentUser.uid, authorAvatar: snapA.val() || '',
+        likes: 0, shares: 0, timestamp: Date.now()
+      });
+      input.value = ''; pendingImages = []; renderImagePreview();
+      document.getElementById('charCount').textContent = '০ / ৫০০';
+      document.getElementById('charCount').className = 'char-count';
+      showToast('✓ পোস্ট সেভ হয়েছে!');
+    } catch(e) { showToast('❌ পোস্ট হয়নি: ' + e.message, 'var(--like)'); }
+    postBtn.textContent = 'পোস্ট করুন'; updatePostBtnState();
+  };
+
+  window.toggleLike = async function(id, currentLiked, currentCount) {
+    if (!currentUser) return;
+    const uid = currentUser.uid;
+    const newLiked = !currentLiked;
+    const newCount = newLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
+    try {
+      const updates = { likes: newCount };
+      updates['likedBy/' + uid] = newLiked ? true : null;
+      await db.ref('posts/' + id).update(updates);
+      if (newLiked) {
+        const postSnap = await db.ref('posts/' + id).once('value');
+        const post = postSnap.val();
+        if (post && post.authorUid && post.authorUid !== uid) {
+          const myName = currentUser.displayName || currentUser.email.split('@')[0];
+          await db.ref('notifications/' + post.authorUid).push({ type: 'like', fromUid: uid, fromName: myName, postId: id, postText: (post.text||'').substring(0,60), ts: Date.now(), read: false });
+        }
+      }
+    } catch(e) { showToast('❌ হয়নি', 'var(--like)'); }
+  };
+
+  window.submitComment = async function(id) {
+    if (!currentUser) return;
+    const inp  = document.getElementById('cmt-input-' + id);
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = ''; inp.style.height = '';
+    const name = currentUser.displayName || currentUser.email.split('@')[0];
+    try {
+      await db.ref('posts/' + id + '/comments').push({ author: name, authorUid: currentUser.uid, text, timestamp: Date.now() });
+      const postSnap = await db.ref('posts/' + id).once('value');
+      const post = postSnap.val();
+      if (post && post.authorUid && post.authorUid !== currentUser.uid) {
+        await db.ref('notifications/' + post.authorUid).push({ type: 'comment', fromUid: currentUser.uid, fromName: name, postId: id, postText: (post.text||'').substring(0,60), commentText: text.substring(0,80), ts: Date.now(), read: false });
+      }
+    } catch(e) { showToast('❌ মন্তব্য হয়নি', 'var(--like)'); }
+  };
+
+  window.sharePost = async function(id, currentShares, encodedText) {
+    const text = decodeURIComponent(encodedText);
+    try { await db.ref('posts/' + id).update({ shares: currentShares + 1 }); } catch(e) {}
+    if (navigator.share) navigator.share({ title: 'পোস্টবই', text }).catch(()=>{});
+    else if (navigator.clipboard) navigator.clipboard.writeText(text);
+    showToast('✓ পোস্ট শেয়ার হয়েছে!');
+  };
+
+  window.deletePost = async function(id) {
+    if (!confirm('এই পোস্টটি মুছে ফেলবেন?')) return;
+    try { await db.ref('posts/' + id).remove(); showToast('🗑️ পোস্ট মুছে ফেলা হয়েছে'); }
+    catch(e) { showToast('❌ মুছা হয়নি', 'var(--like)'); }
+  };
+
+  window.copyPostText = async function(id) {
+    try {
+      const snap = await db.ref('posts/' + id + '/text').once('value');
+      if (snap.val() && navigator.clipboard) navigator.clipboard.writeText(snap.val());
+    } catch(e) {}
+    document.getElementById('menu-' + id)?.classList.remove('open');
+    showToast('📋 কপি হয়েছে!');
+  };
+
+  window.toggleMenu = function(id) {
+    document.querySelectorAll('.dropdown.open').forEach(d => { if (d.id !== 'menu-' + id) d.classList.remove('open'); });
+    document.getElementById('menu-' + id).classList.toggle('open');
+  };
+  window.toggleComments = function(id) {
+    const sec = document.getElementById('cmts-' + id);
+    sec.classList.toggle('open');
+    if (sec.classList.contains('open')) setTimeout(() => document.getElementById('cmt-input-' + id)?.focus(), 100);
+  };
+  window.autoResize = function(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; };
+
+  // ── Bottom Nav ────────────────────────────────────────────────────
+  window.updateBottomNav = function(active) {
+    ['feed','friends','messages','notifications','profile'].forEach(id => {
+      const btn = document.getElementById('nav' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (btn) btn.style.color = id === active ? 'var(--accent)' : 'var(--muted)';
+    });
+  };
+
+  // ── Friends Page ──────────────────────────────────────────────────
+  let allUsersCache = [];
+  let currentFriendsTab = 'all';
+
+  window.loadFriends = async function() {
+    const grid = document.getElementById('friendsGrid');
+    const label = document.getElementById('friendsCountLabel');
+    grid.innerHTML = '<div class="loading-spinner" style="grid-column:1/-1">⏳ লোড হচ্ছে...</div>';
+    label.textContent = 'লোড হচ্ছে...';
+    const snap = await db.ref('users').once('value');
+    const data = snap.val() || {};
+    const followingSnap = await db.ref('users/' + currentUser.uid + '/following').once('value');
+    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
+    const followingMap  = followingSnap.val() || {};
+    const followersMap  = followersSnap.val() || {};
+    allUsersCache = Object.entries(data)
+      .filter(([uid]) => uid !== currentUser.uid)
+      .map(([uid, u]) => ({ uid, name: u.name||'ব্যবহারকারী', email: u.email||'', avatar: u.avatar||'', isFollowing: !!followingMap[uid], isFollower: !!followersMap[uid] }));
+    renderFriendCards();
+  };
+
+  window.switchFriendsTab = function(tab) {
+    currentFriendsTab = tab;
+    ['all','following','followers'].forEach(t => {
+      const btn = document.getElementById('friendsTab' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.className = 'nav-tab' + (t === tab ? ' active' : '');
+    });
+    document.getElementById('friendsSearch').value = '';
+    renderFriendCards();
+  };
+
+  window.filterFriends = function() { renderFriendCards(); };
+
+  function renderFriendCards() {
+    const grid  = document.getElementById('friendsGrid');
+    const label = document.getElementById('friendsCountLabel');
+    const query = (document.getElementById('friendsSearch')?.value || '').toLowerCase();
+    let list = allUsersCache;
+    if (currentFriendsTab === 'following') list = list.filter(u => u.isFollowing);
+    if (currentFriendsTab === 'followers') list = list.filter(u => u.isFollower);
+    if (query) list = list.filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
+    const tabLabel = currentFriendsTab === 'all' ? 'মোট ব্যবহারকারী' : currentFriendsTab === 'following' ? 'ফলোয়িং' : 'ফলোয়ার';
+    label.textContent = toBengaliNum(list.length) + ' জন ' + tabLabel;
+    if (!list.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div><div class="empty-text">কেউ নেই</div></div>'; return; }
+    grid.innerHTML = '';
+    list.forEach(user => {
+      const card = document.createElement('div');
+      card.className = 'friend-card';
+      const avatarHTML = user.avatar ? '<div class="friend-avatar-lg"><img src="' + user.avatar + '" alt=""></div>' : '<div class="friend-avatar-lg">' + getInitial(user.name) + '</div>';
+      card.innerHTML = avatarHTML + '<div class="friend-card-name">' + escHtml(user.name) + '</div><div class="friend-card-sub">@' + escHtml((user.name||'user').toLowerCase().replace(/\s/g,'_')) + '</div><button class="friend-card-btn ' + (user.isFollowing ? 'following' : '') + '" id="fcard-btn-' + user.uid + '" onclick="event.stopPropagation();friendToggleFollow(\'' + user.uid + '\')">' + (user.isFollowing ? '✓ ফলোয়িং' : '+ ফলো করুন') + '</button>';
+      card.onclick = () => { openProfile(user.uid); updateBottomNav('profile'); };
+      grid.appendChild(card);
+    });
+  }
+
+  window.friendToggleFollow = async function(targetUid) {
+    const myUid = currentUser.uid;
+    const user  = allUsersCache.find(u => u.uid === targetUid);
+    if (!user) return;
+    const btn = document.getElementById('fcard-btn-' + targetUid);
+    if (user.isFollowing) {
+      await db.ref('users/' + myUid + '/following/' + targetUid).remove();
+      await db.ref('users/' + targetUid + '/followers/' + myUid).remove();
+      user.isFollowing = false;
+      if (btn) { btn.textContent = '+ ফলো করুন'; btn.classList.remove('following'); }
+      showToast('আনফলো করা হয়েছে');
+    } else {
+      await db.ref('users/' + myUid + '/following/' + targetUid).set(true);
+      await db.ref('users/' + targetUid + '/followers/' + myUid).set(true);
+      user.isFollowing = true;
+      if (btn) { btn.textContent = '✓ ফলোয়িং'; btn.classList.add('following'); }
+      const myName = currentUser.displayName || currentUser.email.split('@')[0];
+      await db.ref('notifications/' + targetUid).push({ type: 'follow', fromUid: myUid, fromName: myName, ts: Date.now(), read: false });
+      showToast('✓ ফলো করা হয়েছে!');
+    }
+    if (currentFriendsTab === 'following') renderFriendCards();
+  };
+
+  // ── Notifications ─────────────────────────────────────────────────
+  const ADMIN_UID = 'REPLACE_WITH_YOUR_UID';
+
+  function startNotifListener() {
+    if (!currentUser) return;
+    db.ref('notifications/' + currentUser.uid).on('value', snap => {
+      const data = snap.val() || {};
+      const unread = Object.values(data).filter(n => !n.read).length;
+      const badge = document.getElementById('navNotifBadge');
+      if (badge) { badge.textContent = unread > 9 ? '9+' : String(unread); badge.className = 'nav-notif-badge' + (unread > 0 ? ' show' : ''); }
+    });
+  }
+
+  window.loadNotifications = async function() {
+    if (!currentUser) return;
+    const list = document.getElementById('notifList');
+    list.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+    document.getElementById('adminPanel').style.display = currentUser.uid === ADMIN_UID ? 'block' : 'none';
+    const snap = await db.ref('notifications/' + currentUser.uid).once('value');
+    const data = snap.val() || {};
+    const notifs = Object.entries(data).map(([id, v]) => ({ id, ...v })).sort((a, b) => (b.ts||0) - (a.ts||0));
+    const followingSnap = await db.ref('users/' + currentUser.uid + '/following').once('value');
+    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
+    const followingCount = followingSnap.val() ? Object.keys(followingSnap.val()).length : 0;
+    const followersCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
+    const allPostsSnap = await postsRef.once('value');
+    const allPosts = allPostsSnap.val() || {};
+    let totalLikes = 0, totalComments = 0;
+    Object.values(allPosts).forEach(p => { if (p.authorUid === currentUser.uid) { totalLikes += (p.likes||0); totalComments += p.comments ? Object.keys(p.comments).length : 0; } });
+    list.innerHTML = '';
+    const summary = document.createElement('div');
+    summary.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.5rem;text-align:center;';
+    summary.innerHTML = '<div><div style="font-size:1.4rem;font-weight:700;color:var(--like)">' + toBengaliNum(totalLikes) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">মোট লাইক</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--comment)">' + toBengaliNum(totalComments) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">মন্তব্য</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--accent3)">' + toBengaliNum(followersCount) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">ফলোয়ার</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--accent)">' + toBengaliNum(followingCount) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">ফলোয়িং</div></div>';
+    list.appendChild(summary);
+    if (!notifs.length) { list.innerHTML += '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-text">এখনো কোনো নোটিফিকেশন নেই</div></div>'; return; }
+    notifs.forEach(n => {
+      const item = document.createElement('div');
+      item.className = 'notif-item' + (!n.read ? ' unread' : '') + (n.type === 'admin' ? ' admin-notif' : '');
+      let iconClass='', iconEmoji='', text='';
+      if (n.type==='like')    { iconClass='like';    iconEmoji='❤️'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনার পোস্টে লাইক দিয়েছে'+(n.postText?' — <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.postText)+'..."</span>':''); }
+      else if (n.type==='comment') { iconClass='comment'; iconEmoji='💬'; text='<strong>'+escHtml(n.fromName)+'</strong> মন্তব্য করেছে'+(n.commentText?': <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.commentText)+'"</span>':''); }
+      else if (n.type==='follow')  { iconClass='follow';  iconEmoji='👤'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনাকে ফলো করেছে'; }
+      else if (n.type==='admin')   { iconClass='admin';   iconEmoji='📢'; text='<span style="color:var(--accent2);font-weight:700">অ্যাডমিন:</span> '+escHtml(n.message); }
+      item.innerHTML = '<div class="notif-icon-wrap '+iconClass+'">'+iconEmoji+'</div><div class="notif-body"><div class="notif-text">'+text+'</div><div class="notif-time">'+timeLabel(n.ts)+'</div></div>'+(!n.read?'<div class="notif-unread-dot"></div>':'');
+      item.onclick = async () => {
+        if (!n.read) { await db.ref('notifications/'+currentUser.uid+'/'+n.id).update({read:true}); item.classList.remove('unread'); item.querySelector('.notif-unread-dot')?.remove(); }
+        if (n.type !== 'admin' && n.fromUid) openProfile(n.fromUid);
+      };
+      list.appendChild(item);
+    });
+  };
+
+  window.markAllRead = async function() {
+    if (!currentUser) return;
+    const snap = await db.ref('notifications/' + currentUser.uid).once('value');
+    const data = snap.val() || {};
+    const updates = {};
+    Object.keys(data).forEach(k => { updates[k + '/read'] = true; });
+    if (Object.keys(updates).length) await db.ref('notifications/' + currentUser.uid).update(updates);
+    loadNotifications(); showToast('✓ সব নোটিফিকেশন পড়া হয়েছে');
+  };
+
+  window.sendAdminNotif = async function() {
+    if (currentUser.uid !== ADMIN_UID) return;
+    const msg = document.getElementById('adminMsg').value.trim();
+    if (!msg) { showToast('বার্তা লিখুন', 'var(--like)'); return; }
+    const btn = document.getElementById('adminSendBtn');
+    btn.disabled = true; btn.textContent = '⏳ পাঠানো হচ্ছে...';
+    const usersSnap = await db.ref('users').once('value');
+    const users = usersSnap.val() || {};
+    const promises = Object.keys(users).filter(uid => uid !== ADMIN_UID).map(uid => db.ref('notifications/' + uid).push({ type: 'admin', message: msg, ts: Date.now(), read: false }));
+    await Promise.all(promises);
+    document.getElementById('adminMsg').value = '';
+    btn.disabled = false; btn.textContent = '📢 সবাইকে পাঠান';
+    showToast('✓ সবার কাছে বার্তা পাঠানো হয়েছে!');
+  };
+
+  // ── Story Feature ─────────────────────────────────────────────────
+  const STORY_TTL = 24 * 60 * 60 * 1000;
+  let storyGroups = [], storyGroupIdx = 0, storyIdx = 0, storyTimer = null, storyImgBase64 = null;
+  const STORY_DURATION = 5000;
+
+  async function loadStories() {
+    const now = Date.now();
+    const snap = await db.ref('stories').once('value');
+    const data = snap.val() || {};
+    const byUser = {};
+    Object.entries(data).forEach(([sid, s]) => {
+      if (!s || (now - (s.ts||0)) > STORY_TTL) return;
+      if (!byUser[s.uid]) byUser[s.uid] = { uid: s.uid, name: s.name, avatar: s.avatar||'', stories: [] };
+      byUser[s.uid].stories.push({ id: sid, ...s });
+    });
+    Object.values(byUser).forEach(g => g.stories.sort((a,b) => a.ts - b.ts));
+    const myUid = currentUser.uid;
+    storyGroups = Object.values(byUser).sort((a,b) => {
+      if (a.uid === myUid) return -1; if (b.uid === myUid) return 1;
+      return (b.stories[b.stories.length-1]?.ts||0) - (a.stories[a.stories.length-1]?.ts||0);
+    });
+    renderStoryBar();
+  }
+
+  function renderStoryBar() {
+    const bar = document.getElementById('storyBar');
+    const myUid = currentUser.uid;
+    const seenKey = 'seen_stories_' + myUid;
+    let seen = {};
+    try { seen = JSON.parse(localStorage.getItem(seenKey) || '{}'); } catch(e) {}
+    bar.innerHTML = '<div class="story-item" onclick="openStoryComposer()"><div class="story-add-ring">＋</div><div class="story-name me">স্টোরি</div></div>';
+    storyGroups.forEach((group, gIdx) => {
+      const allSeen = group.stories.every(s => seen[s.id]);
+      const isMe = group.uid === myUid;
+      const shortName = group.name.split(' ')[0];
+      const avatarInner = group.avatar ? '<img src="' + group.avatar + '" alt="">' : '<div class="story-initials">' + getInitial(group.name) + '</div>';
+      const item = document.createElement('div');
+      item.className = 'story-item';
+      item.innerHTML = '<div class="story-ring' + (allSeen?' seen':'') + '"><div class="story-ring-inner">' + avatarInner + '</div></div><div class="story-name' + (isMe?' me':'') + '">' + escHtml(shortName) + '</div>';
+      item.onclick = () => openStoryViewer(gIdx);
+      bar.appendChild(item);
+    });
+  }
+
+  window.openStoryComposer = function() {
+    storyImgBase64 = null;
+    document.getElementById('storyImgPreview').classList.remove('show');
+    document.getElementById('storyImgPreview').src = '';
+    document.getElementById('storyUploadArea').style.display = 'flex';
+    document.getElementById('storyTextInput').value = '';
+    document.getElementById('storyImgInput').value = '';
+    document.getElementById('storyComposerModal').classList.add('open');
+  };
+  window.closeStoryComposer = function() { document.getElementById('storyComposerModal').classList.remove('open'); };
+  window.handleStoryImage = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    showToast('⏳ ছবি প্রস্তুত হচ্ছে...');
+    storyImgBase64 = await fileToBase64(file, 900);
+    const prev = document.getElementById('storyImgPreview');
+    prev.src = storyImgBase64; prev.classList.add('show');
+    document.getElementById('storyUploadArea').style.display = 'none';
+    showToast('✓ ছবি প্রস্তুত');
+  };
+  window.publishStory = async function() {
+    const text = document.getElementById('storyTextInput').value.trim();
+    if (!storyImgBase64 && !text) { showToast('ছবি বা লেখা দিন', 'var(--like)'); return; }
+    const btn = document.getElementById('storyPostBtn');
+    btn.disabled = true; btn.textContent = '⏳ পোস্ট হচ্ছে...';
+    const name = currentUser.displayName || currentUser.email.split('@')[0];
+    const snapAv = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
+    await db.ref('stories').push({ uid: currentUser.uid, name, avatar: snapAv.val()||'', text: text||'', image: storyImgBase64||'', ts: Date.now() });
+    btn.disabled = false; btn.textContent = '🌟 স্টোরি পোস্ট করুন';
+    closeStoryComposer(); showToast('✓ স্টোরি পোস্ট হয়েছে!'); loadStories();
+  };
+
+  window.openStoryViewer = function(gIdx) { storyGroupIdx = gIdx; storyIdx = 0; document.getElementById('storyViewer').classList.add('open'); showStory(); };
+  window.closeStoryViewer = function() { clearTimeout(storyTimer); document.getElementById('storyViewer').classList.remove('open'); renderStoryBar(); };
+
+  function showStory() {
+    clearTimeout(storyTimer);
+    const group = storyGroups[storyGroupIdx];
+    if (!group) { closeStoryViewer(); return; }
+    const story = group.stories[storyIdx];
+    if (!story) { closeStoryViewer(); return; }
+    const seenKey = 'seen_stories_' + currentUser.uid;
+    let seen = {};
+    try { seen = JSON.parse(localStorage.getItem(seenKey) || '{}'); } catch(e) {}
+    seen[story.id] = true;
+    try { localStorage.setItem(seenKey, JSON.stringify(seen)); } catch(e) {}
+    const bar = document.getElementById('storyProgressBar');
+    bar.innerHTML = '';
+    group.stories.forEach((_, i) => {
+      const seg = document.createElement('div'); seg.className = 'story-prog-seg';
+      const fill = document.createElement('div'); fill.className = 'story-prog-fill';
+      if (i < storyIdx) fill.style.width = '100%';
+      seg.appendChild(fill); bar.appendChild(seg);
+      if (i === storyIdx) setTimeout(() => { fill.style.transition = 'width ' + STORY_DURATION + 'ms linear'; fill.style.width = '100%'; }, 50);
+    });
+    const avatarEl = document.getElementById('svAvatar');
+    avatarEl.innerHTML = group.avatar ? '<img src="' + group.avatar + '" alt="">' : getInitial(group.name);
+    document.getElementById('svName').textContent = group.name;
+    document.getElementById('svTime').textContent = timeLabel(story.ts);
+    const delBtn = document.getElementById('svDeleteBtn');
+    delBtn.style.display = (story.uid === currentUser.uid) ? 'block' : 'none';
+    const content = document.getElementById('svContent');
+    content.querySelectorAll('img, .story-viewer-text-only').forEach(el => el.remove());
+    if (story.image) {
+      const img = document.createElement('img'); img.className = 'story-viewer-img'; img.src = story.image;
+      content.insertBefore(img, content.firstChild);
+      if (story.text) { const overlay = document.createElement('div'); overlay.style.cssText = 'position:absolute;bottom:80px;left:0;right:0;padding:1rem 1.25rem;text-align:center;font-size:1.1rem;font-weight:600;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.8);pointer-events:none;'; overlay.textContent = story.text; content.appendChild(overlay); }
+    } else {
+      const textDiv = document.createElement('div'); textDiv.className = 'story-viewer-text-only'; textDiv.textContent = story.text; content.insertBefore(textDiv, content.firstChild);
+    }
+    storyTimer = setTimeout(() => storyNav(1), STORY_DURATION);
+  }
+
+  window.storyNav = function(dir) {
+    clearTimeout(storyTimer);
+    const group = storyGroups[storyGroupIdx];
+    storyIdx += dir;
+    if (storyIdx < 0) { if (storyGroupIdx > 0) { storyGroupIdx--; storyIdx = storyGroups[storyGroupIdx].stories.length - 1; showStory(); } else { closeStoryViewer(); } }
+    else if (storyIdx >= group.stories.length) { if (storyGroupIdx < storyGroups.length - 1) { storyGroupIdx++; storyIdx = 0; showStory(); } else { closeStoryViewer(); } }
+    else { showStory(); }
+  };
+
+  window.deleteCurrentStory = async function() {
+    const group = storyGroups[storyGroupIdx];
+    const story = group?.stories[storyIdx];
+    if (!story || story.uid !== currentUser.uid) return;
+    if (!confirm('এই স্টোরিটি মুছে ফেলবেন?')) return;
+    clearTimeout(storyTimer);
+    await db.ref('stories/' + story.id).remove();
+    showToast('🗑️ স্টোরি মুছে ফেলা হয়েছে');
+    closeStoryViewer(); loadStories();
+  };
+
+  async function cleanExpiredStories() {
+    const now = Date.now();
+    const snap = await db.ref('stories').once('value');
+    const data = snap.val() || {};
+    const removes = [];
+    Object.entries(data).forEach(([sid, s]) => { if (s && (now - (s.ts||0)) > STORY_TTL) removes.push(db.ref('stories/' + sid).remove()); });
+    if (removes.length) await Promise.all(removes);
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── MESSENGER FEATURE ─────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════
+
+  let currentChatUid  = null;  // peer UID
+  let currentChatName = '';
+  let chatListener    = null;  // Firebase listener unsubscribe
+  let callTimerInterval = null;
+  let callSeconds       = 0;
+  let localStream       = null;
+  let isMuted = false, isCamOff = false;
+
+  // chatId = sorted UIDs joined by '_'
+  function getChatId(uid1, uid2) {
+    return [uid1, uid2].sort().join('_');
+  }
+
+  // ── Inbox ─────────────────────────────────────────────────────────
+  window.loadInbox = async function() {
+    const list = document.getElementById('inboxList');
+    list.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+    const myUid = currentUser.uid;
+
+    // Load all chats where myUid participates
+    const snap = await db.ref('chats').once('value');
+    const all  = snap.val() || {};
+
+    const myChats = Object.entries(all)
+      .filter(([cid]) => cid.includes(myUid))
+      .map(([cid, data]) => {
+        const msgs = data.messages ? Object.values(data.messages) : [];
+        const last = msgs.sort((a,b) => (b.ts||0)-(a.ts||0))[0];
+        const peerUid = cid.replace(myUid, '').replace('_','');
+        const unread  = msgs.filter(m => m.senderUid !== myUid && !m.read).length;
+        return { cid, peerUid, last, unread };
+      })
+      .sort((a,b) => (b.last?.ts||0) - (a.last?.ts||0));
+
+    if (!myChats.length) {
+      list.innerHTML = '<div class="inbox-empty"><div class="empty-icon">💬</div><div>এখনো কোনো মেসেজ নেই।<br><span style="font-size:0.85rem">কাউকে ফলো করে মেসেজ পাঠান।</span></div></div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    for (const chat of myChats) {
+      const usnap = await db.ref('users/' + chat.peerUid).once('value');
+      const udata = usnap.val() || {};
+      const item  = document.createElement('div');
+      item.className = 'inbox-item' + (chat.unread > 0 ? ' unread' : '');
+      const avHTML = udata.avatar
+        ? '<div class="inbox-avatar"><img src="' + udata.avatar + '" alt=""></div>'
+        : '<div class="inbox-avatar">' + getInitial(udata.name) + '</div>';
+      const preview = chat.last ? (chat.last.senderUid === myUid ? 'আপনি: ' : '') + (chat.last.img ? '📷 ছবি' : (chat.last.text||'').substring(0,40)) : 'মেসেজ শুরু করুন';
+      item.innerHTML = avHTML +
+        '<div class="inbox-info"><div class="inbox-name">' + escHtml(udata.name||'ব্যবহারকারী') + '</div><div class="inbox-preview">' + escHtml(preview) + '</div></div>' +
+        '<div class="inbox-meta"><div class="inbox-time">' + (chat.last ? timeLabel(chat.last.ts) : '') + '</div>' +
+        (chat.unread > 0 ? '<div class="inbox-badge">' + chat.unread + '</div>' : '') + '</div>';
+      item.onclick = () => openChat(chat.peerUid);
+      list.appendChild(item);
+    }
+  };
+
+  // ── Open Chat ──────────────────────────────────────────────────────
+  window.openChat = async function(peerUid) {
+    currentChatUid = peerUid;
+    const snap = await db.ref('users/' + peerUid).once('value');
+    const data  = snap.val() || {};
+    currentChatName = data.name || 'ব্যবহারকারী';
+
+    // Header
+    const avEl = document.getElementById('chatPeerAvatar');
+    avEl.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(currentChatName);
+    document.getElementById('chatPeerName').textContent   = currentChatName;
+    document.getElementById('chatPeerStatus').textContent = 'অনলাইন';
+
+    // Open window
+    document.getElementById('chatWindow').classList.add('open');
+    document.getElementById('chatMessages').innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+
+    // Listen to messages
+    const cid     = getChatId(currentUser.uid, peerUid);
+    const msgsRef = db.ref('chats/' + cid + '/messages');
+
+    if (chatListener) chatListener();  // detach old
+    msgsRef.on('value', snap => {
+      const data = snap.val() || {};
+      const msgs = Object.entries(data).map(([k,v]) => ({id:k,...v})).sort((a,b) => (a.ts||0)-(b.ts||0));
+      renderMessages(msgs);
+      // Mark received as read
+      msgs.filter(m => m.senderUid !== currentUser.uid && !m.read).forEach(m => {
+        msgsRef.child(m.id).update({ read: true });
+      });
+    });
+    chatListener = () => msgsRef.off();
+
+    // Reset input
+    const inp = document.getElementById('chatTextInput');
+    inp.value = ''; inp.style.height = '';
+    setTimeout(() => inp.focus(), 300);
+  };
+
+  window.closeChatWindow = function() {
+    if (chatListener) { chatListener(); chatListener = null; }
+    document.getElementById('chatWindow').classList.remove('open');
+    currentChatUid = null;
+  };
+
+  function renderMessages(msgs) {
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = '';
+    if (!msgs.length) {
+      container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem;font-size:0.88rem">কথা শুরু করুন! 👋</div>';
+      return;
+    }
+    let lastDate = '';
+    msgs.forEach(m => {
+      const isMine = m.senderUid === currentUser.uid;
+      // Date divider
+      const d = new Date(m.ts||0);
+      const dateStr = d.toLocaleDateString('bn-BD', {day:'numeric',month:'short'});
+      if (dateStr !== lastDate) {
+        const div = document.createElement('div');
+        div.className = 'chat-date-divider';
+        div.textContent = dateStr;
+        container.appendChild(div);
+        lastDate = dateStr;
+      }
+      const row = document.createElement('div');
+      row.className = 'msg-row' + (isMine ? ' mine' : '');
+      const timeStr = d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
+      let bubbleContent = '';
+      if (m.img)  bubbleContent += '<img class="msg-img" src="' + m.img + '" alt="" onclick="openLightbox(\'' + m.img + '\')">';
+      if (m.text) bubbleContent += escHtml(m.text);
+      bubbleContent += '<span class="msg-time' + (isMine?' mine':'') + '">' + timeStr + '</span>';
+      if (isMine && m.read) bubbleContent += '<div class="msg-seen">✓✓ দেখেছে</div>';
+      row.innerHTML = '<div class="msg-bubble ' + (isMine?'mine':'theirs') + '">' + bubbleContent + '</div>';
+      container.appendChild(row);
+    });
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // ── Send Message ──────────────────────────────────────────────────
+  window.sendMessage = async function() {
+    if (!currentChatUid) return;
+    const inp  = document.getElementById('chatTextInput');
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = ''; inp.style.height = '';
+    const cid = getChatId(currentUser.uid, currentChatUid);
+    await db.ref('chats/' + cid + '/messages').push({
+      senderUid: currentUser.uid,
+      text, ts: Date.now(), read: false
+    });
+    // Notify peer
+    const myName = currentUser.displayName || currentUser.email.split('@')[0];
+    await db.ref('notifications/' + currentChatUid).push({
+      type:'message', fromUid:currentUser.uid, fromName:myName,
+      preview:text.substring(0,60), ts:Date.now(), read:false
+    });
+  };
+
+  // ── Send Image ────────────────────────────────────────────────────
+  window.sendImage = async function(e) {
+    const file = e.target.files[0]; if (!file || !currentChatUid) return;
+    showToast('⏳ ছবি পাঠানো হচ্ছে...');
+    const b64 = await fileToBase64(file, 800);
+    const cid = getChatId(currentUser.uid, currentChatUid);
+    await db.ref('chats/' + cid + '/messages').push({
+      senderUid: currentUser.uid, img: b64, ts: Date.now(), read: false
+    });
+    e.target.value = '';
+    showToast('✓ ছবি পাঠানো হয়েছে!');
+  };
+
+  // ── Message Nav Badge ─────────────────────────────────────────────
+  function startMsgBadgeListener() {
+    if (!currentUser) return;
+    db.ref('chats').on('value', snap => {
+      const all = snap.val() || {};
+      let totalUnread = 0;
+      Object.entries(all).forEach(([cid, data]) => {
+        if (!cid.includes(currentUser.uid)) return;
+        const msgs = data.messages ? Object.values(data.messages) : [];
+        totalUnread += msgs.filter(m => m.senderUid !== currentUser.uid && !m.read).length;
+      });
+      const badge = document.getElementById('msgNavBadge');
+      if (badge) {
+        badge.textContent = totalUnread > 9 ? '9+' : String(totalUnread);
+        badge.className = 'msg-nav-badge' + (totalUnread > 0 ? ' show' : '');
+      }
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── CALL FEATURE (WebRTC simulation — signaling via Firebase) ─────
+  // ══════════════════════════════════════════════════════════════════
+
+  let callType = 'audio'; // 'audio' | 'video'
+  let callTimerEl = null;
+
+  window.startCall = async function(type) {
+    callType = type;
+    callTimerEl = document.getElementById('callTimer');
+    // UI setup
+    const modal = document.getElementById('callModal');
+    const avEl  = document.getElementById('callModalAvatar');
+    const snap  = await db.ref('users/' + currentChatUid).once('value');
+    const data  = snap.val() || {};
+    avEl.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(data.name||currentChatName);
+    document.getElementById('callModalName').textContent   = data.name || currentChatName;
+    document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল হচ্ছে...' : '📞 অডিও কল হচ্ছে...';
+    callTimerEl.style.display = 'none';
+    document.getElementById('camBtn').style.display  = type === 'video' ? 'flex' : 'none';
+    document.getElementById('callVideoArea').classList.toggle('active', type === 'video');
+    modal.classList.add('open');
+
+    // Try to get media
+    try {
+      const constraints = { audio: true, video: type === 'video' };
+      localStream = await navigator.mediaDevices.getUserMedia(constraints);
+      if (type === 'video') {
+        document.getElementById('localVideo').srcObject = localStream;
+      }
+      // Simulate connection after 2s
+      setTimeout(() => {
+        document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল চলছে' : '📞 কল সংযুক্ত';
+        startCallTimer();
+      }, 2000);
+    } catch(err) {
+      document.getElementById('callModalStatus').textContent = '⚠️ মাইক/ক্যামেরা অ্যাক্সেস পাওয়া যায়নি';
+    }
+
+    // Log call in Firebase
+    const myName = currentUser.displayName || currentUser.email.split('@')[0];
+    await db.ref('chats/' + getChatId(currentUser.uid, currentChatUid) + '/messages').push({
+      senderUid: currentUser.uid,
+      text: (type === 'video' ? '📹 ভিডিও কল' : '📞 অডিও কল') + ' শুরু করা হয়েছে',
+      ts: Date.now(), read: false, callType: type
+    });
+  };
+
+  function startCallTimer() {
+    callSeconds = 0;
+    callTimerEl.style.display = 'block';
+    callTimerInterval = setInterval(() => {
+      callSeconds++;
+      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
+      const s = String(callSeconds%60).padStart(2,'0');
+      callTimerEl.textContent = m + ':' + s;
+    }, 1000);
+  }
+
+  window.endCall = function() {
+    clearInterval(callTimerInterval);
+    if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+    document.getElementById('localVideo').srcObject  = null;
+    document.getElementById('remoteVideo').srcObject = null;
+    document.getElementById('callModal').classList.remove('open');
+    document.getElementById('callVideoArea').classList.remove('active');
+    isMuted = false; isCamOff = false;
+    document.getElementById('muteBtn').textContent = '🎤';
+    document.getElementById('muteBtn').className = 'call-ctrl-btn mute';
+    document.getElementById('camBtn').textContent  = '📷';
+    document.getElementById('camBtn').className  = 'call-ctrl-btn cam';
+    if (callSeconds > 0) {
+      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
+      const s = String(callSeconds%60).padStart(2,'0');
+      const durText = (callType==='video'?'📹':'📞') + ' কল শেষ — সময়: ' + m + ':' + s;
+      if (currentChatUid) {
+        db.ref('chats/' + getChatId(currentUser.uid, currentChatUid) + '/messages').push({
+          senderUid: currentUser.uid, text: durText, ts: Date.now(), read: false
+        });
+      }
+    }
+    showToast('📵 কল শেষ হয়েছে');
+  };
+
+  window.toggleMute = function() {
+    if (!localStream) return;
+    isMuted = !isMuted;
+    localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+    const btn = document.getElementById('muteBtn');
+    btn.textContent = isMuted ? '🔇' : '🎤';
+    btn.className = 'call-ctrl-btn ' + (isMuted ? 'muted' : 'mute');
+  };
+
+  window.toggleCam = function() {
+    if (!localStream) return;
+    isCamOff = !isCamOff;
+    localStream.getVideoTracks().forEach(t => t.enabled = !isCamOff);
+    const btn = document.getElementById('camBtn');
+    btn.textContent = isCamOff ? '🚫' : '📷';
+    btn.className = 'call-ctrl-btn ' + (isCamOff ? 'cam-off' : 'cam');
+  };
+
+  // ── Emoji Picker ──────────────────────────────────────────────────
+  window.toggleEmojiPicker = function(e) {
+    e.stopPropagation();
+    const picker = document.getElementById('emojiPicker');
+    picker.classList.toggle('open');
+  };
+  window.insertEmoji = function(emoji) {
+    const inp = document.getElementById('chatTextInput');
+    const start = inp.selectionStart;
+    const end   = inp.selectionEnd;
+    inp.value = inp.value.substring(0, start) + emoji + inp.value.substring(end);
+    inp.selectionStart = inp.selectionEnd = start + emoji.length;
+    inp.focus();
+    autoResize(inp);
+    // keep picker open for quick multi-emoji sending
+  };
+  document.addEventListener('click', function(e) {
+    const picker = document.getElementById('emojiPicker');
+    if (picker && !picker.contains(e.target) && e.target.id !== 'emojiToggleBtn') {
+      picker.classList.remove('open');
+    }
+  });
+
+  // ── Auth Button Bindings ──────────────────────────────────────────
+  document.getElementById('tabLogin').addEventListener('click', () => switchTab('login'));
+  document.getElementById('tabRegister').addEventListener('click', () => switchTab('register'));
+  document.getElementById('authBtn').addEventListener('click', handleAuth);
+  document.getElementById('passToggleBtn').addEventListener('click', () => {
+    const el = document.getElementById('authPassword');
+    el.type = el.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('authPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+
+</script>
+</body>
+</html>
