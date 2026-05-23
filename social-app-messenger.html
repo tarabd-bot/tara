@@ -862,6 +862,7 @@
     color:white; border-bottom-right-radius:4px;
   }
   .msg-img { max-width:200px; border-radius:12px; cursor:pointer; display:block; margin-bottom:4px; }
+  .msg-video { max-width:220px; border-radius:12px; display:block; margin-bottom:4px; outline:none; }
   .msg-time { font-size:0.65rem; opacity:0.6; margin-top:3px; display:block; }
   .msg-time.mine { text-align:right; }
   .msg-seen { font-size:0.65rem; color:var(--accent3); text-align:right; margin-top:1px; }
@@ -1373,6 +1374,8 @@
   <div class="chat-input-bar" style="position:relative;">
     <button class="chat-attach-btn" onclick="document.getElementById('chatImgInput').click()" title="ছবি পাঠান">📷</button>
     <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="sendImage(event)">
+    <button class="chat-attach-btn" onclick="document.getElementById('chatVideoInput').click()" title="ভিডিও পাঠান">🎬</button>
+    <input type="file" id="chatVideoInput" accept="video/*" style="display:none" onchange="sendVideo(event)">
     <!-- Emoji Picker Wrap -->
     <div class="emoji-picker-wrap">
       <button class="chat-emoji-toggle" id="emojiToggleBtn" onclick="toggleEmojiPicker(event)" title="ইমোজি">😊</button>
@@ -2737,6 +2740,7 @@
       const timeStr = d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
       let bubbleContent = '';
       if (m.img)  bubbleContent += '<img class="msg-img" src="' + m.img + '" alt="" onclick="openLightbox(\'' + m.img + '\')">';
+      if (m.video) bubbleContent += '<video class="msg-video" src="' + m.video + '" controls playsinline></video>';
       if (m.text) bubbleContent += escHtml(m.text);
       bubbleContent += '<span class="msg-time' + (isMine?' mine':'') + '">' + timeStr + '</span>';
       if (isMine && m.read) bubbleContent += '<div class="msg-seen">✓✓ দেখেছে</div>';
@@ -2767,16 +2771,53 @@
   };
 
   // ── Send Image ────────────────────────────────────────────────────
+  const CLOUDINARY_CLOUD = 'dvfsjkwgb';
+  const CLOUDINARY_PRESET = 'tara_media';
+
+  async function uploadToCloudinary(file, resourceType) {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('resource_type', resourceType);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`, {
+      method: 'POST', body: fd
+    });
+    const data = await res.json();
+    if (!data.secure_url) throw new Error('Upload failed');
+    return data.secure_url;
+  }
+
   window.sendImage = async function(e) {
     const file = e.target.files[0]; if (!file || !currentChatUid) return;
-    showToast('⏳ ছবি পাঠানো হচ্ছে...');
-    const b64 = await fileToBase64(file, 800);
-    const cid = getChatId(currentUser.uid, currentChatUid);
-    await db.ref('chats/' + cid + '/messages').push({
-      senderUid: currentUser.uid, img: b64, ts: Date.now(), read: false
-    });
-    e.target.value = '';
-    showToast('✓ ছবি পাঠানো হয়েছে!');
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    try {
+      const url = await uploadToCloudinary(file, 'image');
+      const cid = getChatId(currentUser.uid, currentChatUid);
+      await db.ref('chats/' + cid + '/messages').push({
+        senderUid: currentUser.uid, img: url, ts: Date.now(), read: false
+      });
+      e.target.value = '';
+      showToast('✓ ছবি পাঠানো হয়েছে!');
+    } catch(err) {
+      showToast('❌ ছবি পাঠানো যায়নি!');
+    }
+  };
+
+  window.sendVideo = async function(e) {
+    const file = e.target.files[0]; if (!file || !currentChatUid) return;
+    if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
+    showToast('⏳ ভিডিও আপলোড হচ্ছে... একটু অপেক্ষা করুন');
+    try {
+      const url = await uploadToCloudinary(file, 'video');
+      const cid = getChatId(currentUser.uid, currentChatUid);
+      await db.ref('chats/' + cid + '/messages').push({
+        senderUid: currentUser.uid, video: url, ts: Date.now(), read: false
+      });
+      e.target.value = '';
+      showToast('✓ ভিডিও পাঠানো হয়েছে!');
+    } catch(err) {
+      showToast('❌ ভিডিও পাঠানো যায়নি!');
+    }
   };
 
   // ── Message Nav Badge ─────────────────────────────────────────────
