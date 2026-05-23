@@ -905,6 +905,32 @@
   .chat-send-btn:hover { transform:scale(1.08); }
   .chat-send-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
+  /* ── Upload Progress ── */
+  .upload-progress-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 999; display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .upload-progress-overlay.show { display: flex; }
+  .upload-progress-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 1.75rem; width: 85%; max-width: 340px;
+    text-align: center; animation: fadeUp 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  .upload-progress-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .upload-progress-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+  .upload-progress-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem; }
+  .upload-bar-wrap {
+    width: 100%; height: 8px; background: var(--surface);
+    border-radius: 10px; overflow: hidden; margin-bottom: 0.6rem;
+  }
+  .upload-bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 10px; transition: width 0.3s ease;
+  }
+  .upload-percent { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+
   /* ── Emoji Picker ── */
   .emoji-picker {
     position: absolute; bottom: 60px; left: 0;
@@ -1357,6 +1383,19 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Upload Progress Overlay -->
+<div class="upload-progress-overlay" id="uploadProgressOverlay">
+  <div class="upload-progress-box">
+    <div class="upload-progress-icon">🎬</div>
+    <div class="upload-progress-title" id="uploadProgressTitle">ভিডিও আপলোড হচ্ছে...</div>
+    <div class="upload-progress-sub" id="uploadProgressSub">একটু অপেক্ষা করুন</div>
+    <div class="upload-bar-wrap">
+      <div class="upload-bar-fill" id="uploadBarFill"></div>
+    </div>
+    <div class="upload-percent" id="uploadPercent">০%</div>
+  </div>
+</div>
 
 <!-- ══ CHAT WINDOW ══ -->
 <div class="chat-window" id="chatWindow">
@@ -2192,9 +2231,11 @@
   window.handlePostVideo = async function(e) {
     const file = e.target.files[0]; if (!file) return;
     if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
-    showToast('⏳ ভিডিও আপলোড হচ্ছে... একটু অপেক্ষা করুন');
+    showUploadProgress('পোস্টের ভিডিও আপলোড হচ্ছে...');
     try {
-      const url = await uploadToCloudinary(file, 'video');
+      const url = await uploadToCloudinary(file, 'video', true);
+      updateUploadProgress(100);
+      setTimeout(hideUploadProgress, 500);
       pendingVideo = url;
       pendingImages = []; renderImagePreview();
       const wrap = document.getElementById('imgPreview');
@@ -2202,7 +2243,10 @@
       wrap.innerHTML = '<div class="preview-item" style="width:120px;height:80px;background:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:2rem">🎬</span><button class="preview-del" onclick="removePendingVideo()">✕</button></div>';
       updatePostBtnState();
       showToast('✓ ভিডিও প্রস্তুত!');
-    } catch(err) { showToast('❌ ভিডিও আপলোড হয়নি!'); }
+    } catch(err) {
+      hideUploadProgress();
+      showToast('❌ ভিডিও আপলোড হয়নি!');
+    }
     e.target.value = '';
   };
 
@@ -2809,17 +2853,42 @@
   const CLOUDINARY_CLOUD = 'dvfsjkwgb';
   const CLOUDINARY_PRESET = 'tara_media';
 
-  async function uploadToCloudinary(file, resourceType) {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('upload_preset', CLOUDINARY_PRESET);
-    fd.append('resource_type', resourceType);
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`, {
-      method: 'POST', body: fd
+  function showUploadProgress(title) {
+    document.getElementById('uploadProgressTitle').textContent = title || 'আপলোড হচ্ছে...';
+    document.getElementById('uploadProgressSub').textContent = 'একটু অপেক্ষা করুন';
+    document.getElementById('uploadBarFill').style.width = '0%';
+    document.getElementById('uploadPercent').textContent = '০%';
+    document.getElementById('uploadProgressOverlay').classList.add('show');
+  }
+  function updateUploadProgress(pct) {
+    document.getElementById('uploadBarFill').style.width = pct + '%';
+    document.getElementById('uploadPercent').textContent = toBengaliNum(Math.round(pct)) + '%';
+    if (pct >= 100) document.getElementById('uploadProgressSub').textContent = 'প্রায় শেষ...';
+  }
+  function hideUploadProgress() {
+    document.getElementById('uploadProgressOverlay').classList.remove('show');
+  }
+
+  async function uploadToCloudinary(file, resourceType, showProgress) {
+    return new Promise((resolve, reject) => {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`);
+      if (showProgress) {
+        xhr.upload.onprogress = function(e) {
+          if (e.lengthComputable) updateUploadProgress((e.loaded / e.total) * 100);
+        };
+      }
+      xhr.onload = function() {
+        const data = JSON.parse(xhr.responseText);
+        if (data.secure_url) resolve(data.secure_url);
+        else reject(new Error('Upload failed'));
+      };
+      xhr.onerror = () => reject(new Error('Network error'));
+      xhr.send(fd);
     });
-    const data = await res.json();
-    if (!data.secure_url) throw new Error('Upload failed');
-    return data.secure_url;
   }
 
   window.sendImage = async function(e) {
@@ -2841,9 +2910,11 @@
   window.sendVideo = async function(e) {
     const file = e.target.files[0]; if (!file || !currentChatUid) return;
     if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
-    showToast('⏳ ভিডিও আপলোড হচ্ছে... একটু অপেক্ষা করুন');
+    showUploadProgress('ভিডিও আপলোড হচ্ছে...');
     try {
-      const url = await uploadToCloudinary(file, 'video');
+      const url = await uploadToCloudinary(file, 'video', true);
+      updateUploadProgress(100);
+      setTimeout(hideUploadProgress, 500);
       const cid = getChatId(currentUser.uid, currentChatUid);
       await db.ref('chats/' + cid + '/messages').push({
         senderUid: currentUser.uid, video: url, ts: Date.now(), read: false
@@ -2851,6 +2922,7 @@
       e.target.value = '';
       showToast('✓ ভিডিও পাঠানো হয়েছে!');
     } catch(err) {
+      hideUploadProgress();
       showToast('❌ ভিডিও পাঠানো যায়নি!');
     }
   };
