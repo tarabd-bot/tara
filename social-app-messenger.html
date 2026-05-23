@@ -905,6 +905,27 @@
   .chat-send-btn:hover { transform:scale(1.08); }
   .chat-send-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
+  /* ── Fullscreen Video Player ── */
+  .video-player-modal {
+    position: fixed; inset: 0; z-index: 700;
+    background: #000;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .video-player-modal.open { display: flex; }
+  .video-player-close {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); border: none;
+    color: white; font-size: 1.3rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+  .video-player-modal video {
+    width: 100%; max-height: 100vh;
+    object-fit: contain; outline: none;
+  }
+
   /* ── Upload Progress ── */
   .upload-progress-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.7);
@@ -1395,6 +1416,12 @@
     </div>
     <div class="upload-percent" id="uploadPercent">০%</div>
   </div>
+</div>
+
+<!-- Fullscreen Video Player -->
+<div class="video-player-modal" id="videoPlayerModal">
+  <button class="video-player-close" onclick="closeVideoPlayer()">✕</button>
+  <video id="fullscreenVideo" controls autoplay playsinline></video>
 </div>
 
 <!-- ══ CHAT WINDOW ══ -->
@@ -1936,7 +1963,11 @@
   function buildPostImages(post) {
     let html = '';
     if (post.video) {
-      html += '<div class="post-image-wrap" style="background:#000;max-height:320px;"><video src="' + post.video + '" controls playsinline style="width:100%;max-height:320px;border-radius:14px;display:block;"></video></div>';
+      html += '<div class="post-image-wrap" style="background:#000;max-height:320px;position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + post.video + '\')">' +
+        '<video src="' + post.video + '" style="width:100%;max-height:320px;border-radius:14px;display:block;pointer-events:none;"></video>' +
+        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(0,0,0,0.3);">' +
+        '<div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">▶</div>' +
+        '</div></div>';
     }
     const imgs = post.images;
     if (!imgs || !imgs.length) return html;
@@ -2819,7 +2850,11 @@
       const timeStr = d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
       let bubbleContent = '';
       if (m.img)  bubbleContent += '<img class="msg-img" src="' + m.img + '" alt="" onclick="openLightbox(\'' + m.img + '\')">';
-      if (m.video) bubbleContent += '<video class="msg-video" src="' + m.video + '" controls playsinline></video>';
+      if (m.video) bubbleContent += '<div style="position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + m.video + '\')">' +
+        '<video class="msg-video" src="' + m.video + '" style="pointer-events:none;"></video>' +
+        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,0,0,0.3);">' +
+        '<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">▶</div>' +
+        '</div></div>';
       if (m.text) bubbleContent += escHtml(m.text);
       bubbleContent += '<span class="msg-time' + (isMine?' mine':'') + '">' + timeStr + '</span>';
       if (isMine && m.read) bubbleContent += '<div class="msg-seen">✓✓ দেখেছে</div>';
@@ -3047,6 +3082,26 @@
     btn.textContent = isCamOff ? '🚫' : '📷';
     btn.className = 'call-ctrl-btn ' + (isCamOff ? 'cam-off' : 'cam');
   };
+
+  // ── Fullscreen Video Player ───────────────────────────────────────
+  window.openVideoPlayer = function(url) {
+    const modal = document.getElementById('videoPlayerModal');
+    const video = document.getElementById('fullscreenVideo');
+    video.src = url;
+    modal.classList.add('open');
+    video.play();
+  };
+  window.closeVideoPlayer = function() {
+    const modal = document.getElementById('videoPlayerModal');
+    const video = document.getElementById('fullscreenVideo');
+    video.pause();
+    video.src = '';
+    modal.classList.remove('open');
+  };
+  // Close on back button (Android)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeVideoPlayer();
+  });
 
   // ── Emoji Picker ──────────────────────────────────────────────────
   window.toggleEmojiPicker = function(e) {
