@@ -1210,12 +1210,14 @@
         <div class="composer-bottom">
           <div class="composer-actions">
             <button class="img-attach-btn" title="ছবি যোগ করুন" onclick="document.getElementById('postImgInput').click()">📷</button>
+            <button class="img-attach-btn" title="ভিডিও যোগ করুন" onclick="document.getElementById('postVideoInput').click()">🎬</button>
             <span class="char-count" id="charCount">০ / ৫০০</span>
           </div>
           <button class="post-btn" id="postBtn" disabled onclick="createPost()">পোস্ট করুন</button>
         </div>
       </div>
       <input type="file" id="postImgInput" accept="image/*" multiple style="display:none" onchange="handlePostImages(event)">
+      <input type="file" id="postVideoInput" accept="video/*" style="display:none" onchange="handlePostVideo(event)">
       <div class="feed-label">সাম্প্রতিক পোস্ট</div>
       <div id="feed">
         <div class="loading-spinner" id="loadingState">⏳ লোড হচ্ছে...</div>
@@ -1893,18 +1895,22 @@
 
   // ── Build Post Images HTML ────────────────────────────────────────
   function buildPostImages(post) {
+    let html = '';
+    if (post.video) {
+      html += '<div class="post-image-wrap" style="background:#000;max-height:320px;"><video src="' + post.video + '" controls playsinline style="width:100%;max-height:320px;border-radius:14px;display:block;"></video></div>';
+    }
     const imgs = post.images;
-    if (!imgs || !imgs.length) return '';
+    if (!imgs || !imgs.length) return html;
     const count = imgs.length;
     if (count === 1) {
-      return '<div class="post-image-wrap"><img src="' + imgs[0] + '" alt="" onclick="openLightbox(\'' + imgs[0] + '\')"></div>';
+      return html + '<div class="post-image-wrap"><img src="' + imgs[0] + '" alt="" onclick="openLightbox(\'' + imgs[0] + '\')"></div>';
     }
     const show = Math.min(count, 4);
     const items = imgs.slice(0, show).map((src, i) => {
       const isLast = i === show - 1 && count > 4;
       return '<div class="img-item' + (isLast ? ' more-overlay' : '') + '" ' + (isLast ? 'data-more="+' + (count-4) + '"' : '') + '><img src="' + src + '" alt="" onclick="openLightbox(\'' + src + '\')"></div>';
     }).join('');
-    return '<div class="post-images-grid count-' + show + '">' + items + '</div>';
+    return html + '<div class="post-images-grid count-' + show + '">' + items + '</div>';
   }
 
   // ── Render Post ───────────────────────────────────────────────────
@@ -2176,18 +2182,46 @@
 
   // ── Post Actions ──────────────────────────────────────────────────
   let pendingImages = [];
+  let pendingVideo = null;
 
   function updatePostBtnState() {
     const text = document.getElementById('postInput').value.trim();
-    document.getElementById('postBtn').disabled = text.length === 0 && pendingImages.length === 0;
+    document.getElementById('postBtn').disabled = text.length === 0 && pendingImages.length === 0 && !pendingVideo;
   }
+
+  window.handlePostVideo = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
+    showToast('⏳ ভিডিও আপলোড হচ্ছে... একটু অপেক্ষা করুন');
+    try {
+      const url = await uploadToCloudinary(file, 'video');
+      pendingVideo = url;
+      pendingImages = []; renderImagePreview();
+      const wrap = document.getElementById('imgPreview');
+      wrap.style.display = 'flex';
+      wrap.innerHTML = '<div class="preview-item" style="width:120px;height:80px;background:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:2rem">🎬</span><button class="preview-del" onclick="removePendingVideo()">✕</button></div>';
+      updatePostBtnState();
+      showToast('✓ ভিডিও প্রস্তুত!');
+    } catch(err) { showToast('❌ ভিডিও আপলোড হয়নি!'); }
+    e.target.value = '';
+  };
+
+  window.removePendingVideo = function() {
+    pendingVideo = null;
+    renderImagePreview();
+    updatePostBtnState();
+  };
 
   window.handlePostImages = async function(e) {
     const files = Array.from(e.target.files); if (!files.length) return;
-    showToast('⏳ ছবি প্রস্তুত হচ্ছে...');
+    pendingVideo = null;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
     for (const file of files) {
       if (pendingImages.length >= 4) { showToast('সর্বোচ্চ ৪টি ছবি দেওয়া যাবে', 'var(--like)'); break; }
-      pendingImages.push(await fileToBase64(file, 1100));
+      try {
+        const url = await uploadToCloudinary(file, 'image');
+        pendingImages.push(url);
+      } catch(err) { showToast('❌ একটি ছবি আপলোড হয়নি'); }
     }
     e.target.value = ''; renderImagePreview(); updatePostBtnState(); showToast('✓ ছবি যোগ হয়েছে');
   };
@@ -2211,17 +2245,18 @@
     const input   = document.getElementById('postInput');
     const postBtn = document.getElementById('postBtn');
     const text = input.value.trim();
-    if (!text && pendingImages.length === 0) return;
+    if (!text && pendingImages.length === 0 && !pendingVideo) return;
     postBtn.disabled = true; postBtn.textContent = 'পোস্ট হচ্ছে...';
     try {
       const name = currentUser.displayName || currentUser.email.split('@')[0];
       const snapA = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
       await postsRef.push({
         text: text || '', images: pendingImages.length ? pendingImages : null,
+        video: pendingVideo || null,
         author: name, authorUid: currentUser.uid, authorAvatar: snapA.val() || '',
         likes: 0, shares: 0, timestamp: Date.now()
       });
-      input.value = ''; pendingImages = []; renderImagePreview();
+      input.value = ''; pendingImages = []; pendingVideo = null; renderImagePreview();
       document.getElementById('charCount').textContent = '০ / ৫০০';
       document.getElementById('charCount').className = 'char-count';
       showToast('✓ পোস্ট সেভ হয়েছে!');
