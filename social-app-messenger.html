@@ -183,6 +183,7 @@
 
   /* ── Main Layout ── */
   .layout { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 5.5rem; }
+  #pageReels.page.active ~ .layout, .layout:has(~ #pageReels.page.active) { padding: 0; }
 
   /* ── Pages ── */
   .page { display: none; }
@@ -1055,6 +1056,275 @@
   /* Empty inbox */
   .inbox-empty { text-align:center; padding:3rem 1rem; color:var(--muted); }
   .inbox-empty .empty-icon { font-size:3rem; margin-bottom:0.75rem; }
+
+  /* ══ REELS ══════════════════════════════════════════════════════ */
+  .reels-container {
+    position: relative;
+    height: calc(100vh - 60px - 56px);
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .reels-container::-webkit-scrollbar { display: none; }
+
+  .reel-item {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 60px - 56px);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .reel-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    outline: none;
+  }
+
+  /* Gradient overlay */
+  .reel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 30%,
+      rgba(0,0,0,0.15) 60%,
+      rgba(0,0,0,0.75) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Bottom info */
+  .reel-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 60px;
+    padding: 1rem 1rem 1.25rem;
+    z-index: 10;
+  }
+  .reel-user {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.5rem; cursor: pointer;
+  }
+  .reel-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem; color: white;
+    border: 2px solid white; overflow: hidden; flex-shrink: 0;
+  }
+  .reel-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .reel-username { font-weight: 700; font-size: 0.95rem; color: white; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+  .reel-caption {
+    font-size: 0.88rem; color: rgba(255,255,255,0.9);
+    line-height: 1.5; margin-bottom: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .reel-caption.expanded { -webkit-line-clamp: unset; }
+  .reel-time { font-size: 0.75rem; color: rgba(255,255,255,0.55); }
+
+  /* Right action bar */
+  .reel-actions {
+    position: absolute;
+    bottom: 1rem; right: 0;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1.25rem;
+    padding: 0 0.75rem;
+    z-index: 10;
+  }
+  .reel-action-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: none; border: none; cursor: pointer;
+    color: white; font-family: inherit;
+  }
+  .reel-action-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; transition: all 0.2s;
+  }
+  .reel-action-btn:active .reel-action-icon { transform: scale(1.2); }
+  .reel-action-btn.liked .reel-action-icon { background: rgba(247,110,143,0.35); }
+  .reel-action-count { font-size: 0.72rem; font-weight: 700; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+
+  /* Play/pause tap indicator */
+  .reel-tap-play {
+    position: absolute; inset: 0; z-index: 5;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .reel-play-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
+  }
+  .reel-play-icon.show { opacity: 1; }
+
+  /* Reels header */
+  .reels-header {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 0.75rem 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 20;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 100%);
+  }
+  .reels-header-title {
+    font-size: 1.1rem; font-weight: 700; color: white;
+    letter-spacing: 0.5px;
+  }
+  .reels-upload-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    border: none; color: white; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .reels-upload-btn:hover { background: rgba(255,255,255,0.3); }
+
+  /* Reels page wrapper */
+  #pageReels {
+    padding: 0 !important;
+    height: calc(100vh - 60px - 56px);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Reel upload modal */
+  .reel-upload-modal {
+    position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+    display: none; align-items: flex-end; justify-content: center;
+    padding: 0;
+  }
+  .reel-upload-modal.open { display: flex; }
+  .reel-upload-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 28px 28px 0 0;
+    padding: 1.5rem 1.5rem 2rem;
+    width: 100%; max-width: 500px;
+    animation: slideUpModal 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  @keyframes slideUpModal {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+  .reel-upload-title {
+    font-size: 1.05rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .reel-video-preview {
+    width: 100%; max-height: 200px; border-radius: 14px;
+    object-fit: cover; display: none; margin-bottom: 0.85rem;
+  }
+  .reel-video-preview.show { display: block; }
+  .reel-upload-area {
+    width: 100%; height: 110px; border-radius: 14px;
+    border: 2px dashed var(--border);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.4rem;
+    cursor: pointer; color: var(--muted); font-size: 0.88rem; font-weight: 600;
+    margin-bottom: 0.85rem; transition: all 0.2s;
+  }
+  .reel-upload-area:hover { border-color: var(--accent); color: var(--accent); }
+  .reel-caption-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.7rem 1rem; color: var(--text);
+    font-family: inherit; font-size: 0.95rem; outline: none; resize: none;
+    min-height: 70px; line-height: 1.6; margin-bottom: 0.85rem;
+    transition: border-color 0.2s;
+  }
+  .reel-caption-input:focus { border-color: var(--accent); }
+  .reel-caption-input::placeholder { color: var(--muted); }
+  .reel-post-btn {
+    width: 100%; padding: 0.85rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .reel-post-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,110,247,0.4); }
+  .reel-post-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Reel comments drawer */
+  .reel-comments-drawer {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 350;
+    background: var(--surface); border-radius: 24px 24px 0 0;
+    border-top: 1px solid var(--border);
+    max-height: 65vh; display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reel-comments-drawer.open { transform: translateY(0); }
+  .reel-comments-handle { width: 40px; height: 4px; border-radius: 2px; background: var(--border); margin: 0.75rem auto 0; }
+  .reel-comments-header {
+    padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .reel-comments-title { font-size: 0.95rem; font-weight: 700; }
+  .reel-comments-close { background: none; border: none; color: var(--muted); font-size: 1.1rem; cursor: pointer; }
+  .reel-comments-list { flex: 1; overflow-y: auto; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .reel-comment-item { display: flex; gap: 0.6rem; }
+  .reel-comment-bubble { background: var(--card); border-radius: 12px; padding: 0.55rem 0.85rem; flex: 1; }
+  .reel-comment-author { font-weight: 600; font-size: 0.82rem; color: var(--accent); margin-bottom: 2px; }
+  .reel-comment-text { font-size: 0.88rem; line-height: 1.5; color: var(--text); }
+  .reel-comments-input-row {
+    display: flex; gap: 0.6rem; align-items: flex-end;
+    padding: 0.75rem 1rem 1.25rem; border-top: 1px solid var(--border);
+  }
+  .reel-comment-input {
+    flex: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: 22px; padding: 0.6rem 1rem;
+    color: var(--text); font-family: inherit; font-size: 0.9rem;
+    outline: none; resize: none; max-height: 80px;
+    transition: border-color 0.2s;
+  }
+  .reel-comment-input:focus { border-color: var(--accent); }
+  .reel-comment-send {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), #9b8bf8);
+    border: none; color: white; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .reel-comment-send:hover { transform: scale(1.08); }
+
+  /* Empty reels */
+  .reels-empty {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.75rem; color: rgba(255,255,255,0.55);
+  }
+  .reels-empty-icon { font-size: 3.5rem; }
+  .reels-empty-text { font-size: 0.95rem; font-weight: 600; }
+  .reels-empty-sub { font-size: 0.82rem; opacity: 0.7; }
+  .reels-loading {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6); font-size: 0.95rem;
+  }
+
+  /* Mute indicator */
+  .reel-mute-indicator {
+    position: absolute; top: 55px; right: 1rem; z-index: 15;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; cursor: pointer; transition: all 0.2s;
+  }
 </style>
 </head>
 <body>
@@ -1366,6 +1636,17 @@
       </div>
     </div>
 
+    <!-- ═══ REELS PAGE ═══ -->
+    <div id="pageReels" class="page" style="margin:-1.5rem -1rem -5.5rem;height:calc(100vh - 60px - 56px);overflow:hidden;position:relative;background:#000;">
+      <div class="reels-header">
+        <div class="reels-header-title">🎬 রিলস</div>
+        <button class="reels-upload-btn" onclick="openReelUpload()" title="রিল আপলোড">➕</button>
+      </div>
+      <div class="reels-container" id="reelsContainer">
+        <div class="reels-loading" id="reelsLoading">⏳ লোড হচ্ছে...</div>
+      </div>
+    </div>
+
     <!-- ═══ MESSAGES PAGE ═══ -->
     <div id="pageMessages" class="page">
       <div class="inbox-header">
@@ -1385,6 +1666,9 @@
     </button>
     <button onclick="showPage('friends');loadFriends();updateBottomNav('friends')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navFriends">
       <span style="font-size:1.2rem">👥</span>ফ্রেন্ডস
+    </button>
+    <button onclick="showPage('reels');loadReels();updateBottomNav('reels')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navReels">
+      <span style="font-size:1.2rem">🎬</span>রিলস
     </button>
     <button onclick="showPage('messages');loadInbox();updateBottomNav('messages')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;position:relative;" id="navMessages">
       <span style="font-size:1.2rem">💬</span>
@@ -1578,6 +1862,40 @@
   </div>
 </div>
 
+<!-- ══ REEL UPLOAD MODAL ══ -->
+<div class="reel-upload-modal" id="reelUploadModal">
+  <div class="reel-upload-box">
+    <div class="reel-upload-title">
+      <span>🎬 নতুন রিল</span>
+      <button class="modal-close" onclick="closeReelUpload()">✕</button>
+    </div>
+    <video class="reel-video-preview" id="reelVideoPreview" controls playsinline muted></video>
+    <div class="reel-upload-area" id="reelUploadArea" onclick="document.getElementById('reelVideoInput').click()">
+      <span style="font-size:1.8rem">🎬</span>
+      <span>ভিডিও বেছে নিন</span>
+      <span style="font-size:0.75rem;opacity:0.6">MP4, MOV — সর্বোচ্চ ৬০ সেকেন্ড</span>
+    </div>
+    <input type="file" id="reelVideoInput" accept="video/*" style="display:none" onchange="handleReelVideo(event)">
+    <textarea class="reel-caption-input" id="reelCaptionInput" placeholder="ক্যাপশন লিখুন... #হ্যাশট্যাগ" maxlength="200"></textarea>
+    <button class="reel-post-btn" id="reelPostBtn" onclick="publishReel()" disabled>🚀 রিল পোস্ট করুন</button>
+  </div>
+</div>
+
+<!-- ══ REEL COMMENTS DRAWER ══ -->
+<div class="reel-comments-drawer" id="reelCommentsDrawer">
+  <div class="reel-comments-handle"></div>
+  <div class="reel-comments-header">
+    <div class="reel-comments-title">💬 মন্তব্য</div>
+    <button class="reel-comments-close" onclick="closeReelComments()">✕</button>
+  </div>
+  <div class="reel-comments-list" id="reelCommentsList"></div>
+  <div class="reel-comments-input-row">
+    <textarea class="reel-comment-input" id="reelCommentInput" placeholder="মন্তব্য লিখুন..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendReelComment()}"></textarea>
+    <button class="reel-comment-send" onclick="sendReelComment()">➤</button>
+  </div>
+</div>
+
 <!-- Firebase Compat SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -1757,1385 +2075,4 @@
   }
 
   // Gender buttons
-  ['gMale','gFemale','gOther'].forEach(id => {
-    document.getElementById(id).addEventListener('click', () => {
-      document.querySelectorAll('.gender-opt').forEach(b => b.classList.remove('selected'));
-      document.getElementById(id).classList.add('selected');
-      selectedGender = { gMale:'পুরুষ', gFemale:'মহিলা', gOther:'অন্যান্য' }[id];
-    });
-  });
-
-  // Contact method toggle
-  document.getElementById('ctPhone').addEventListener('click', () => {
-    contactMethod = 'phone';
-    document.getElementById('ctPhone').classList.add('active');
-    document.getElementById('ctEmail').classList.remove('active');
-    document.getElementById('contactPhoneField').style.display = 'block';
-    document.getElementById('contactEmailField').style.display = 'none';
-  });
-  document.getElementById('ctEmail').addEventListener('click', () => {
-    contactMethod = 'email';
-    document.getElementById('ctEmail').classList.add('active');
-    document.getElementById('ctPhone').classList.remove('active');
-    document.getElementById('contactPhoneField').style.display = 'none';
-    document.getElementById('contactEmailField').style.display = 'block';
-  });
-
-  // Password toggles
-  document.getElementById('regPassToggle').addEventListener('click', () => {
-    const el = document.getElementById('regPassword');
-    el.type = el.type === 'password' ? 'text' : 'password';
-  });
-  document.getElementById('regPassToggle2').addEventListener('click', () => {
-    const el = document.getElementById('regPassword2');
-    el.type = el.type === 'password' ? 'text' : 'password';
-  });
-
-  // Step navigation
-  document.getElementById('step0Next').addEventListener('click', () => {
-    const first = document.getElementById('regFirstName').value.trim();
-    const last  = document.getElementById('regLastName').value.trim();
-    if (!first) { showError('প্রথম নাম দিন।'); return; }
-    regData.firstName = first; regData.lastName = last;
-    regData.name = (first + ' ' + last).trim();
-    regStep = 1; showRegStep(1);
-  });
-
-  document.getElementById('step1Back').addEventListener('click', () => { regStep=0; showRegStep(0); });
-  document.getElementById('step1Next').addEventListener('click', () => {
-    const d = document.getElementById('dobDay').value;
-    const m = document.getElementById('dobMonth').value;
-    const y = document.getElementById('dobYear').value;
-    if (!d || !m || !y) { showError('জন্মতারিখ সম্পূর্ণ দিন।'); return; }
-    if (!selectedGender) { showError('লিঙ্গ বেছে নিন।'); return; }
-    regData.dob = d+'/'+m+'/'+y; regData.gender = selectedGender;
-    regStep = 2; showRegStep(2);
-  });
-
-  document.getElementById('step2Back').addEventListener('click', () => { regStep=1; showRegStep(1); });
-  document.getElementById('step2Next').addEventListener('click', async () => {
-    hideError();
-    if (contactMethod === 'phone') {
-      const phone = document.getElementById('regPhone').value.trim();
-      if (!phone || phone.length < 10) { showError('সঠিক মোবাইল নম্বর দিন।'); return; }
-      const snap = await db.ref('users').once('value');
-      const users = snap.val() || {};
-      if (Object.values(users).find(u => u.phone === phone)) {
-        showError('এই নম্বরে আগেই অ্যাকাউন্ট আছে।'); return;
-      }
-      regData.phone = phone; regData.contactBy = 'phone';
-      regData.authEmail = phone.replace(/\D/g,'') + '@postbook.app';
-    } else {
-      const email = document.getElementById('regEmail').value.trim();
-      if (!email || !email.includes('@')) { showError('সঠিক ইমেইল আইডি দিন।'); return; }
-      const snap = await db.ref('users').once('value');
-      const users = snap.val() || {};
-      if (Object.values(users).find(u => u.email === email)) {
-        showError('এই ইমেইলে আগেই অ্যাকাউন্ট আছে।'); return;
-      }
-      regData.email = email; regData.contactBy = 'email'; regData.authEmail = email;
-    }
-    regStep = 3; showRegStep(3);
-  });
-
-  document.getElementById('step3Back').addEventListener('click', () => { regStep=2; showRegStep(2); });
-  document.getElementById('step3Next').addEventListener('click', () => {
-    const p1 = document.getElementById('regPassword').value;
-    const p2 = document.getElementById('regPassword2').value;
-    if (p1.length < 6) { showError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।'); return; }
-    if (p1 !== p2)     { showError('পাসওয়ার্ড দুটো মিলছে না।'); return; }
-    regData.password = p1;
-    document.getElementById('summName').textContent   = regData.name;
-    document.getElementById('summDob').textContent    = regData.dob;
-    document.getElementById('summGender').textContent = regData.gender;
-    document.getElementById('summContact').textContent = '🔒 গোপন রাখা হবে';
-    regStep = 4; showRegStep(4);
-  });
-
-  document.getElementById('step4Back').addEventListener('click', () => { regStep=3; showRegStep(3); });
-  document.getElementById('finalRegBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('finalRegBtn');
-    btn.disabled = true; btn.textContent = '⏳ অ্যাকাউন্ট তৈরি হচ্ছে...';
-    try {
-      const cred = await auth.createUserWithEmailAndPassword(regData.authEmail, regData.password);
-      await cred.user.updateProfile({ displayName: regData.name });
-      await db.ref('users/' + cred.user.uid).set({
-        name: regData.name, firstName: regData.firstName, lastName: regData.lastName,
-        dob: regData.dob, gender: regData.gender,
-        phone: regData.phone || '', email: regData.email || '',
-        contactBy: regData.contactBy, authEmail: regData.authEmail,
-        bio: '', link: '', createdAt: Date.now()
-      });
-      showToast('🎉 স্বাগতম ' + regData.firstName + '! অ্যাকাউন্ট তৈরি হয়েছে।');
-    } catch(e) {
-      let msg = 'একটি সমস্যা হয়েছে।';
-      if (e.code === 'auth/email-already-in-use') msg = 'এই তথ্যে আগেই অ্যাকাউন্ট আছে।';
-      showError(msg);
-      btn.disabled = false; btn.textContent = '🎉 অ্যাকাউন্ট খুলুন';
-    }
-  });
-
-  window.handleLogout = async function() {
-    await auth.signOut();
-    document.getElementById('userDropdown').classList.remove('open');
-    regStep = 0; regData = {}; selectedGender = ''; contactMethod = 'phone';
-    switchTab('login');
-    showToast('👋 লগআউট হয়েছে');
-  };
-
-  window.toggleUserMenu = function() {
-    document.getElementById('userDropdown').classList.toggle('open');
-  };
-
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.user-menu-wrap'))
-      document.getElementById('userDropdown')?.classList.remove('open');
-    if (!e.target.closest('.menu-wrap'))
-      document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
-  });
-
-  // ── Auth State ────────────────────────────────────────────────────
-  auth.onAuthStateChanged(async function(user) {
-    if (user) {
-      currentUser = user;
-      const name = user.displayName || user.email.split('@')[0];
-      const init = getInitial(name);
-      document.getElementById('authScreen').style.display  = 'none';
-      document.getElementById('appScreen').style.display   = 'block';
-      document.getElementById('dropdownName').textContent  = name;
-      document.getElementById('dropdownEmail').textContent = user.email;
-
-      const snap = await db.ref('users/' + user.uid + '/avatar').once('value');
-      const av = snap.val();
-      if (av) {
-        document.getElementById('headerAvatar').innerHTML  = '<img src="' + av + '" alt="">';
-        document.getElementById('composerAvatar').innerHTML = '<img src="' + av + '" alt="">';
-      } else {
-        document.getElementById('headerAvatar').textContent  = init;
-        document.getElementById('composerAvatar').textContent = init;
-      }
-      startApp();
-      startNotifListener();
-      startMsgBadgeListener();
-      cleanExpiredStories().then(() => loadStories());
-    } else {
-      currentUser = null;
-      document.getElementById('authScreen').style.display = 'flex';
-      document.getElementById('appScreen').style.display  = 'none';
-    }
-  });
-
-  // ── Start App ─────────────────────────────────────────────────────
-  function startApp() {
-    db.ref('.info/connected').on('value', snap => {
-      document.getElementById('connDot').className = 'conn-dot' + (snap.val() ? ' online' : '');
-    });
-
-    const input     = document.getElementById('postInput');
-    const charCount = document.getElementById('charCount');
-    input.addEventListener('input', () => {
-      const total = input.value.length;
-      charCount.textContent = toBengaliNum(total) + ' / ৫০০';
-      charCount.className = 'char-count' + (total > 450 ? (total > 490 ? ' over' : ' warn') : '');
-      updatePostBtnState();
-    });
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && e.ctrlKey) createPost();
-    });
-
-    postsRef.on('value', snap => {
-      const feed = document.getElementById('feed');
-      document.getElementById('loadingState')?.remove();
-      const data = snap.val();
-      if (!data) {
-        feed.innerHTML = '<div class="empty-state"><div class="empty-icon">✍️</div><div class="empty-text">এখনো কোনো পোস্ট নেই।</div></div>';
-        return;
-      }
-      const posts = Object.entries(data)
-        .map(([id, v]) => ({ id, ...v }))
-        .sort((a, b) => (b.timestamp||0) - (a.timestamp||0));
-      feed.innerHTML = '';
-      posts.forEach(post => renderPost(post, feed));
-    });
-  }
-
-  // ── Build Post Images HTML ────────────────────────────────────────
-  function buildPostImages(post) {
-    let html = '';
-    if (post.video) {
-      html += '<div class="post-image-wrap" style="background:#000;max-height:320px;position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + post.video + '\')">' +
-        '<video src="' + post.video + '" style="width:100%;max-height:320px;border-radius:14px;display:block;pointer-events:none;"></video>' +
-        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(0,0,0,0.3);">' +
-        '<div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">▶</div>' +
-        '</div></div>';
-    }
-    const imgs = post.images;
-    if (!imgs || !imgs.length) return html;
-    const count = imgs.length;
-    if (count === 1) {
-      return html + '<div class="post-image-wrap"><img src="' + imgs[0] + '" alt="" onclick="openLightbox(\'' + imgs[0] + '\')"></div>';
-    }
-    const show = Math.min(count, 4);
-    const items = imgs.slice(0, show).map((src, i) => {
-      const isLast = i === show - 1 && count > 4;
-      return '<div class="img-item' + (isLast ? ' more-overlay' : '') + '" ' + (isLast ? 'data-more="+' + (count-4) + '"' : '') + '><img src="' + src + '" alt="" onclick="openLightbox(\'' + src + '\')"></div>';
-    }).join('');
-    return html + '<div class="post-images-grid count-' + show + '">' + items + '</div>';
-  }
-
-  // ── Render Post ───────────────────────────────────────────────────
-  function renderPost(post, feed, isOwnerOverride) {
-    const card = document.createElement('div');
-    card.className = 'post-card';
-    card.id = 'card-' + post.id;
-
-    const uid        = currentUser ? currentUser.uid : '';
-    const likedByMe  = post.likedBy && post.likedBy[uid];
-    const likeCount  = post.likes || 0;
-    const shareCount = post.shares || 0;
-    const isOwner    = isOwnerOverride !== undefined ? isOwnerOverride : post.authorUid === uid;
-    const comments   = post.comments ? Object.values(post.comments) : [];
-
-    const avatarHTML = post.authorAvatar
-      ? '<div class="avatar" style="cursor:pointer" onclick="openProfile(\'' + post.authorUid + '\')"><img src="' + post.authorAvatar + '" alt=""></div>'
-      : '<div class="avatar" style="cursor:pointer" onclick="openProfile(\'' + post.authorUid + '\')">' + getInitial(post.author) + '</div>';
-
-    const commentsHTML = comments.map(c =>
-      '<div class="comment-item"><div class="avatar sm">' + getInitial(c.author) + '</div><div class="comment-bubble"><div class="comment-author">' + escHtml(c.author||'ব্যবহারকারী') + '</div><div class="comment-text">' + escHtml(c.text) + '</div></div></div>'
-    ).join('');
-
-    const menuHTML = isOwner ? '<div class="menu-wrap"><button class="post-menu" onclick="toggleMenu(\'' + post.id + '\')">⋯</button><div class="dropdown" id="menu-' + post.id + '"><div class="dropdown-item danger" onclick="deletePost(\'' + post.id + '\')">🗑️ মুছে ফেলুন</div><div class="dropdown-item" onclick="copyPostText(\'' + post.id + '\')">📋 কপি করুন</div></div></div>' : '';
-
-    card.innerHTML =
-      '<div class="post-header">' + avatarHTML +
-      '<div class="post-meta"><div class="post-name" onclick="openProfile(\'' + post.authorUid + '\')">' + escHtml(post.author||'ব্যবহারকারী') + '</div><div class="post-time">' + timeLabel(post.timestamp) + '</div></div>' + menuHTML + '</div>' +
-      '<div class="post-body"' + (!post.text ? ' style="display:none"' : '') + '>' + escHtml(post.text) + '</div>' +
-      buildPostImages(post) +
-      '<div class="post-actions">' +
-        '<button class="action-btn like-btn ' + (likedByMe?'liked':'') + '" onclick="toggleLike(\'' + post.id + '\',' + (!!likedByMe) + ',' + likeCount + ')"><span class="action-icon">' + (likedByMe?'❤️':'🤍') + '</span><span>' + (likeCount > 0 ? toBengaliNum(likeCount)+' লাইক' : 'লাইক') + '</span></button>' +
-        '<button class="action-btn cmt-btn" onclick="toggleComments(\'' + post.id + '\')"><span class="action-icon">💬</span><span>' + (comments.length>0?toBengaliNum(comments.length)+' ':'') + 'মন্তব্য</span></button>' +
-        '<button class="action-btn share-btn" onclick="sharePost(\'' + post.id + '\',' + shareCount + ',\'' + encodeURIComponent(post.text||'') + '\')"><span class="action-icon">↗️</span><span>' + (shareCount>0?toBengaliNum(shareCount)+' শেয়ার':'শেয়ার') + '</span></button>' +
-      '</div>' +
-      '<div class="comment-section" id="cmts-' + post.id + '">' +
-        '<div class="comment-input-row"><div class="avatar sm">' + getInitial(currentUser ? currentUser.displayName : '') + '</div>' +
-        '<textarea class="comment-input" id="cmt-input-' + post.id + '" placeholder="মন্তব্য করুন..." rows="1" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();submitComment(\'' + post.id + '\')}" oninput="autoResize(this)"></textarea>' +
-        '<button class="send-btn" onclick="submitComment(\'' + post.id + '\')">➤</button></div>' +
-        '<div class="comments-list">' + commentsHTML + '</div></div>';
-
-    feed.appendChild(card);
-  }
-
-  // ── Open Profile ──────────────────────────────────────────────────
-  window.openProfile = async function(uid) {
-    if (!uid) return;
-    viewingUid = uid;
-    showPage('profile');
-    const isMe = uid === (currentUser ? currentUser.uid : '');
-
-    document.getElementById('avatarEditBtn').style.display = isMe ? 'flex' : 'none';
-    document.getElementById('addPhotoBtn').style.display   = isMe ? 'block' : 'none';
-
-    const cover = document.getElementById('profileCover');
-    cover.style.cursor = isMe ? 'pointer' : 'default';
-    cover.onclick = isMe ? () => document.getElementById('coverInput').click() : null;
-
-    const snap = await db.ref('users/' + uid).once('value');
-    const data = snap.val() || {};
-    const name = data.name || 'ব্যবহারকারী';
-
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileUsername').textContent = '@' + name.toLowerCase().replace(/\s/g,'_');
-
-    const bioWrap = document.getElementById('profileBioWrap');
-    if (data.bio) {
-      bioWrap.innerHTML = '<div class="profile-bio">' + escHtml(data.bio) + '</div>';
-      if (data.link) bioWrap.innerHTML += '<div style="margin-top:4px"><a href="' + escHtml(data.link) + '" target="_blank" style="color:var(--accent);font-size:0.85rem;text-decoration:none">🔗 ' + escHtml(data.link) + '</a></div>';
-    } else {
-      bioWrap.innerHTML = isMe ? '<div class="profile-bio-empty">বায়ো যোগ করুন...</div>' : '';
-    }
-
-    const av = document.getElementById('profileAvatar');
-    av.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(name);
-
-    const coverEl = document.getElementById('profileCover');
-    if (data.cover) {
-      coverEl.innerHTML = '<img src="' + data.cover + '" alt=""><div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>';
-    } else {
-      coverEl.innerHTML = '<div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>';
-    }
-
-    const actionsEl = document.getElementById('profileActions');
-    if (isMe) {
-      actionsEl.innerHTML = '<button class="btn-edit-profile" onclick="openEditModal()">✏️ সম্পাদনা</button>';
-    } else {
-      const followSnap = await db.ref('users/' + currentUser.uid + '/following/' + uid).once('value');
-      const isFollowing = !!followSnap.val();
-      actionsEl.innerHTML = '<button class="btn-follow ' + (isFollowing?'following':'') + '" id="followBtn" onclick="toggleFollow(\'' + uid + '\',' + isFollowing + ')">' + (isFollowing?'✓ ফলোয়িং':'+ ফলো করুন') + '</button>' +
-        (isFollowing ? '<button class="btn-message" onclick="openChat(\'' + uid + '\')" style="margin-left:0.5rem">💬 মেসেজ</button>' : '');
-    }
-
-    const followersSnap = await db.ref('users/' + uid + '/followers').once('value');
-    const followingSnap = await db.ref('users/' + uid + '/following').once('value');
-    const followersCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
-    const followingCount = followingSnap.val() ? Object.keys(followingSnap.val()).length : 0;
-    document.getElementById('statFollowers').textContent = toBengaliNum(followersCount);
-    document.getElementById('statFollowing').textContent = toBengaliNum(followingCount);
-
-    loadPhotos(uid, isMe);
-
-    const profileFeed = document.getElementById('profileFeed');
-    profileFeed.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
-    const allSnap = await postsRef.once('value');
-    const allData = allSnap.val() || {};
-    const userPosts = Object.entries(allData)
-      .map(([id, v]) => ({ id, ...v }))
-      .filter(p => p.authorUid === uid)
-      .sort((a, b) => (b.timestamp||0) - (a.timestamp||0));
-
-    document.getElementById('statPosts').textContent = toBengaliNum(userPosts.length);
-    profileFeed.innerHTML = '';
-    if (!userPosts.length) {
-      profileFeed.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">কোনো পোস্ট নেই</div></div>';
-    } else {
-      userPosts.forEach(p => renderPost(p, profileFeed, isMe));
-    }
-  };
-
-  // ── Load Photos ───────────────────────────────────────────────────
-  async function loadPhotos(uid, isMe) {
-    const snap = await db.ref('users/' + uid + '/photos').once('value');
-    const grid = document.getElementById('photoGrid');
-    grid.innerHTML = '';
-    if (!snap.val()) return;
-    const photos = Object.entries(snap.val());
-    photos.sort((a,b) => (b[1].ts||0) - (a[1].ts||0));
-    photos.forEach(([pid, pdata]) => {
-      const div = document.createElement('div');
-      div.className = 'photo-item';
-      div.innerHTML = '<img src="' + pdata.url + '" alt="" onclick="openLightbox(\'' + pdata.url + '\')">' +
-        (isMe ? '<button class="photo-del" onclick="deletePhoto(\'' + uid + '\',\'' + pid + '\',event)">✕</button>' : '');
-      grid.appendChild(div);
-    });
-  }
-
-  window.deletePhoto = async function(uid, pid, e) {
-    e.stopPropagation();
-    if (!confirm('এই ছবিটি মুছে ফেলবেন?')) return;
-    await db.ref('users/' + uid + '/photos/' + pid).remove();
-    loadPhotos(uid, true);
-    showToast('🗑️ ছবি মুছে ফেলা হয়েছে');
-  };
-
-  // ── Follow / Unfollow ─────────────────────────────────────────────
-  window.toggleFollow = async function(targetUid, isFollowing) {
-    const myUid = currentUser.uid;
-    const btn = document.getElementById('followBtn');
-    if (isFollowing) {
-      await db.ref('users/' + myUid + '/following/' + targetUid).remove();
-      await db.ref('users/' + targetUid + '/followers/' + myUid).remove();
-      btn.textContent = '+ ফলো করুন';
-      btn.classList.remove('following');
-      btn.onclick = () => toggleFollow(targetUid, false);
-      showToast('আনফলো করা হয়েছে');
-    } else {
-      await db.ref('users/' + myUid + '/following/' + targetUid).set(true);
-      await db.ref('users/' + targetUid + '/followers/' + myUid).set(true);
-      btn.textContent = '✓ ফলোয়িং';
-      btn.classList.add('following');
-      btn.onclick = () => toggleFollow(targetUid, true);
-      const myName = currentUser.displayName || currentUser.email.split('@')[0];
-      await db.ref('notifications/' + targetUid).push({ type: 'follow', fromUid: myUid, fromName: myName, ts: Date.now(), read: false });
-      // Show message button
-      if (!document.getElementById('profileMsgBtn')) {
-        const msgBtn = document.createElement('button');
-        msgBtn.className = 'btn-message'; msgBtn.id = 'profileMsgBtn';
-        msgBtn.textContent = '💬 মেসেজ'; msgBtn.style.marginLeft = '0.5rem';
-        msgBtn.onclick = () => openChat(targetUid);
-        btn.parentNode.appendChild(msgBtn);
-      }
-      showToast('✓ ফলো করা হয়েছে!');
-    }
-    const fs = await db.ref('users/' + targetUid + '/followers').once('value');
-    document.getElementById('statFollowers').textContent = toBengaliNum(fs.val() ? Object.keys(fs.val()).length : 0);
-  };
-
-  window.showFollowers = async function() {
-    document.getElementById('followListTitle').textContent = 'ফলোয়ার';
-    const snap = await db.ref('users/' + viewingUid + '/followers').once('value');
-    renderFollowList(snap.val());
-    document.getElementById('followListModal').classList.add('open');
-  };
-  window.showFollowing = async function() {
-    document.getElementById('followListTitle').textContent = 'ফলোয়িং';
-    const snap = await db.ref('users/' + viewingUid + '/following').once('value');
-    renderFollowList(snap.val());
-    document.getElementById('followListModal').classList.add('open');
-  };
-  async function renderFollowList(uidsObj) {
-    const container = document.getElementById('followListContainer');
-    container.innerHTML = '';
-    if (!uidsObj) { container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem">কেউ নেই</div>'; return; }
-    for (const uid of Object.keys(uidsObj)) {
-      const snap = await db.ref('users/' + uid).once('value');
-      const data = snap.val() || {};
-      const div = document.createElement('div');
-      div.className = 'follow-item';
-      div.onclick = () => { document.getElementById('followListModal').classList.remove('open'); openProfile(uid); };
-      const avatarHTML = data.avatar ? '<div class="avatar sm"><img src="' + data.avatar + '" alt=""></div>' : '<div class="avatar sm">' + getInitial(data.name) + '</div>';
-      div.innerHTML = avatarHTML + '<div><div class="follow-item-name">' + escHtml(data.name||'ব্যবহারকারী') + '</div><div class="follow-item-sub">@' + escHtml((data.name||'user').toLowerCase().replace(/\s/g,'_')) + '</div></div>';
-      container.appendChild(div);
-    }
-  }
-
-  // ── Edit Profile ──────────────────────────────────────────────────
-  window.openEditModal = async function() {
-    const snap = await db.ref('users/' + currentUser.uid).once('value');
-    const data = snap.val() || {};
-    document.getElementById('editName').value = data.name || '';
-    document.getElementById('editBio').value  = data.bio  || '';
-    document.getElementById('editLink').value = data.link || '';
-    document.getElementById('editProfileModal').classList.add('open');
-  };
-  window.closeEditModal = function() { document.getElementById('editProfileModal').classList.remove('open'); };
-  window.saveProfile = async function() {
-    const name = document.getElementById('editName').value.trim();
-    const bio  = document.getElementById('editBio').value.trim();
-    const link = document.getElementById('editLink').value.trim();
-    if (!name) { showToast('নাম দিন', 'var(--like)'); return; }
-    await db.ref('users/' + currentUser.uid).update({ name, bio, link });
-    await currentUser.updateProfile({ displayName: name });
-    closeEditModal();
-    showToast('✓ প্রোফাইল আপডেট হয়েছে!');
-    openProfile(currentUser.uid);
-    document.getElementById('dropdownName').textContent = name;
-  };
-
-  // ── Cover & Avatar Upload ─────────────────────────────────────────
-  window.triggerCoverUpload = function() {
-    if (viewingUid === (currentUser ? currentUser.uid : '')) document.getElementById('coverInput').click();
-  };
-  window.uploadCover = async function(e) {
-    const file = e.target.files[0]; if (!file) return;
-    showToast('⏳ কভার আপলোড হচ্ছে...');
-    const b64 = await fileToBase64(file, 1200);
-    await db.ref('users/' + currentUser.uid).update({ cover: b64 });
-    showToast('✓ কভার আপডেট হয়েছে!');
-    openProfile(currentUser.uid); e.target.value = '';
-  };
-  window.uploadAvatar = async function(e) {
-    const file = e.target.files[0]; if (!file) return;
-    showToast('⏳ ছবি আপলোড হচ্ছে...');
-    const b64 = await fileToBase64(file, 400);
-    await db.ref('users/' + currentUser.uid).update({ avatar: b64 });
-    document.getElementById('headerAvatar').innerHTML  = '<img src="' + b64 + '" alt="">';
-    document.getElementById('composerAvatar').innerHTML = '<img src="' + b64 + '" alt="">';
-    showToast('✓ প্রোফাইল ছবি আপডেট হয়েছে!');
-    openProfile(currentUser.uid); e.target.value = '';
-  };
-  window.uploadPhotos = async function(e) {
-    const files = Array.from(e.target.files); if (!files.length) return;
-    showToast('⏳ ছবি আপলোড হচ্ছে...');
-    for (const file of files) {
-      const b64 = await fileToBase64(file, 900);
-      await db.ref('users/' + currentUser.uid + '/photos').push({ url: b64, ts: Date.now() });
-    }
-    showToast('✓ ' + toBengaliNum(files.length) + 'টি ছবি যোগ হয়েছে!');
-    loadPhotos(currentUser.uid, true); e.target.value = '';
-  };
-
-  // ── Lightbox ──────────────────────────────────────────────────────
-  window.openLightbox = function(src) {
-    document.getElementById('lightboxImg').src = src;
-    document.getElementById('lightbox').classList.add('open');
-  };
-  window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
-
-  // ── Post Actions ──────────────────────────────────────────────────
-  let pendingImages = [];
-  let pendingVideo = null;
-
-  function updatePostBtnState() {
-    const text = document.getElementById('postInput').value.trim();
-    document.getElementById('postBtn').disabled = text.length === 0 && pendingImages.length === 0 && !pendingVideo;
-  }
-
-  window.handlePostVideo = async function(e) {
-    const file = e.target.files[0]; if (!file) return;
-    if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
-    showUploadProgress('পোস্টের ভিডিও আপলোড হচ্ছে...');
-    try {
-      const url = await uploadToCloudinary(file, 'video', true);
-      updateUploadProgress(100);
-      setTimeout(hideUploadProgress, 500);
-      pendingVideo = url;
-      pendingImages = []; renderImagePreview();
-      const wrap = document.getElementById('imgPreview');
-      wrap.style.display = 'flex';
-      wrap.innerHTML = '<div class="preview-item" style="width:120px;height:80px;background:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:2rem">🎬</span><button class="preview-del" onclick="removePendingVideo()">✕</button></div>';
-      updatePostBtnState();
-      showToast('✓ ভিডিও প্রস্তুত!');
-    } catch(err) {
-      hideUploadProgress();
-      showToast('❌ ভিডিও আপলোড হয়নি!');
-    }
-    e.target.value = '';
-  };
-
-  window.removePendingVideo = function() {
-    pendingVideo = null;
-    renderImagePreview();
-    updatePostBtnState();
-  };
-
-  window.handlePostImages = async function(e) {
-    const files = Array.from(e.target.files); if (!files.length) return;
-    pendingVideo = null;
-    showToast('⏳ ছবি আপলোড হচ্ছে...');
-    for (const file of files) {
-      if (pendingImages.length >= 4) { showToast('সর্বোচ্চ ৪টি ছবি দেওয়া যাবে', 'var(--like)'); break; }
-      try {
-        const url = await uploadToCloudinary(file, 'image');
-        pendingImages.push(url);
-      } catch(err) { showToast('❌ একটি ছবি আপলোড হয়নি'); }
-    }
-    e.target.value = ''; renderImagePreview(); updatePostBtnState(); showToast('✓ ছবি যোগ হয়েছে');
-  };
-
-  function renderImagePreview() {
-    const wrap = document.getElementById('imgPreview');
-    if (!pendingImages.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
-    wrap.style.display = 'flex'; wrap.innerHTML = '';
-    pendingImages.forEach((src, i) => {
-      const item = document.createElement('div');
-      item.className = 'preview-item';
-      item.innerHTML = '<img src="' + src + '" alt=""><button class="preview-del" onclick="removePreviewImg(' + i + ')">✕</button>';
-      wrap.appendChild(item);
-    });
-  }
-
-  window.removePreviewImg = function(i) { pendingImages.splice(i, 1); renderImagePreview(); updatePostBtnState(); };
-
-  window.createPost = async function() {
-    if (!currentUser) return;
-    const input   = document.getElementById('postInput');
-    const postBtn = document.getElementById('postBtn');
-    const text = input.value.trim();
-    if (!text && pendingImages.length === 0 && !pendingVideo) return;
-    postBtn.disabled = true; postBtn.textContent = 'পোস্ট হচ্ছে...';
-    try {
-      const name = currentUser.displayName || currentUser.email.split('@')[0];
-      const snapA = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
-      await postsRef.push({
-        text: text || '', images: pendingImages.length ? pendingImages : null,
-        video: pendingVideo || null,
-        author: name, authorUid: currentUser.uid, authorAvatar: snapA.val() || '',
-        likes: 0, shares: 0, timestamp: Date.now()
-      });
-      input.value = ''; pendingImages = []; pendingVideo = null; renderImagePreview();
-      document.getElementById('charCount').textContent = '০ / ৫০০';
-      document.getElementById('charCount').className = 'char-count';
-      showToast('✓ পোস্ট সেভ হয়েছে!');
-    } catch(e) { showToast('❌ পোস্ট হয়নি: ' + e.message, 'var(--like)'); }
-    postBtn.textContent = 'পোস্ট করুন'; updatePostBtnState();
-  };
-
-  window.toggleLike = async function(id, currentLiked, currentCount) {
-    if (!currentUser) return;
-    const uid = currentUser.uid;
-    const newLiked = !currentLiked;
-    const newCount = newLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
-    try {
-      const updates = { likes: newCount };
-      updates['likedBy/' + uid] = newLiked ? true : null;
-      await db.ref('posts/' + id).update(updates);
-      if (newLiked) {
-        const postSnap = await db.ref('posts/' + id).once('value');
-        const post = postSnap.val();
-        if (post && post.authorUid && post.authorUid !== uid) {
-          const myName = currentUser.displayName || currentUser.email.split('@')[0];
-          await db.ref('notifications/' + post.authorUid).push({ type: 'like', fromUid: uid, fromName: myName, postId: id, postText: (post.text||'').substring(0,60), ts: Date.now(), read: false });
-        }
-      }
-    } catch(e) { showToast('❌ হয়নি', 'var(--like)'); }
-  };
-
-  window.submitComment = async function(id) {
-    if (!currentUser) return;
-    const inp  = document.getElementById('cmt-input-' + id);
-    const text = inp.value.trim();
-    if (!text) return;
-    inp.value = ''; inp.style.height = '';
-    const name = currentUser.displayName || currentUser.email.split('@')[0];
-    try {
-      await db.ref('posts/' + id + '/comments').push({ author: name, authorUid: currentUser.uid, text, timestamp: Date.now() });
-      const postSnap = await db.ref('posts/' + id).once('value');
-      const post = postSnap.val();
-      if (post && post.authorUid && post.authorUid !== currentUser.uid) {
-        await db.ref('notifications/' + post.authorUid).push({ type: 'comment', fromUid: currentUser.uid, fromName: name, postId: id, postText: (post.text||'').substring(0,60), commentText: text.substring(0,80), ts: Date.now(), read: false });
-      }
-    } catch(e) { showToast('❌ মন্তব্য হয়নি', 'var(--like)'); }
-  };
-
-  window.sharePost = async function(id, currentShares, encodedText) {
-    const text = decodeURIComponent(encodedText);
-    try { await db.ref('posts/' + id).update({ shares: currentShares + 1 }); } catch(e) {}
-    if (navigator.share) navigator.share({ title: 'পোস্টবই', text }).catch(()=>{});
-    else if (navigator.clipboard) navigator.clipboard.writeText(text);
-    showToast('✓ পোস্ট শেয়ার হয়েছে!');
-  };
-
-  window.deletePost = async function(id) {
-    if (!confirm('এই পোস্টটি মুছে ফেলবেন?')) return;
-    try { await db.ref('posts/' + id).remove(); showToast('🗑️ পোস্ট মুছে ফেলা হয়েছে'); }
-    catch(e) { showToast('❌ মুছা হয়নি', 'var(--like)'); }
-  };
-
-  window.copyPostText = async function(id) {
-    try {
-      const snap = await db.ref('posts/' + id + '/text').once('value');
-      if (snap.val() && navigator.clipboard) navigator.clipboard.writeText(snap.val());
-    } catch(e) {}
-    document.getElementById('menu-' + id)?.classList.remove('open');
-    showToast('📋 কপি হয়েছে!');
-  };
-
-  window.toggleMenu = function(id) {
-    document.querySelectorAll('.dropdown.open').forEach(d => { if (d.id !== 'menu-' + id) d.classList.remove('open'); });
-    document.getElementById('menu-' + id).classList.toggle('open');
-  };
-  window.toggleComments = function(id) {
-    const sec = document.getElementById('cmts-' + id);
-    sec.classList.toggle('open');
-    if (sec.classList.contains('open')) setTimeout(() => document.getElementById('cmt-input-' + id)?.focus(), 100);
-  };
-  window.autoResize = function(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; };
-
-  // ── Bottom Nav ────────────────────────────────────────────────────
-  window.updateBottomNav = function(active) {
-    ['feed','friends','messages','notifications','profile'].forEach(id => {
-      const btn = document.getElementById('nav' + id.charAt(0).toUpperCase() + id.slice(1));
-      if (btn) btn.style.color = id === active ? 'var(--accent)' : 'var(--muted)';
-    });
-  };
-
-  // ── Friends Page ──────────────────────────────────────────────────
-  let allUsersCache = [];
-  let currentFriendsTab = 'all';
-
-  window.loadFriends = async function() {
-    const grid = document.getElementById('friendsGrid');
-    const label = document.getElementById('friendsCountLabel');
-    grid.innerHTML = '<div class="loading-spinner" style="grid-column:1/-1">⏳ লোড হচ্ছে...</div>';
-    label.textContent = 'লোড হচ্ছে...';
-    const snap = await db.ref('users').once('value');
-    const data = snap.val() || {};
-    const followingSnap = await db.ref('users/' + currentUser.uid + '/following').once('value');
-    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
-    const followingMap  = followingSnap.val() || {};
-    const followersMap  = followersSnap.val() || {};
-    allUsersCache = Object.entries(data)
-      .filter(([uid]) => uid !== currentUser.uid)
-      .map(([uid, u]) => ({ uid, name: u.name||'ব্যবহারকারী', email: u.email||'', avatar: u.avatar||'', isFollowing: !!followingMap[uid], isFollower: !!followersMap[uid] }));
-    renderFriendCards();
-  };
-
-  window.switchFriendsTab = function(tab) {
-    currentFriendsTab = tab;
-    ['all','following','followers'].forEach(t => {
-      const btn = document.getElementById('friendsTab' + t.charAt(0).toUpperCase() + t.slice(1));
-      if (btn) btn.className = 'nav-tab' + (t === tab ? ' active' : '');
-    });
-    document.getElementById('friendsSearch').value = '';
-    renderFriendCards();
-  };
-
-  window.filterFriends = function() { renderFriendCards(); };
-
-  function renderFriendCards() {
-    const grid  = document.getElementById('friendsGrid');
-    const label = document.getElementById('friendsCountLabel');
-    const query = (document.getElementById('friendsSearch')?.value || '').toLowerCase();
-    let list = allUsersCache;
-    if (currentFriendsTab === 'following') list = list.filter(u => u.isFollowing);
-    if (currentFriendsTab === 'followers') list = list.filter(u => u.isFollower);
-    if (query) list = list.filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
-    const tabLabel = currentFriendsTab === 'all' ? 'মোট ব্যবহারকারী' : currentFriendsTab === 'following' ? 'ফলোয়িং' : 'ফলোয়ার';
-    label.textContent = toBengaliNum(list.length) + ' জন ' + tabLabel;
-    if (!list.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div><div class="empty-text">কেউ নেই</div></div>'; return; }
-    grid.innerHTML = '';
-    list.forEach(user => {
-      const card = document.createElement('div');
-      card.className = 'friend-card';
-      const avatarHTML = user.avatar ? '<div class="friend-avatar-lg"><img src="' + user.avatar + '" alt=""></div>' : '<div class="friend-avatar-lg">' + getInitial(user.name) + '</div>';
-      card.innerHTML = avatarHTML + '<div class="friend-card-name">' + escHtml(user.name) + '</div><div class="friend-card-sub">@' + escHtml((user.name||'user').toLowerCase().replace(/\s/g,'_')) + '</div><button class="friend-card-btn ' + (user.isFollowing ? 'following' : '') + '" id="fcard-btn-' + user.uid + '" onclick="event.stopPropagation();friendToggleFollow(\'' + user.uid + '\')">' + (user.isFollowing ? '✓ ফলোয়িং' : '+ ফলো করুন') + '</button>';
-      card.onclick = () => { openProfile(user.uid); updateBottomNav('profile'); };
-      grid.appendChild(card);
-    });
-  }
-
-  window.friendToggleFollow = async function(targetUid) {
-    const myUid = currentUser.uid;
-    const user  = allUsersCache.find(u => u.uid === targetUid);
-    if (!user) return;
-    const btn = document.getElementById('fcard-btn-' + targetUid);
-    if (user.isFollowing) {
-      await db.ref('users/' + myUid + '/following/' + targetUid).remove();
-      await db.ref('users/' + targetUid + '/followers/' + myUid).remove();
-      user.isFollowing = false;
-      if (btn) { btn.textContent = '+ ফলো করুন'; btn.classList.remove('following'); }
-      showToast('আনফলো করা হয়েছে');
-    } else {
-      await db.ref('users/' + myUid + '/following/' + targetUid).set(true);
-      await db.ref('users/' + targetUid + '/followers/' + myUid).set(true);
-      user.isFollowing = true;
-      if (btn) { btn.textContent = '✓ ফলোয়িং'; btn.classList.add('following'); }
-      const myName = currentUser.displayName || currentUser.email.split('@')[0];
-      await db.ref('notifications/' + targetUid).push({ type: 'follow', fromUid: myUid, fromName: myName, ts: Date.now(), read: false });
-      showToast('✓ ফলো করা হয়েছে!');
-    }
-    if (currentFriendsTab === 'following') renderFriendCards();
-  };
-
-  // ── Notifications ─────────────────────────────────────────────────
-  const ADMIN_UID = 'REPLACE_WITH_YOUR_UID';
-
-  function startNotifListener() {
-    if (!currentUser) return;
-    db.ref('notifications/' + currentUser.uid).on('value', snap => {
-      const data = snap.val() || {};
-      const unread = Object.values(data).filter(n => !n.read).length;
-      const badge = document.getElementById('navNotifBadge');
-      if (badge) { badge.textContent = unread > 9 ? '9+' : String(unread); badge.className = 'nav-notif-badge' + (unread > 0 ? ' show' : ''); }
-    });
-  }
-
-  window.loadNotifications = async function() {
-    if (!currentUser) return;
-    const list = document.getElementById('notifList');
-    list.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
-    document.getElementById('adminPanel').style.display = currentUser.uid === ADMIN_UID ? 'block' : 'none';
-    const snap = await db.ref('notifications/' + currentUser.uid).once('value');
-    const data = snap.val() || {};
-    const notifs = Object.entries(data).map(([id, v]) => ({ id, ...v })).sort((a, b) => (b.ts||0) - (a.ts||0));
-    const followingSnap = await db.ref('users/' + currentUser.uid + '/following').once('value');
-    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
-    const followingCount = followingSnap.val() ? Object.keys(followingSnap.val()).length : 0;
-    const followersCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
-    const allPostsSnap = await postsRef.once('value');
-    const allPosts = allPostsSnap.val() || {};
-    let totalLikes = 0, totalComments = 0;
-    Object.values(allPosts).forEach(p => { if (p.authorUid === currentUser.uid) { totalLikes += (p.likes||0); totalComments += p.comments ? Object.keys(p.comments).length : 0; } });
-    list.innerHTML = '';
-    const summary = document.createElement('div');
-    summary.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.5rem;text-align:center;';
-    summary.innerHTML = '<div><div style="font-size:1.4rem;font-weight:700;color:var(--like)">' + toBengaliNum(totalLikes) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">মোট লাইক</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--comment)">' + toBengaliNum(totalComments) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">মন্তব্য</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--accent3)">' + toBengaliNum(followersCount) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">ফলোয়ার</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--accent)">' + toBengaliNum(followingCount) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">ফলোয়িং</div></div>';
-    list.appendChild(summary);
-    if (!notifs.length) { list.innerHTML += '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-text">এখনো কোনো নোটিফিকেশন নেই</div></div>'; return; }
-    notifs.forEach(n => {
-      const item = document.createElement('div');
-      item.className = 'notif-item' + (!n.read ? ' unread' : '') + (n.type === 'admin' ? ' admin-notif' : '');
-      let iconClass='', iconEmoji='', text='';
-      if (n.type==='like')    { iconClass='like';    iconEmoji='❤️'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনার পোস্টে লাইক দিয়েছে'+(n.postText?' — <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.postText)+'..."</span>':''); }
-      else if (n.type==='comment') { iconClass='comment'; iconEmoji='💬'; text='<strong>'+escHtml(n.fromName)+'</strong> মন্তব্য করেছে'+(n.commentText?': <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.commentText)+'"</span>':''); }
-      else if (n.type==='follow')  { iconClass='follow';  iconEmoji='👤'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনাকে ফলো করেছে'; }
-      else if (n.type==='admin')   { iconClass='admin';   iconEmoji='📢'; text='<span style="color:var(--accent2);font-weight:700">অ্যাডমিন:</span> '+escHtml(n.message); }
-      item.innerHTML = '<div class="notif-icon-wrap '+iconClass+'">'+iconEmoji+'</div><div class="notif-body"><div class="notif-text">'+text+'</div><div class="notif-time">'+timeLabel(n.ts)+'</div></div>'+(!n.read?'<div class="notif-unread-dot"></div>':'');
-      item.onclick = async () => {
-        if (!n.read) { await db.ref('notifications/'+currentUser.uid+'/'+n.id).update({read:true}); item.classList.remove('unread'); item.querySelector('.notif-unread-dot')?.remove(); }
-        if (n.type !== 'admin' && n.fromUid) openProfile(n.fromUid);
-      };
-      list.appendChild(item);
-    });
-  };
-
-  window.markAllRead = async function() {
-    if (!currentUser) return;
-    const snap = await db.ref('notifications/' + currentUser.uid).once('value');
-    const data = snap.val() || {};
-    const updates = {};
-    Object.keys(data).forEach(k => { updates[k + '/read'] = true; });
-    if (Object.keys(updates).length) await db.ref('notifications/' + currentUser.uid).update(updates);
-    loadNotifications(); showToast('✓ সব নোটিফিকেশন পড়া হয়েছে');
-  };
-
-  window.sendAdminNotif = async function() {
-    if (currentUser.uid !== ADMIN_UID) return;
-    const msg = document.getElementById('adminMsg').value.trim();
-    if (!msg) { showToast('বার্তা লিখুন', 'var(--like)'); return; }
-    const btn = document.getElementById('adminSendBtn');
-    btn.disabled = true; btn.textContent = '⏳ পাঠানো হচ্ছে...';
-    const usersSnap = await db.ref('users').once('value');
-    const users = usersSnap.val() || {};
-    const promises = Object.keys(users).filter(uid => uid !== ADMIN_UID).map(uid => db.ref('notifications/' + uid).push({ type: 'admin', message: msg, ts: Date.now(), read: false }));
-    await Promise.all(promises);
-    document.getElementById('adminMsg').value = '';
-    btn.disabled = false; btn.textContent = '📢 সবাইকে পাঠান';
-    showToast('✓ সবার কাছে বার্তা পাঠানো হয়েছে!');
-  };
-
-  // ── Story Feature ─────────────────────────────────────────────────
-  const STORY_TTL = 24 * 60 * 60 * 1000;
-  let storyGroups = [], storyGroupIdx = 0, storyIdx = 0, storyTimer = null, storyImgBase64 = null;
-  const STORY_DURATION = 5000;
-
-  async function loadStories() {
-    const now = Date.now();
-    const snap = await db.ref('stories').once('value');
-    const data = snap.val() || {};
-    const byUser = {};
-    Object.entries(data).forEach(([sid, s]) => {
-      if (!s || (now - (s.ts||0)) > STORY_TTL) return;
-      if (!byUser[s.uid]) byUser[s.uid] = { uid: s.uid, name: s.name, avatar: s.avatar||'', stories: [] };
-      byUser[s.uid].stories.push({ id: sid, ...s });
-    });
-    Object.values(byUser).forEach(g => g.stories.sort((a,b) => a.ts - b.ts));
-    const myUid = currentUser.uid;
-    storyGroups = Object.values(byUser).sort((a,b) => {
-      if (a.uid === myUid) return -1; if (b.uid === myUid) return 1;
-      return (b.stories[b.stories.length-1]?.ts||0) - (a.stories[a.stories.length-1]?.ts||0);
-    });
-    renderStoryBar();
-  }
-
-  function renderStoryBar() {
-    const bar = document.getElementById('storyBar');
-    const myUid = currentUser.uid;
-    const seenKey = 'seen_stories_' + myUid;
-    let seen = {};
-    try { seen = JSON.parse(localStorage.getItem(seenKey) || '{}'); } catch(e) {}
-    bar.innerHTML = '<div class="story-item" onclick="openStoryComposer()"><div class="story-add-ring">＋</div><div class="story-name me">স্টোরি</div></div>';
-    storyGroups.forEach((group, gIdx) => {
-      const allSeen = group.stories.every(s => seen[s.id]);
-      const isMe = group.uid === myUid;
-      const shortName = group.name.split(' ')[0];
-      const avatarInner = group.avatar ? '<img src="' + group.avatar + '" alt="">' : '<div class="story-initials">' + getInitial(group.name) + '</div>';
-      const item = document.createElement('div');
-      item.className = 'story-item';
-      item.innerHTML = '<div class="story-ring' + (allSeen?' seen':'') + '"><div class="story-ring-inner">' + avatarInner + '</div></div><div class="story-name' + (isMe?' me':'') + '">' + escHtml(shortName) + '</div>';
-      item.onclick = () => openStoryViewer(gIdx);
-      bar.appendChild(item);
-    });
-  }
-
-  window.openStoryComposer = function() {
-    storyImgBase64 = null;
-    document.getElementById('storyImgPreview').classList.remove('show');
-    document.getElementById('storyImgPreview').src = '';
-    document.getElementById('storyUploadArea').style.display = 'flex';
-    document.getElementById('storyTextInput').value = '';
-    document.getElementById('storyImgInput').value = '';
-    document.getElementById('storyComposerModal').classList.add('open');
-  };
-  window.closeStoryComposer = function() { document.getElementById('storyComposerModal').classList.remove('open'); };
-  window.handleStoryImage = async function(e) {
-    const file = e.target.files[0]; if (!file) return;
-    showToast('⏳ ছবি প্রস্তুত হচ্ছে...');
-    storyImgBase64 = await fileToBase64(file, 900);
-    const prev = document.getElementById('storyImgPreview');
-    prev.src = storyImgBase64; prev.classList.add('show');
-    document.getElementById('storyUploadArea').style.display = 'none';
-    showToast('✓ ছবি প্রস্তুত');
-  };
-  window.publishStory = async function() {
-    const text = document.getElementById('storyTextInput').value.trim();
-    if (!storyImgBase64 && !text) { showToast('ছবি বা লেখা দিন', 'var(--like)'); return; }
-    const btn = document.getElementById('storyPostBtn');
-    btn.disabled = true; btn.textContent = '⏳ পোস্ট হচ্ছে...';
-    const name = currentUser.displayName || currentUser.email.split('@')[0];
-    const snapAv = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
-    await db.ref('stories').push({ uid: currentUser.uid, name, avatar: snapAv.val()||'', text: text||'', image: storyImgBase64||'', ts: Date.now() });
-    btn.disabled = false; btn.textContent = '🌟 স্টোরি পোস্ট করুন';
-    closeStoryComposer(); showToast('✓ স্টোরি পোস্ট হয়েছে!'); loadStories();
-  };
-
-  window.openStoryViewer = function(gIdx) { storyGroupIdx = gIdx; storyIdx = 0; document.getElementById('storyViewer').classList.add('open'); showStory(); };
-  window.closeStoryViewer = function() { clearTimeout(storyTimer); document.getElementById('storyViewer').classList.remove('open'); renderStoryBar(); };
-
-  function showStory() {
-    clearTimeout(storyTimer);
-    const group = storyGroups[storyGroupIdx];
-    if (!group) { closeStoryViewer(); return; }
-    const story = group.stories[storyIdx];
-    if (!story) { closeStoryViewer(); return; }
-    const seenKey = 'seen_stories_' + currentUser.uid;
-    let seen = {};
-    try { seen = JSON.parse(localStorage.getItem(seenKey) || '{}'); } catch(e) {}
-    seen[story.id] = true;
-    try { localStorage.setItem(seenKey, JSON.stringify(seen)); } catch(e) {}
-    const bar = document.getElementById('storyProgressBar');
-    bar.innerHTML = '';
-    group.stories.forEach((_, i) => {
-      const seg = document.createElement('div'); seg.className = 'story-prog-seg';
-      const fill = document.createElement('div'); fill.className = 'story-prog-fill';
-      if (i < storyIdx) fill.style.width = '100%';
-      seg.appendChild(fill); bar.appendChild(seg);
-      if (i === storyIdx) setTimeout(() => { fill.style.transition = 'width ' + STORY_DURATION + 'ms linear'; fill.style.width = '100%'; }, 50);
-    });
-    const avatarEl = document.getElementById('svAvatar');
-    avatarEl.innerHTML = group.avatar ? '<img src="' + group.avatar + '" alt="">' : getInitial(group.name);
-    document.getElementById('svName').textContent = group.name;
-    document.getElementById('svTime').textContent = timeLabel(story.ts);
-    const delBtn = document.getElementById('svDeleteBtn');
-    delBtn.style.display = (story.uid === currentUser.uid) ? 'block' : 'none';
-    const content = document.getElementById('svContent');
-    content.querySelectorAll('img, .story-viewer-text-only').forEach(el => el.remove());
-    if (story.image) {
-      const img = document.createElement('img'); img.className = 'story-viewer-img'; img.src = story.image;
-      content.insertBefore(img, content.firstChild);
-      if (story.text) { const overlay = document.createElement('div'); overlay.style.cssText = 'position:absolute;bottom:80px;left:0;right:0;padding:1rem 1.25rem;text-align:center;font-size:1.1rem;font-weight:600;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.8);pointer-events:none;'; overlay.textContent = story.text; content.appendChild(overlay); }
-    } else {
-      const textDiv = document.createElement('div'); textDiv.className = 'story-viewer-text-only'; textDiv.textContent = story.text; content.insertBefore(textDiv, content.firstChild);
-    }
-    storyTimer = setTimeout(() => storyNav(1), STORY_DURATION);
-  }
-
-  window.storyNav = function(dir) {
-    clearTimeout(storyTimer);
-    const group = storyGroups[storyGroupIdx];
-    storyIdx += dir;
-    if (storyIdx < 0) { if (storyGroupIdx > 0) { storyGroupIdx--; storyIdx = storyGroups[storyGroupIdx].stories.length - 1; showStory(); } else { closeStoryViewer(); } }
-    else if (storyIdx >= group.stories.length) { if (storyGroupIdx < storyGroups.length - 1) { storyGroupIdx++; storyIdx = 0; showStory(); } else { closeStoryViewer(); } }
-    else { showStory(); }
-  };
-
-  window.deleteCurrentStory = async function() {
-    const group = storyGroups[storyGroupIdx];
-    const story = group?.stories[storyIdx];
-    if (!story || story.uid !== currentUser.uid) return;
-    if (!confirm('এই স্টোরিটি মুছে ফেলবেন?')) return;
-    clearTimeout(storyTimer);
-    await db.ref('stories/' + story.id).remove();
-    showToast('🗑️ স্টোরি মুছে ফেলা হয়েছে');
-    closeStoryViewer(); loadStories();
-  };
-
-  async function cleanExpiredStories() {
-    const now = Date.now();
-    const snap = await db.ref('stories').once('value');
-    const data = snap.val() || {};
-    const removes = [];
-    Object.entries(data).forEach(([sid, s]) => { if (s && (now - (s.ts||0)) > STORY_TTL) removes.push(db.ref('stories/' + sid).remove()); });
-    if (removes.length) await Promise.all(removes);
-  }
-
-  // ══════════════════════════════════════════════════════════════════
-  // ── MESSENGER FEATURE ─────────────────────────────────────────────
-  // ══════════════════════════════════════════════════════════════════
-
-  let currentChatUid  = null;  // peer UID
-  let currentChatName = '';
-  let chatListener    = null;  // Firebase listener unsubscribe
-  let callTimerInterval = null;
-  let callSeconds       = 0;
-  let localStream       = null;
-  let isMuted = false, isCamOff = false;
-
-  // chatId = sorted UIDs joined by '_'
-  function getChatId(uid1, uid2) {
-    return [uid1, uid2].sort().join('_');
-  }
-
-  // ── Inbox ─────────────────────────────────────────────────────────
-  window.loadInbox = async function() {
-    const list = document.getElementById('inboxList');
-    list.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
-    const myUid = currentUser.uid;
-
-    // Load all chats where myUid participates
-    const snap = await db.ref('chats').once('value');
-    const all  = snap.val() || {};
-
-    const myChats = Object.entries(all)
-      .filter(([cid]) => cid.includes(myUid))
-      .map(([cid, data]) => {
-        const msgs = data.messages ? Object.values(data.messages) : [];
-        const last = msgs.sort((a,b) => (b.ts||0)-(a.ts||0))[0];
-        const peerUid = cid.replace(myUid, '').replace('_','');
-        const unread  = msgs.filter(m => m.senderUid !== myUid && !m.read).length;
-        return { cid, peerUid, last, unread };
-      })
-      .sort((a,b) => (b.last?.ts||0) - (a.last?.ts||0));
-
-    if (!myChats.length) {
-      list.innerHTML = '<div class="inbox-empty"><div class="empty-icon">💬</div><div>এখনো কোনো মেসেজ নেই।<br><span style="font-size:0.85rem">কাউকে ফলো করে মেসেজ পাঠান।</span></div></div>';
-      return;
-    }
-
-    list.innerHTML = '';
-    for (const chat of myChats) {
-      const usnap = await db.ref('users/' + chat.peerUid).once('value');
-      const udata = usnap.val() || {};
-      const item  = document.createElement('div');
-      item.className = 'inbox-item' + (chat.unread > 0 ? ' unread' : '');
-      const avHTML = udata.avatar
-        ? '<div class="inbox-avatar"><img src="' + udata.avatar + '" alt=""></div>'
-        : '<div class="inbox-avatar">' + getInitial(udata.name) + '</div>';
-      const preview = chat.last ? (chat.last.senderUid === myUid ? 'আপনি: ' : '') + (chat.last.img ? '📷 ছবি' : (chat.last.text||'').substring(0,40)) : 'মেসেজ শুরু করুন';
-      item.innerHTML = avHTML +
-        '<div class="inbox-info"><div class="inbox-name">' + escHtml(udata.name||'ব্যবহারকারী') + '</div><div class="inbox-preview">' + escHtml(preview) + '</div></div>' +
-        '<div class="inbox-meta"><div class="inbox-time">' + (chat.last ? timeLabel(chat.last.ts) : '') + '</div>' +
-        (chat.unread > 0 ? '<div class="inbox-badge">' + chat.unread + '</div>' : '') + '</div>';
-      item.onclick = () => openChat(chat.peerUid);
-      list.appendChild(item);
-    }
-  };
-
-  // ── Open Chat ──────────────────────────────────────────────────────
-  window.openChat = async function(peerUid) {
-    currentChatUid = peerUid;
-    const snap = await db.ref('users/' + peerUid).once('value');
-    const data  = snap.val() || {};
-    currentChatName = data.name || 'ব্যবহারকারী';
-
-    // Header
-    const avEl = document.getElementById('chatPeerAvatar');
-    avEl.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(currentChatName);
-    document.getElementById('chatPeerName').textContent   = currentChatName;
-    document.getElementById('chatPeerStatus').textContent = 'অনলাইন';
-
-    // Open window
-    document.getElementById('chatWindow').classList.add('open');
-    document.getElementById('chatMessages').innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
-
-    // Listen to messages
-    const cid     = getChatId(currentUser.uid, peerUid);
-    const msgsRef = db.ref('chats/' + cid + '/messages');
-
-    if (chatListener) chatListener();  // detach old
-    msgsRef.on('value', snap => {
-      const data = snap.val() || {};
-      const msgs = Object.entries(data).map(([k,v]) => ({id:k,...v})).sort((a,b) => (a.ts||0)-(b.ts||0));
-      renderMessages(msgs);
-      // Mark received as read
-      msgs.filter(m => m.senderUid !== currentUser.uid && !m.read).forEach(m => {
-        msgsRef.child(m.id).update({ read: true });
-      });
-    });
-    chatListener = () => msgsRef.off();
-
-    // Reset input
-    const inp = document.getElementById('chatTextInput');
-    inp.value = ''; inp.style.height = '';
-    setTimeout(() => inp.focus(), 300);
-  };
-
-  window.closeChatWindow = function() {
-    if (chatListener) { chatListener(); chatListener = null; }
-    document.getElementById('chatWindow').classList.remove('open');
-    currentChatUid = null;
-  };
-
-  function renderMessages(msgs) {
-    const container = document.getElementById('chatMessages');
-    container.innerHTML = '';
-    if (!msgs.length) {
-      container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem;font-size:0.88rem">কথা শুরু করুন! 👋</div>';
-      return;
-    }
-    let lastDate = '';
-    msgs.forEach(m => {
-      const isMine = m.senderUid === currentUser.uid;
-      // Date divider
-      const d = new Date(m.ts||0);
-      const dateStr = d.toLocaleDateString('bn-BD', {day:'numeric',month:'short'});
-      if (dateStr !== lastDate) {
-        const div = document.createElement('div');
-        div.className = 'chat-date-divider';
-        div.textContent = dateStr;
-        container.appendChild(div);
-        lastDate = dateStr;
-      }
-      const row = document.createElement('div');
-      row.className = 'msg-row' + (isMine ? ' mine' : '');
-      const timeStr = d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
-      let bubbleContent = '';
-      if (m.img)  bubbleContent += '<img class="msg-img" src="' + m.img + '" alt="" onclick="openLightbox(\'' + m.img + '\')">';
-      if (m.video) bubbleContent += '<div style="position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + m.video + '\')">' +
-        '<video class="msg-video" src="' + m.video + '" style="pointer-events:none;"></video>' +
-        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,0,0,0.3);">' +
-        '<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">▶</div>' +
-        '</div></div>';
-      if (m.text) bubbleContent += escHtml(m.text);
-      bubbleContent += '<span class="msg-time' + (isMine?' mine':'') + '">' + timeStr + '</span>';
-      if (isMine && m.read) bubbleContent += '<div class="msg-seen">✓✓ দেখেছে</div>';
-      row.innerHTML = '<div class="msg-bubble ' + (isMine?'mine':'theirs') + '">' + bubbleContent + '</div>';
-      container.appendChild(row);
-    });
-    container.scrollTop = container.scrollHeight;
-  }
-
-  // ── Send Message ──────────────────────────────────────────────────
-  window.sendMessage = async function() {
-    if (!currentChatUid) return;
-    const inp  = document.getElementById('chatTextInput');
-    const text = inp.value.trim();
-    if (!text) return;
-    inp.value = ''; inp.style.height = '';
-    const cid = getChatId(currentUser.uid, currentChatUid);
-    await db.ref('chats/' + cid + '/messages').push({
-      senderUid: currentUser.uid,
-      text, ts: Date.now(), read: false
-    });
-    // Notify peer
-    const myName = currentUser.displayName || currentUser.email.split('@')[0];
-    await db.ref('notifications/' + currentChatUid).push({
-      type:'message', fromUid:currentUser.uid, fromName:myName,
-      preview:text.substring(0,60), ts:Date.now(), read:false
-    });
-  };
-
-  // ── Send Image ────────────────────────────────────────────────────
-  const CLOUDINARY_CLOUD = 'dvfsjkwgb';
-  const CLOUDINARY_PRESET = 'tara_media';
-
-  function showUploadProgress(title) {
-    document.getElementById('uploadProgressTitle').textContent = title || 'আপলোড হচ্ছে...';
-    document.getElementById('uploadProgressSub').textContent = 'একটু অপেক্ষা করুন';
-    document.getElementById('uploadBarFill').style.width = '0%';
-    document.getElementById('uploadPercent').textContent = '০%';
-    document.getElementById('uploadProgressOverlay').classList.add('show');
-  }
-  function updateUploadProgress(pct) {
-    document.getElementById('uploadBarFill').style.width = pct + '%';
-    document.getElementById('uploadPercent').textContent = toBengaliNum(Math.round(pct)) + '%';
-    if (pct >= 100) document.getElementById('uploadProgressSub').textContent = 'প্রায় শেষ...';
-  }
-  function hideUploadProgress() {
-    document.getElementById('uploadProgressOverlay').classList.remove('show');
-  }
-
-  async function uploadToCloudinary(file, resourceType, showProgress) {
-    return new Promise((resolve, reject) => {
-      const fd = new FormData();
-      fd.append('file', file);
-      fd.append('upload_preset', CLOUDINARY_PRESET);
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`);
-      if (showProgress) {
-        xhr.upload.onprogress = function(e) {
-          if (e.lengthComputable) updateUploadProgress((e.loaded / e.total) * 100);
-        };
-      }
-      xhr.onload = function() {
-        const data = JSON.parse(xhr.responseText);
-        if (data.secure_url) resolve(data.secure_url);
-        else reject(new Error('Upload failed'));
-      };
-      xhr.onerror = () => reject(new Error('Network error'));
-      xhr.send(fd);
-    });
-  }
-
-  window.sendImage = async function(e) {
-    const file = e.target.files[0]; if (!file || !currentChatUid) return;
-    showToast('⏳ ছবি আপলোড হচ্ছে...');
-    try {
-      const url = await uploadToCloudinary(file, 'image');
-      const cid = getChatId(currentUser.uid, currentChatUid);
-      await db.ref('chats/' + cid + '/messages').push({
-        senderUid: currentUser.uid, img: url, ts: Date.now(), read: false
-      });
-      e.target.value = '';
-      showToast('✓ ছবি পাঠানো হয়েছে!');
-    } catch(err) {
-      showToast('❌ ছবি পাঠানো যায়নি!');
-    }
-  };
-
-  window.sendVideo = async function(e) {
-    const file = e.target.files[0]; if (!file || !currentChatUid) return;
-    if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
-    showUploadProgress('ভিডিও আপলোড হচ্ছে...');
-    try {
-      const url = await uploadToCloudinary(file, 'video', true);
-      updateUploadProgress(100);
-      setTimeout(hideUploadProgress, 500);
-      const cid = getChatId(currentUser.uid, currentChatUid);
-      await db.ref('chats/' + cid + '/messages').push({
-        senderUid: currentUser.uid, video: url, ts: Date.now(), read: false
-      });
-      e.target.value = '';
-      showToast('✓ ভিডিও পাঠানো হয়েছে!');
-    } catch(err) {
-      hideUploadProgress();
-      showToast('❌ ভিডিও পাঠানো যায়নি!');
-    }
-  };
-
-  // ── Message Nav Badge ─────────────────────────────────────────────
-  function startMsgBadgeListener() {
-    if (!currentUser) return;
-    db.ref('chats').on('value', snap => {
-      const all = snap.val() || {};
-      let totalUnread = 0;
-      Object.entries(all).forEach(([cid, data]) => {
-        if (!cid.includes(currentUser.uid)) return;
-        const msgs = data.messages ? Object.values(data.messages) : [];
-        totalUnread += msgs.filter(m => m.senderUid !== currentUser.uid && !m.read).length;
-      });
-      const badge = document.getElementById('msgNavBadge');
-      if (badge) {
-        badge.textContent = totalUnread > 9 ? '9+' : String(totalUnread);
-        badge.className = 'msg-nav-badge' + (totalUnread > 0 ? ' show' : '');
-      }
-    });
-  }
-
-  // ══════════════════════════════════════════════════════════════════
-  // ── CALL FEATURE (WebRTC simulation — signaling via Firebase) ─────
-  // ══════════════════════════════════════════════════════════════════
-
-  let callType = 'audio'; // 'audio' | 'video'
-  let callTimerEl = null;
-
-  window.startCall = async function(type) {
-    callType = type;
-    callTimerEl = document.getElementById('callTimer');
-    // UI setup
-    const modal = document.getElementById('callModal');
-    const avEl  = document.getElementById('callModalAvatar');
-    const snap  = await db.ref('users/' + currentChatUid).once('value');
-    const data  = snap.val() || {};
-    avEl.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(data.name||currentChatName);
-    document.getElementById('callModalName').textContent   = data.name || currentChatName;
-    document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল হচ্ছে...' : '📞 অডিও কল হচ্ছে...';
-    callTimerEl.style.display = 'none';
-    document.getElementById('camBtn').style.display  = type === 'video' ? 'flex' : 'none';
-    document.getElementById('callVideoArea').classList.toggle('active', type === 'video');
-    modal.classList.add('open');
-
-    // Try to get media
-    try {
-      const constraints = { audio: true, video: type === 'video' };
-      localStream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (type === 'video') {
-        document.getElementById('localVideo').srcObject = localStream;
-      }
-      // Simulate connection after 2s
-      setTimeout(() => {
-        document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল চলছে' : '📞 কল সংযুক্ত';
-        startCallTimer();
-      }, 2000);
-    } catch(err) {
-      document.getElementById('callModalStatus').textContent = '⚠️ মাইক/ক্যামেরা অ্যাক্সেস পাওয়া যায়নি';
-    }
-
-    // Log call in Firebase
-    const myName = currentUser.displayName || currentUser.email.split('@')[0];
-    await db.ref('chats/' + getChatId(currentUser.uid, currentChatUid) + '/messages').push({
-      senderUid: currentUser.uid,
-      text: (type === 'video' ? '📹 ভিডিও কল' : '📞 অডিও কল') + ' শুরু করা হয়েছে',
-      ts: Date.now(), read: false, callType: type
-    });
-  };
-
-  function startCallTimer() {
-    callSeconds = 0;
-    callTimerEl.style.display = 'block';
-    callTimerInterval = setInterval(() => {
-      callSeconds++;
-      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
-      const s = String(callSeconds%60).padStart(2,'0');
-      callTimerEl.textContent = m + ':' + s;
-    }, 1000);
-  }
-
-  window.endCall = function() {
-    clearInterval(callTimerInterval);
-    if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-    document.getElementById('localVideo').srcObject  = null;
-    document.getElementById('remoteVideo').srcObject = null;
-    document.getElementById('callModal').classList.remove('open');
-    document.getElementById('callVideoArea').classList.remove('active');
-    isMuted = false; isCamOff = false;
-    document.getElementById('muteBtn').textContent = '🎤';
-    document.getElementById('muteBtn').className = 'call-ctrl-btn mute';
-    document.getElementById('camBtn').textContent  = '📷';
-    document.getElementById('camBtn').className  = 'call-ctrl-btn cam';
-    if (callSeconds > 0) {
-      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
-      const s = String(callSeconds%60).padStart(2,'0');
-      const durText = (callType==='video'?'📹':'📞') + ' কল শেষ — সময়: ' + m + ':' + s;
-      if (currentChatUid) {
-        db.ref('chats/' + getChatId(currentUser.uid, currentChatUid) + '/messages').push({
-          senderUid: currentUser.uid, text: durText, ts: Date.now(), read: false
-        });
-      }
-    }
-    showToast('📵 কল শেষ হয়েছে');
-  };
-
-  window.toggleMute = function() {
-    if (!localStream) return;
-    isMuted = !isMuted;
-    localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
-    const btn = document.getElementById('muteBtn');
-    btn.textContent = isMuted ? '🔇' : '🎤';
-    btn.className = 'call-ctrl-btn ' + (isMuted ? 'muted' : 'mute');
-  };
-
-  window.toggleCam = function() {
-    if (!localStream) return;
-    isCamOff = !isCamOff;
-    localStream.getVideoTracks().forEach(t => t.enabled = !isCamOff);
-    const btn = document.getElementById('camBtn');
-    btn.textContent = isCamOff ? '🚫' : '📷';
-    btn.className = 'call-ctrl-btn ' + (isCamOff ? 'cam-off' : 'cam');
-  };
-
-  // ── Fullscreen Video Player ───────────────────────────────────────
-  window.openVideoPlayer = function(url) {
-    const modal = document.getElementById('videoPlayerModal');
-    const video = document.getElementById('fullscreenVideo');
-    video.src = url;
-    modal.classList.add('open');
-    video.play();
-  };
-  window.closeVideoPlayer = function() {
-    const modal = document.getElementById('videoPlayerModal');
-    const video = document.getElementById('fullscreenVideo');
-    video.pause();
-    video.src = '';
-    modal.classList.remove('open');
-  };
-  // Close on back button (Android)
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeVideoPlayer();
-  });
-
-  // ── Emoji Picker ──────────────────────────────────────────────────
-  window.toggleEmojiPicker = function(e) {
-    e.stopPropagation();
-    const picker = document.getElementById('emojiPicker');
-    picker.classList.toggle('open');
-  };
-  window.insertEmoji = function(emoji) {
-    const inp = document.getElementById('chatTextInput');
-    const start = inp.selectionStart;
-    const end   = inp.selectionEnd;
-    inp.value = inp.value.substring(0, start) + emoji + inp.value.substring(end);
-    inp.selectionStart = inp.selectionEnd = start + emoji.length;
-    inp.focus();
-    autoResize(inp);
-    // keep picker open for quick multi-emoji sending
-  };
-  document.addEventListener('click', function(e) {
-    const picker = document.getElementById('emojiPicker');
-    if (picker && !picker.contains(e.target) && e.target.id !== 'emojiToggleBtn') {
-      picker.classList.remove('open');
-    }
-  });
-
-  // ── Auth Button Bindings ──────────────────────────────────────────
-  document.getElementById('tabLogin').addEventListener('click', () => switchTab('login'));
-  document.getElementById('tabRegister').addEventListener('click', () => switchTab('register'));
-  document.getElementById('authBtn').addEventListener('click', handleAuth);
-  document.getElementById('passToggleBtn').addEventListener('click', () => {
-    const el = document.getElementById('authPassword');
-    el.type = el.type === 'password' ? 'text' : 'password';
-  });
-  document.getElementById('authPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
-
-</script>
-</body>
-</html>
+  ['gMale','gFemale','gOther'].forEa
