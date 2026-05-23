@@ -904,6 +904,34 @@
   .chat-send-btn:hover { transform:scale(1.08); }
   .chat-send-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
+  /* ── Emoji Picker ── */
+  .emoji-picker {
+    position: absolute; bottom: 60px; left: 0;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 0.75rem;
+    display: none; flex-wrap: wrap; gap: 6px;
+    width: 260px; z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    animation: fadeUp 0.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .emoji-picker.open { display: flex; }
+  .emoji-btn-pick {
+    font-size: 1.6rem; background: none; border: none;
+    cursor: pointer; border-radius: 10px; padding: 4px 6px;
+    transition: transform 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .emoji-btn-pick:hover { transform: scale(1.25); background: rgba(124,110,247,0.15); }
+  .chat-emoji-toggle {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--border);
+    color: var(--muted); font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: all 0.2s;
+  }
+  .chat-emoji-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .emoji-picker-wrap { position: relative; }
+
   /* Call modal overlay */
   .call-modal {
     position:fixed; inset:0; z-index:600;
@@ -1342,9 +1370,39 @@
     </div>
   </div>
   <div class="chat-messages" id="chatMessages"></div>
-  <div class="chat-input-bar">
+  <div class="chat-input-bar" style="position:relative;">
     <button class="chat-attach-btn" onclick="document.getElementById('chatImgInput').click()" title="ছবি পাঠান">📷</button>
     <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="sendImage(event)">
+    <!-- Emoji Picker Wrap -->
+    <div class="emoji-picker-wrap">
+      <button class="chat-emoji-toggle" id="emojiToggleBtn" onclick="toggleEmojiPicker(event)" title="ইমোজি">😊</button>
+      <div class="emoji-picker" id="emojiPicker">
+        <button class="emoji-btn-pick" onclick="insertEmoji('😭')">😭</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😍')">😍</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🎉')">🎉</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💔')">💔</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('👌')">👌</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🙏')">🙏</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💋')">💋</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😷')">😷</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🌝')">🌝</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('❤️‍🔥')">❤️‍🔥</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🦴')">🦴</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('❤️')">❤️</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😂')">😂</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🥺')">🥺</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😊')">😊</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🔥')">🔥</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💯')">💯</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😘')">😘</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🤣')">🤣</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('💀')">💀</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🥰')">🥰</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('😤')">😤</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('🤔')">🤔</button>
+        <button class="emoji-btn-pick" onclick="insertEmoji('👏')">👏</button>
+      </div>
+    </div>
     <textarea class="chat-text-input" id="chatTextInput" placeholder="মেসেজ লিখুন..." rows="1"
       oninput="autoResize(this)"
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
@@ -2841,6 +2899,29 @@
     btn.textContent = isCamOff ? '🚫' : '📷';
     btn.className = 'call-ctrl-btn ' + (isCamOff ? 'cam-off' : 'cam');
   };
+
+  // ── Emoji Picker ──────────────────────────────────────────────────
+  window.toggleEmojiPicker = function(e) {
+    e.stopPropagation();
+    const picker = document.getElementById('emojiPicker');
+    picker.classList.toggle('open');
+  };
+  window.insertEmoji = function(emoji) {
+    const inp = document.getElementById('chatTextInput');
+    const start = inp.selectionStart;
+    const end   = inp.selectionEnd;
+    inp.value = inp.value.substring(0, start) + emoji + inp.value.substring(end);
+    inp.selectionStart = inp.selectionEnd = start + emoji.length;
+    inp.focus();
+    autoResize(inp);
+    // keep picker open for quick multi-emoji sending
+  };
+  document.addEventListener('click', function(e) {
+    const picker = document.getElementById('emojiPicker');
+    if (picker && !picker.contains(e.target) && e.target.id !== 'emojiToggleBtn') {
+      picker.classList.remove('open');
+    }
+  });
 
   // ── Auth Button Bindings ──────────────────────────────────────────
   document.getElementById('tabLogin').addEventListener('click', () => switchTab('login'));
