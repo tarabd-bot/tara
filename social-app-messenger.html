@@ -906,6 +906,7 @@
     max-width:72%; padding:0.6rem 0.9rem;
     border-radius:18px; font-size:0.9rem; line-height:1.5;
     word-break:break-word; position:relative;
+    cursor:pointer;
   }
   .msg-bubble.theirs {
     background:var(--card); border:1px solid var(--border);
@@ -924,6 +925,82 @@
     text-align:center; font-size:0.72rem; color:var(--muted);
     margin:0.5rem 0; font-weight:600;
   }
+
+  /* Message reaction */
+  .msg-reaction {
+    position:absolute; bottom:-10px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:20px; padding:1px 6px; font-size:0.78rem;
+    cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);
+  }
+  .msg-bubble.mine .msg-reaction { right:8px; }
+  .msg-bubble.theirs .msg-reaction { left:8px; }
+
+  /* Message action popup */
+  .msg-action-popup {
+    position:fixed; z-index:600;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; padding:0.5rem;
+    display:none; flex-direction:column; gap:2px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+    min-width:160px;
+  }
+  .msg-action-popup.show { display:flex; }
+  .msg-action-emoji-row {
+    display:flex; gap:6px; padding:6px 8px;
+    border-bottom:1px solid var(--border); margin-bottom:4px;
+  }
+  .msg-action-emoji-btn {
+    font-size:1.4rem; background:none; border:none;
+    cursor:pointer; border-radius:8px; padding:3px 5px;
+    transition:transform 0.15s;
+  }
+  .msg-action-emoji-btn:hover { transform:scale(1.3); }
+  .msg-action-item {
+    padding:0.5rem 0.75rem; border-radius:10px;
+    background:none; border:none; color:var(--text);
+    font-family:inherit; font-size:0.88rem;
+    cursor:pointer; text-align:left; display:flex; gap:0.5rem; align-items:center;
+    transition:background 0.15s;
+  }
+  .msg-action-item:hover { background:var(--surface); }
+  .msg-action-item.danger { color:#ff6b6b; }
+
+  /* Reply preview in input */
+  .reply-preview {
+    display:none; padding:0.5rem 1rem;
+    background:var(--surface); border-left:3px solid var(--accent);
+    font-size:0.82rem; color:var(--muted);
+    flex-shrink:0; position:relative;
+  }
+  .reply-preview.show { display:flex; align-items:center; gap:0.5rem; }
+  .reply-preview-text { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .reply-preview-close { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; }
+
+  /* Reply quote in bubble */
+  .msg-reply-quote {
+    background:rgba(0,0,0,0.15); border-radius:8px;
+    padding:0.3rem 0.6rem; margin-bottom:0.4rem;
+    font-size:0.78rem; border-left:2px solid rgba(255,255,255,0.4);
+    opacity:0.85;
+  }
+  .msg-bubble.theirs .msg-reply-quote {
+    background:var(--surface); border-left:2px solid var(--accent);
+  }
+
+  /* Dark/Light mode toggle */
+  .theme-toggle-btn {
+    width:36px; height:36px; border-radius:50%;
+    background:var(--surface); border:1.5px solid var(--border);
+    font-size:1.1rem; cursor:pointer; display:flex;
+    align-items:center; justify-content:center;
+    transition:all 0.2s;
+  }
+  body.light-mode {
+    --bg:#f0f2f5; --surface:#e4e6ea; --card:#ffffff;
+    --border:#d1d5db; --text:#1c1e21; --muted:#65676b;
+  }
+  body.light-mode .chat-input-bar { background:rgba(240,242,245,0.95); }
 
   /* Input bar */
   .chat-input-bar {
@@ -1883,6 +1960,7 @@
       </div>
       <div style="position:relative;display:inline-flex;">
         <button onclick="showPage('notifications');loadNotifications();updateBottomNav('notifications')" id="headerNotifBtn" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.35rem;padding:4px 6px;border-radius:10px;transition:color 0.2s;line-height:1;" title="নোটিফিকেশন">🔔</button>
+        <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="থিম">🌙</button>
         <span class="nav-notif-badge" id="headerNotifBadge" style="position:absolute;top:-2px;right:-4px;background:var(--accent2);color:white;font-size:0.6rem;font-weight:700;min-width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);padding:0 2px;">0</span>
       </div>
       <div class="user-menu-wrap">
@@ -2271,6 +2349,21 @@
   </div>
 </div>
 
+<!-- Message Action Popup -->
+<div class="msg-action-popup" id="msgActionPopup">
+  <div class="msg-action-emoji-row">
+    <button class="msg-action-emoji-btn" onclick="reactToMsg('❤️')">❤️</button>
+    <button class="msg-action-emoji-btn" onclick="reactToMsg('😂')">😂</button>
+    <button class="msg-action-emoji-btn" onclick="reactToMsg('😮')">😮</button>
+    <button class="msg-action-emoji-btn" onclick="reactToMsg('😢')">😢</button>
+    <button class="msg-action-emoji-btn" onclick="reactToMsg('👍')">👍</button>
+    <button class="msg-action-emoji-btn" onclick="reactToMsg('🔥')">🔥</button>
+  </div>
+  <button class="msg-action-item" onclick="replyToMsg()">↩️ রিপ্লাই করুন</button>
+  <button class="msg-action-item" onclick="copyMsg()">📋 কপি করুন</button>
+  <button class="msg-action-item danger" id="deleteMsgBtn" onclick="deleteMsg()">🗑️ ডিলিট করুন</button>
+</div>
+
 <!-- Fullscreen Video Player -->
 <div class="video-player-modal" id="videoPlayerModal">
   <button class="video-player-close" onclick="closeVideoPlayer()">✕</button>
@@ -2292,6 +2385,12 @@
     </div>
   </div>
   <div class="chat-messages" id="chatMessages"></div>
+  <!-- Reply Preview -->
+  <div class="reply-preview" id="replyPreview">
+    <span style="font-size:0.9rem">↩️</span>
+    <span class="reply-preview-text" id="replyPreviewText"></span>
+    <button class="reply-preview-close" onclick="cancelReply()">✕</button>
+  </div>
   <div class="chat-input-bar" style="position:relative;">
     <button class="chat-attach-btn" onclick="document.getElementById('chatImgInput').click()" title="ছবি পাঠান">📷</button>
     <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="sendImage(event)">
@@ -4287,7 +4386,6 @@
     let lastDate = '';
     msgs.forEach(m => {
       const isMine = m.senderUid === currentUser.uid;
-      // Date divider
       const d = new Date(m.ts||0);
       const dateStr = d.toLocaleDateString('bn-BD', {day:'numeric',month:'short'});
       if (dateStr !== lastDate) {
@@ -4301,6 +4399,10 @@
       row.className = 'msg-row' + (isMine ? ' mine' : '');
       const timeStr = d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
       let bubbleContent = '';
+      // Reply quote
+      if (m.replyTo) {
+        bubbleContent += '<div class="msg-reply-quote">↩️ ' + escHtml((m.replyTo||'').substring(0,60)) + '</div>';
+      }
       if (m.img)  bubbleContent += '<img class="msg-img" src="' + m.img + '" alt="" onclick="openLightbox(\'' + m.img + '\')">';
       if (m.video) bubbleContent += '<div style="position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + m.video + '\')">' +
         '<video class="msg-video" src="' + m.video + '" style="pointer-events:none;"></video>' +
@@ -4310,7 +4412,21 @@
       if (m.text) bubbleContent += escHtml(m.text);
       bubbleContent += '<span class="msg-time' + (isMine?' mine':'') + '">' + timeStr + '</span>';
       if (isMine && m.read) bubbleContent += '<div class="msg-seen">✓✓ দেখেছে</div>';
-      row.innerHTML = '<div class="msg-bubble ' + (isMine?'mine':'theirs') + '">' + bubbleContent + '</div>';
+      if (m.reaction) bubbleContent += '<div class="msg-reaction">' + m.reaction + '</div>';
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble ' + (isMine?'mine':'theirs');
+      bubble.innerHTML = bubbleContent;
+      bubble.dataset.msgId = m.id;
+      bubble.dataset.isMine = isMine ? '1' : '0';
+      bubble.dataset.text = m.text || '';
+      // Long press to show actions
+      let pressTimer;
+      bubble.addEventListener('touchstart', () => {
+        pressTimer = setTimeout(() => showMsgActions(bubble, m, isMine), 500);
+      });
+      bubble.addEventListener('touchend', () => clearTimeout(pressTimer));
+      bubble.addEventListener('touchmove', () => clearTimeout(pressTimer));
+      row.appendChild(bubble);
       container.appendChild(row);
     });
     container.scrollTop = container.scrollHeight;
@@ -4322,13 +4438,14 @@
     const inp  = document.getElementById('chatTextInput');
     const text = inp.value.trim();
     if (!text) return;
+    const replyPreview = document.getElementById('replyPreview');
+    const replyText = replyPreview.dataset.replyText || null;
     inp.value = ''; inp.style.height = '';
+    cancelReply();
     const cid = getChatId(currentUser.uid, currentChatUid);
-    await db.ref('chats/' + cid + '/messages').push({
-      senderUid: currentUser.uid,
-      text, ts: Date.now(), read: false
-    });
-    // Notify peer
+    const msgData = { senderUid: currentUser.uid, text, ts: Date.now(), read: false };
+    if (replyText) msgData.replyTo = replyText;
+    await db.ref('chats/' + cid + '/messages').push(msgData);
     const myName = currentUser.displayName || currentUser.email.split('@')[0];
     await db.ref('notifications/' + currentChatUid).push({
       type:'message', fromUid:currentUser.uid, fromName:myName,
@@ -4572,6 +4689,78 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeVideoPlayer();
   });
+
+  // ── Message Actions (long press) ─────────────────────────────────
+  let activeMsgData = null;
+
+  function showMsgActions(bubble, m, isMine) {
+    activeMsgData = { m, isMine };
+    const popup = document.getElementById('msgActionPopup');
+    document.getElementById('deleteMsgBtn').style.display = isMine ? 'flex' : 'none';
+    const rect = bubble.getBoundingClientRect();
+    popup.style.top = (rect.top + window.scrollY - 10) + 'px';
+    popup.style.left = isMine ? 'auto' : (rect.left + 'px');
+    popup.style.right = isMine ? ((window.innerWidth - rect.right) + 'px') : 'auto';
+    popup.classList.add('show');
+  }
+
+  document.addEventListener('click', function(e) {
+    const popup = document.getElementById('msgActionPopup');
+    if (popup && !popup.contains(e.target)) popup.classList.remove('show');
+  });
+
+  window.reactToMsg = async function(emoji) {
+    if (!activeMsgData) return;
+    const { m } = activeMsgData;
+    const cid = getChatId(currentUser.uid, currentChatUid);
+    await db.ref('chats/' + cid + '/messages/' + m.id).update({ reaction: emoji });
+    document.getElementById('msgActionPopup').classList.remove('show');
+  };
+
+  window.replyToMsg = function() {
+    if (!activeMsgData) return;
+    const { m } = activeMsgData;
+    const preview = document.getElementById('replyPreview');
+    document.getElementById('replyPreviewText').textContent = m.text || '📷 মিডিয়া';
+    preview.classList.add('show');
+    preview.dataset.replyText = m.text || '';
+    document.getElementById('chatTextInput').focus();
+    document.getElementById('msgActionPopup').classList.remove('show');
+  };
+
+  window.cancelReply = function() {
+    const preview = document.getElementById('replyPreview');
+    preview.classList.remove('show');
+    preview.dataset.replyText = '';
+  };
+
+  window.copyMsg = function() {
+    if (!activeMsgData) return;
+    const text = activeMsgData.m.text || '';
+    navigator.clipboard?.writeText(text).then(() => showToast('✓ কপি হয়েছে'));
+    document.getElementById('msgActionPopup').classList.remove('show');
+  };
+
+  window.deleteMsg = async function() {
+    if (!activeMsgData || !activeMsgData.isMine) return;
+    const { m } = activeMsgData;
+    const cid = getChatId(currentUser.uid, currentChatUid);
+    await db.ref('chats/' + cid + '/messages/' + m.id).remove();
+    document.getElementById('msgActionPopup').classList.remove('show');
+    showToast('✓ মেসেজ ডিলিট হয়েছে');
+  };
+
+  // ── Theme Toggle ──────────────────────────────────────────────────
+  window.toggleTheme = function() {
+    const isLight = document.body.classList.toggle('light-mode');
+    document.getElementById('themeToggleBtn').textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  };
+  // Load saved theme
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-mode');
+    document.getElementById('themeToggleBtn') && (document.getElementById('themeToggleBtn').textContent = '☀️');
+  }
 
   // ── Emoji Picker ──────────────────────────────────────────────────
   window.toggleEmojiPicker = function(e) {
