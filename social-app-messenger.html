@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>পোস্টবই</title>
+<title>PostBook</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -52,10 +52,11 @@
   }
   .auth-logo {
     text-align: center; margin-bottom: 0.5rem;
-    font-size: 2rem; font-weight: 700;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
   }
+  .auth-logo-icon { width:42px; height:42px; border-radius:13px; background:linear-gradient(135deg,#7c6ef7,#f76e8f); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(124,110,247,0.45); flex-shrink:0; }
+  .auth-logo-icon svg { width:22px; height:22px; }
+  .auth-logo-text { font-size:2rem; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-0.5px; line-height:1; }
   .auth-subtitle { text-align: center; color: var(--muted); font-size: 0.88rem; margin-bottom: 1.75rem; }
   .auth-tabs { display: flex; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
   .auth-tab { flex: 1; padding: 0.65rem; text-align: center; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--muted); transition: all 0.2s; background: none; border: none; font-family: inherit; }
@@ -152,6 +153,47 @@
   }
   .privacy-note span { color: var(--accent); }
 
+  /* ══ Video Monetize ══ */
+  .vm-criteria-list { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
+  .vm-criterion {
+    display:flex; align-items:center; gap:0.75rem;
+    padding:0.75rem 0.9rem; border-radius:14px;
+    background:var(--surface); border:1.5px solid var(--border);
+    transition:border-color 0.3s;
+  }
+  .vm-criterion.done { border-color:var(--accent3); background:rgba(110,247,200,0.06); }
+  .vm-crit-icon { font-size:1.3rem; flex-shrink:0; }
+  .vm-crit-info { flex:1; }
+  .vm-crit-name { font-size:0.88rem; font-weight:700; color:var(--text); }
+  .vm-crit-sub { font-size:0.76rem; color:var(--muted); margin-top:2px; }
+  .vm-crit-bar-wrap { height:5px; background:var(--border); border-radius:10px; margin-top:6px; overflow:hidden; }
+  .vm-crit-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent3)); border-radius:10px; transition:width 0.5s; }
+  .vm-crit-check { font-size:1.1rem; flex-shrink:0; }
+  .vm-active-box {
+    padding:0.85rem 1rem; border-radius:14px;
+    background:rgba(110,247,200,0.1); border:1.5px solid var(--accent3);
+    margin-bottom:0.75rem;
+  }
+  .vm-active-badge { font-size:0.95rem; font-weight:700; color:var(--accent3); }
+  .vm-method-tabs { display:flex; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .vm-method-tab {
+    flex:1; padding:0.6rem; text-align:center; cursor:pointer;
+    font-size:0.9rem; font-weight:600; color:var(--muted);
+    background:none; border:none; font-family:inherit; transition:all 0.2s;
+  }
+  .vm-method-tab.active { background:var(--accent); color:white; }
+
+  /* Gift earn stats */
+  .gift-earn-stats { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:0.75rem; }
+  .gift-earn-item {
+    display:flex; align-items:center; gap:0.75rem;
+    padding:0.75rem 1rem; border-radius:14px;
+    background:var(--surface); border:1px solid var(--border);
+  }
+  .gift-earn-icon { font-size:1.5rem; width:38px; text-align:center; flex-shrink:0; }
+  .gift-earn-val { font-size:1.1rem; font-weight:700; color:var(--accent); }
+  .gift-earn-label { font-size:0.76rem; color:var(--muted); margin-top:1px; }
+
   /* ── Header ── */
   #appScreen { display: none; }
   header {
@@ -163,7 +205,10 @@
     display: flex; align-items: center; justify-content: space-between;
     height: 60px;
   }
-  .logo { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; cursor: pointer; }
+  .logo { display:flex; align-items:center; gap:0.45rem; cursor:pointer; text-decoration:none; }
+  .logo-icon { width:32px; height:32px; border-radius:10px; background:linear-gradient(135deg,#7c6ef7,#f76e8f); display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 10px rgba(124,110,247,0.45); }
+  .logo-icon svg { width:18px; height:18px; }
+  .logo-text { font-size:1.25rem; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-0.5px; line-height:1; }
   .header-right { display: flex; align-items: center; gap: 0.75rem; }
   .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background 0.3s; }
   .conn-dot.online { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
@@ -182,7 +227,7 @@
   .logout-btn:hover { background: rgba(247,110,143,0.08); }
 
   /* ── Main Layout ── */
-  .layout { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 5.5rem; }
+  .layout { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 7.5rem; }
   #pageReels.page.active ~ .layout, .layout:has(~ #pageReels.page.active) { padding: 0; }
 
   /* ── Pages ── */
@@ -789,6 +834,14 @@
   }
   .inbox-item:hover { border-color:rgba(124,110,247,0.4); }
   .inbox-item.unread { border-left:3px solid var(--accent); }
+  .inbox-av-wrap { position:relative; flex-shrink:0; }
+  .inbox-av-wrap .online-dot {
+    position:absolute; bottom:1px; right:1px;
+    width:11px; height:11px; border-radius:50%;
+    background:#22c55e; border:2px solid var(--card);
+    display:none;
+  }
+  .inbox-av-wrap.is-online .online-dot { display:block; }
   .inbox-avatar {
     width:46px; height:46px; border-radius:50%; flex-shrink:0;
     background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -1325,6 +1378,323 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1rem; cursor: pointer; transition: all 0.2s;
   }
+
+  /* ══ MONETIZATION STYLES ══════════════════════════════════════════ */
+
+  /* Coin badge on profile / header */
+  .coin-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(135deg, #f7b731, #f7811e);
+    color: white; border-radius: 50px;
+    padding: 3px 10px; font-size: 0.78rem; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(247,183,49,0.35);
+  }
+
+  /* Verified badge */
+  .verified-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; font-size: 0.62rem; font-weight: 700;
+    margin-left: 4px; vertical-align: middle;
+    box-shadow: 0 2px 6px rgba(124,110,247,0.4);
+    flex-shrink: 0;
+  }
+
+  /* Premium badge */
+  .premium-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: linear-gradient(135deg, #f7b731, #f76e8f);
+    color: white; border-radius: 50px;
+    padding: 2px 8px; font-size: 0.7rem; font-weight: 700;
+    margin-left: 4px;
+  }
+
+  /* Sponsored post label */
+  .sponsored-label {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.72rem; color: var(--muted); font-weight: 600;
+    margin-bottom: 4px; letter-spacing: 0.3px;
+  }
+
+  /* ── Monetization Modal (shared) ── */
+  .mono-modal {
+    position: fixed; inset: 0; z-index: 800;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .mono-modal.open { display: flex; animation: fadeIn 0.25s ease; }
+  .mono-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 1.75rem; width: 100%; max-width: 400px;
+    animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .mono-title {
+    font-size: 1.15rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.25rem; display: flex; align-items: center; justify-content: space-between;
+  }
+  .mono-sub {
+    font-size: 0.82rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.5;
+  }
+
+  /* ── Coin Shop ── */
+  .coin-packages {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;
+  }
+  .coin-pkg {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: 16px; padding: 1rem 0.75rem; text-align: center;
+    cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .coin-pkg:hover, .coin-pkg.selected { border-color: #f7b731; background: rgba(247,183,49,0.08); }
+  .coin-pkg-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  .coin-pkg-amount { font-size: 1.1rem; font-weight: 700; color: #f7b731; }
+  .coin-pkg-price { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .coin-pkg-badge {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--accent2); color: white; border-radius: 50px;
+    font-size: 0.65rem; font-weight: 700; padding: 2px 7px;
+  }
+
+  /* ── Gift Buttons on Posts ── */
+  .action-btn.gift-btn:hover { color: #f7b731; }
+  .action-btn.gift-btn.gifted { color: #f7b731; }
+
+  /* ── Premium Plans ── */
+  .premium-plans { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .premium-plan {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: 16px; padding: 1rem 1.1rem;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.85rem;
+    position: relative;
+  }
+  .premium-plan:hover, .premium-plan.selected { border-color: var(--accent); background: rgba(124,110,247,0.08); }
+  .premium-plan.popular { border-color: var(--accent2); }
+  .plan-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .plan-info { flex: 1; }
+  .plan-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+  .plan-features { font-size: 0.78rem; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .plan-price { font-size: 1rem; font-weight: 700; color: var(--accent); text-align: right; white-space: nowrap; }
+  .plan-popular-tag {
+    position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    background: var(--accent2); color: white; border-radius: 50px;
+    font-size: 0.65rem; font-weight: 700; padding: 2px 10px; white-space: nowrap;
+  }
+
+  /* ── Boost Post ── */
+  .boost-options { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.25rem; }
+  .boost-opt {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: 14px; padding: 0.9rem 1rem;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;
+  }
+  .boost-opt:hover, .boost-opt.selected { border-color: #f76e8f; background: rgba(247,110,143,0.08); }
+  .boost-opt-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .boost-opt-info { flex: 1; }
+  .boost-opt-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+  .boost-opt-desc { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .boost-opt-cost { font-size: 0.88rem; font-weight: 700; color: #f7b731; white-space: nowrap; }
+
+  /* ── Creator Fund ── */
+  .creator-stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;
+  }
+  .creator-stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1rem; text-align: center;
+  }
+  .creator-stat-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+  .creator-stat-val { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+  .creator-stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .creator-earn-bar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1rem; margin-bottom: 1rem;
+  }
+  .creator-earn-label { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .creator-earn-amount {
+    font-size: 1.8rem; font-weight: 700;
+    background: linear-gradient(135deg, #f7b731, #f76e8f);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .creator-progress-wrap {
+    height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; margin-top: 0.5rem;
+  }
+  .creator-progress-fill {
+    height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, #f7b731, #f76e8f);
+    transition: width 0.8s ease;
+  }
+  .creator-progress-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+
+  /* ── Verified Modal ── */
+  .verify-steps { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.25rem; }
+  .verify-step {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 0.85rem 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .verify-step-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .verify-step-info { flex: 1; }
+  .verify-step-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+  .verify-step-desc { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .verify-step-status { font-size: 0.8rem; font-weight: 700; }
+  .verify-step-status.done { color: var(--accent3); }
+  .verify-step-status.pending { color: #f7b731; }
+
+  /* ── Monetize nav bottom tab ── */
+  .mono-nav-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: linear-gradient(135deg, #f7b731, #f76e8f);
+    color: white; border-radius: 50px;
+    font-size: 0.6rem; font-weight: 700; padding: 1px 5px;
+  }
+
+  /* ── Buy Coin confirm ── */
+  .mono-confirm-btn {
+    width: 100%; padding: 0.85rem;
+    background: linear-gradient(135deg, #f7b731, #f7811e);
+    color: white; border: none; border-radius: 14px;
+    font-family: inherit; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;
+  }
+  .mono-confirm-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(247,183,49,0.4); }
+  .mono-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .mono-confirm-btn.purple {
+    background: linear-gradient(135deg, var(--accent), #9b8bf8);
+  }
+  .mono-confirm-btn.purple:hover:not(:disabled) { box-shadow: 0 8px 24px rgba(124,110,247,0.4); }
+  .mono-cancel-btn {
+    width: 100%; padding: 0.75rem;
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--muted); border-radius: 14px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; margin-top: 0.5rem; transition: all 0.2s;
+  }
+  .mono-cancel-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* Wallet bar */
+  .wallet-bar {
+    background: linear-gradient(135deg, rgba(247,183,49,0.12), rgba(247,130,30,0.08));
+    border: 1px solid rgba(247,183,49,0.25);
+    border-radius: 14px; padding: 0.85rem 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .wallet-balance { font-size: 1.1rem; font-weight: 700; color: #f7b731; }
+  .wallet-label { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .wallet-add-btn {
+    background: linear-gradient(135deg, #f7b731, #f7811e);
+    color: white; border: none; border-radius: 50px;
+    padding: 0.4rem 1rem; font-family: inherit; font-size: 0.82rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .wallet-add-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(247,183,49,0.4); }
+
+  /* Monetize page */
+  #pageMonetize .section-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 1.25rem; margin-bottom: 1rem;
+  }
+  #pageMonetize .section-card-title {
+    font-size: 0.95rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .mono-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .mono-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 1rem; text-align: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .mono-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,110,247,0.15); }
+  .mono-card-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+  .mono-card-name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+  .mono-card-desc { font-size: 0.75rem; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+  /* Ad card in feed */
+  .ad-card {
+    background: var(--card); border: 1px solid rgba(247,183,49,0.25);
+    border-radius: 18px; padding: 1.25rem; margin-bottom: 1rem;
+    position: relative; overflow: hidden;
+  }
+  .ad-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #f7b731, #f76e8f, var(--accent));
+  }
+  .ad-card-label {
+    font-size: 0.7rem; font-weight: 700; color: #f7b731;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.65rem;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .ad-card-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+  .ad-card-body { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.85rem; }
+  .ad-card-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, #f7b731, #f7811e);
+    color: white; border: none; border-radius: 50px;
+    padding: 0.5rem 1.25rem; font-family: inherit; font-size: 0.88rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .ad-card-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(247,183,49,0.4); }
+
+  /* ── Native Ad Card ── */
+  .native-ad-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .native-ad-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+  .native-ad-label {
+    position: absolute; top: 10px; left: 10px; z-index: 5;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+    color: #f7b731; font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.8px; padding: 3px 8px; border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .native-ad-inner {
+    display: block; text-decoration: none; color: inherit;
+  }
+  .native-ad-img-wrap {
+    position: relative; width: 100%; height: 200px; overflow: hidden;
+  }
+  .native-ad-img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s ease;
+    display: block;
+  }
+  .native-ad-card:hover .native-ad-img { transform: scale(1.04); }
+  .native-ad-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%);
+    display: flex; align-items: flex-end; justify-content: flex-end;
+    padding: 0.75rem;
+  }
+  .native-ad-cta-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; font-size: 0.82rem; font-weight: 700;
+    padding: 0.45rem 1rem; border-radius: 50px;
+    box-shadow: 0 4px 14px rgba(124,110,247,0.5);
+    letter-spacing: 0.3px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .native-ad-card:hover .native-ad-cta-btn {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(124,110,247,0.65);
+  }
+  .native-ad-content {
+    padding: 0.85rem 1rem 1rem;
+  }
+  .native-ad-title {
+    font-size: 0.97rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.25rem; line-height: 1.4;
+  }
+  .native-ad-sub {
+    font-size: 0.78rem; color: var(--muted);
+  }
 </style>
 </head>
 <body>
@@ -1332,7 +1702,17 @@
 <!-- ══ AUTH SCREEN ══ -->
 <div id="authScreen">
   <div class="auth-box">
-    <div class="auth-logo">✦ পোস্টবই</div>
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="8" height="8" rx="2" fill="white" opacity="0.95"/>
+          <rect x="13" y="3" width="8" height="8" rx="2" fill="white" opacity="0.7"/>
+          <rect x="3" y="13" width="8" height="8" rx="2" fill="white" opacity="0.7"/>
+          <rect x="13" y="13" width="8" height="8" rx="2" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      <span class="auth-logo-text">PostBook</span>
+    </div>
 
     <!-- Login / Register tabs -->
     <div class="auth-tabs">
@@ -1484,9 +1864,27 @@
 <!-- ══ APP SCREEN ══ -->
 <div id="appScreen">
   <header>
-    <div class="logo" onclick="showPage('feed')">✦ পোস্টবই</div>
+    <div class="logo" onclick="showPage('feed')">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="8" height="8" rx="2" fill="white" opacity="0.95"/>
+          <rect x="13" y="3" width="8" height="8" rx="2" fill="white" opacity="0.7"/>
+          <rect x="3" y="13" width="8" height="8" rx="2" fill="white" opacity="0.7"/>
+          <rect x="13" y="13" width="8" height="8" rx="2" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      <span class="logo-text">PostBook</span>
+    </div>
     <div class="header-right">
       <div class="conn-dot" id="connDot" title="Firebase সংযোগ"></div>
+      <div style="position:relative;display:inline-flex;">
+        <button onclick="showPage('messages');loadInbox();updateBottomNav('messages')" id="headerMsgBtn" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.35rem;padding:4px 6px;border-radius:10px;transition:color 0.2s;line-height:1;" title="মেসেজ">💬</button>
+        <span id="headerMsgBadge" style="position:absolute;top:-2px;right:-4px;background:var(--accent2);color:white;font-size:0.6rem;font-weight:700;min-width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);padding:0 2px;"></span>
+      </div>
+      <div style="position:relative;display:inline-flex;">
+        <button onclick="showPage('notifications');loadNotifications();updateBottomNav('notifications')" id="headerNotifBtn" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.35rem;padding:4px 6px;border-radius:10px;transition:color 0.2s;line-height:1;" title="নোটিফিকেশন">🔔</button>
+        <span class="nav-notif-badge" id="headerNotifBadge" style="position:absolute;top:-2px;right:-4px;background:var(--accent2);color:white;font-size:0.6rem;font-weight:700;min-width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);padding:0 2px;">0</span>
+      </div>
       <div class="user-menu-wrap">
         <div class="header-avatar" id="headerAvatar" onclick="toggleUserMenu()">আ</div>
         <div class="user-dropdown" id="userDropdown">
@@ -1559,7 +1957,12 @@
             <div class="profile-avatar" id="profileAvatar">আ</div>
             <div class="profile-avatar-edit" id="avatarEditBtn" style="display:none" onclick="document.getElementById('avatarInput').click()">✏️</div>
           </div>
-          <div class="profile-actions" id="profileActions"></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem">
+            <div class="profile-actions" id="profileActions"></div>
+            <button onclick="showPage('monetize');loadMonetizePage();updateBottomNav('monetize')" id="profileMonetizeBtn" style="display:none;align-items:center;gap:0.4rem;padding:0.45rem 1rem;background:linear-gradient(135deg,#f7b731,#f7811e);color:white;border:none;border-radius:50px;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 12px rgba(247,183,49,0.35);">
+              💰 আয়
+            </button>
+          </div>
         </div>
         <div class="profile-name" id="profileName">—</div>
         <div class="profile-username" id="profileUsername">@—</div>
@@ -1640,7 +2043,6 @@
     <div id="pageReels" class="page" style="margin:-1.5rem -1rem -5.5rem;height:calc(100vh - 60px - 56px);overflow:hidden;position:relative;background:#000;">
       <div class="reels-header">
         <div class="reels-header-title">🎬 রিলস</div>
-        <button class="reels-upload-btn" onclick="openReelUpload()" title="রিল আপলোড">➕</button>
       </div>
       <div class="reels-container" id="reelsContainer">
         <div class="reels-loading" id="reelsLoading">⏳ লোড হচ্ছে...</div>
@@ -1657,6 +2059,184 @@
       </div>
     </div>
 
+    <!-- ═══ MONETIZE PAGE ═══ -->
+    <div id="pageMonetize" class="page">
+
+      <!-- Wallet Bar -->
+      <div class="wallet-bar">
+        <div>
+          <div class="wallet-balance">🪙 <span id="walletBalance">০</span> কয়েন</div>
+          <div class="wallet-label">আপনার ওয়ালেট ব্যালেন্স</div>
+        </div>
+        <button class="wallet-add-btn" onclick="openCoinShop()">+ কয়েন কিনুন</button>
+      </div>
+
+      <!-- Creator Fund -->
+      <div class="section-card">
+        <div class="section-card-title">💰 ক্রিয়েটর ফান্ড</div>
+        <div class="creator-stats-grid">
+          <div class="creator-stat-card">
+            <div class="creator-stat-icon">❤️</div>
+            <div class="creator-stat-val" id="creatorTotalLikes">০</div>
+            <div class="creator-stat-label">মোট লাইক</div>
+          </div>
+          <div class="creator-stat-card">
+            <div class="creator-stat-icon">💬</div>
+            <div class="creator-stat-val" id="creatorTotalComments">০</div>
+            <div class="creator-stat-label">মোট মন্তব্য</div>
+          </div>
+          <div class="creator-stat-card">
+            <div class="creator-stat-icon">📝</div>
+            <div class="creator-stat-val" id="creatorTotalPosts">০</div>
+            <div class="creator-stat-label">মোট পোস্ট</div>
+          </div>
+          <div class="creator-stat-card">
+            <div class="creator-stat-icon">👥</div>
+            <div class="creator-stat-val" id="creatorTotalFollowers">০</div>
+            <div class="creator-stat-label">ফলোয়ার</div>
+          </div>
+        </div>
+        <div class="creator-earn-bar">
+          <div class="creator-earn-label">এই মাসের আয়</div>
+          <div class="creator-earn-amount">৳ <span id="creatorEarning">০.০০</span></div>
+          <div class="creator-progress-wrap">
+            <div class="creator-progress-fill" id="creatorProgressFill" style="width:0%"></div>
+          </div>
+          <div class="creator-progress-note">পেআউটের জন্য ন্যূনতম ৳৫০০ প্রয়োজন</div>
+        </div>
+        <button class="mono-confirm-btn" onclick="withdrawCreatorFund()" style="margin-top:0" id="withdrawBtn">💸 উত্তোলন করুন</button>
+      </div>
+
+      <!-- ══ গিফট থেকে আয় ══ -->
+      <div class="section-card">
+        <div class="section-card-title">🎁 গিফট থেকে আয়</div>
+        <div style="font-size:0.83rem;color:var(--muted);margin-bottom:0.9rem;line-height:1.6">
+          দর্শকরা আপনার পোস্ট বা ভিডিওতে 🌸 ফুল, 💎 হীরা, 🏆 ট্রফি সহ বিভিন্ন গিফট পাঠালে আপনার ওয়ালেটে কয়েন জমা হয়। সেই কয়েন টাকায় রূপান্তর করে তুলতে পারবেন।
+        </div>
+        <div class="gift-earn-stats">
+          <div class="gift-earn-item">
+            <div class="gift-earn-icon">🪙</div>
+            <div>
+              <div class="gift-earn-val" id="giftTotalCoins">০</div>
+              <div class="gift-earn-label">মোট গিফট কয়েন পেয়েছেন</div>
+            </div>
+          </div>
+          <div class="gift-earn-item">
+            <div class="gift-earn-icon">৳</div>
+            <div>
+              <div class="gift-earn-val" id="giftTotalTaka">০.০০</div>
+              <div class="gift-earn-label">টাকায় মূল্য (১০০ কয়েন = ৳১)</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem;padding:0.6rem 0.8rem;background:rgba(124,110,247,0.08);border-radius:10px;border:1px solid rgba(124,110,247,0.2)">
+          💡 গিফট কয়েন উত্তোলন করতে নিচের <strong style="color:var(--accent)">ভিডিও মনিটাইজেশন</strong> চালু থাকতে হবে।
+        </div>
+      </div>
+
+      <!-- ══ ভিডিও মনিটাইজেশন ══ -->
+      <div class="section-card">
+        <div class="section-card-title">🎬 ভিডিও মনিটাইজেশন</div>
+
+        <!-- শর্তাবলি -->
+        <div id="videoMonetizeStatus">
+          <div style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">
+            নিচের ৩টি শর্ত পূরণ হলে আপনার ভিডিও থেকে স্বয়ংক্রিয়ভাবে আয় শুরু হবে এবং নগদ/বিকাশে তুলতে পারবেন।
+          </div>
+          <div id="vmCriteria" class="vm-criteria-list"></div>
+          <!-- মনিটাইজ চালু/বন্ধ স্ট্যাটাস -->
+          <div id="vmActiveBox" style="display:none" class="vm-active-box">
+            <div class="vm-active-badge">✅ ভিডিও মনিটাইজেশন সক্রিয়!</div>
+            <div style="font-size:0.83rem;color:var(--muted);margin-top:0.4rem">আপনার ভিডিও থেকে প্রতিটি ভিউতে আয় হচ্ছে।</div>
+          </div>
+        </div>
+
+        <!-- পেমেন্ট মেথড সেটআপ -->
+        <div id="vmPaymentSetup" style="display:none">
+          <div style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:0.75rem">💳 পেমেন্ট মেথড সেট করুন</div>
+          <div class="vm-method-tabs">
+            <button class="vm-method-tab active" id="vmTabNagad" onclick="switchVmMethod('nagad')">নগদ</button>
+            <button class="vm-method-tab" id="vmTabBkash" onclick="switchVmMethod('bkash')">বিকাশ</button>
+          </div>
+          <div class="auth-field" style="margin-top:0.75rem">
+            <label id="vmNumberLabel">নগদ নম্বর</label>
+            <input class="auth-input" id="vmPayNumber" type="tel" placeholder="01XXXXXXXXX" maxlength="11">
+          </div>
+          <div class="auth-field">
+            <label>আপনার নাম (একাউন্ট নাম)</label>
+            <input class="auth-input" id="vmPayName" type="text" placeholder="নগদ/বিকাশ একাউন্টের নাম">
+          </div>
+          <button class="mono-confirm-btn" onclick="activateVideoMonetize()" style="margin-top:0.25rem">🚀 মনিটাইজেশন চালু করুন</button>
+        </div>
+
+        <!-- ভিডিও আয়ের সামারি -->
+        <div id="vmEarnSummary" style="display:none;margin-top:1rem">
+          <div class="creator-earn-bar">
+            <div class="creator-earn-label">ভিডিও থেকে মোট আয়</div>
+            <div class="creator-earn-amount">৳ <span id="vmTotalEarning">০.০০</span></div>
+            <div class="creator-progress-wrap">
+              <div class="creator-progress-fill" id="vmProgressFill" style="width:0%"></div>
+            </div>
+            <div class="creator-progress-note">পেআউটের জন্য ন্যূনতম ৳২০০ প্রয়োজন</div>
+          </div>
+          <button class="mono-confirm-btn" id="vmWithdrawBtn" onclick="withdrawVideoEarning()" style="margin-top:0.5rem">💸 ভিডিও আয় তুলুন</button>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="section-card">
+        <div class="section-card-title">⚡ মনিটাইজ অপশন</div>
+        <div class="mono-grid">
+          <div class="mono-card" onclick="openCoinShop()">
+            <div class="mono-card-icon">🪙</div>
+            <div class="mono-card-name">কয়েন কিনুন</div>
+            <div class="mono-card-desc">গিফট ও বুস্টের জন্য</div>
+          </div>
+          <div class="mono-card" onclick="openPremiumModal()">
+            <div class="mono-card-icon">⭐</div>
+            <div class="mono-card-name">প্রিমিয়াম</div>
+            <div class="mono-card-desc">বেশি ফিচার পান</div>
+          </div>
+          <div class="mono-card" onclick="openVerifyModal()">
+            <div class="mono-card-icon">✅</div>
+            <div class="mono-card-name">ভেরিফিকেশন</div>
+            <div class="mono-card-desc">ব্যাজ পান</div>
+          </div>
+          <div class="mono-card" onclick="openBoostModal(null)">
+            <div class="mono-card-icon">📢</div>
+            <div class="mono-card-name">পোস্ট বুস্ট</div>
+            <div class="mono-card-desc">বেশি মানুষকে দেখান</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Premium Status -->
+      <div class="section-card" id="premiumStatusCard">
+        <div class="section-card-title">⭐ প্রিমিয়াম সদস্যতা</div>
+        <div id="premiumStatusContent" style="color:var(--muted);font-size:0.88rem;line-height:1.6">
+          আপনি এখনো প্রিমিয়াম সদস্য নন। প্রিমিয়াম নিলে পাবেন:<br>
+          ✓ ভেরিফাইড ব্যাজ • ✓ আনলিমিটেড রিল • ✓ এক্সক্লুসিভ থিম • ✓ প্রায়রিটি সাপোর্ট
+          <br><br>
+          <button class="mono-confirm-btn purple" onclick="openPremiumModal()" style="margin-top:0">⭐ প্রিমিয়াম নিন</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ── Adsterra 320x50 Banner Ad ── -->
+  <div id="adsterra-banner-320x50" style="position:fixed;bottom:58px;left:50%;transform:translateX(-50%);width:320px;height:50px;z-index:98;overflow:hidden;border-radius:8px;">
+    <script>
+      atOptions = {
+        'key' : '4cde64ff69a85929080f3a4ab0ef179c',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/4cde64ff69a85929080f3a4ab0ef179c/invoke.js"></script>
   </div>
 
   <!-- ── Bottom Nav ── -->
@@ -1669,17 +2249,6 @@
     </button>
     <button onclick="showPage('reels');loadReels();updateBottomNav('reels')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navReels">
       <span style="font-size:1.2rem">🎬</span>রিলস
-    </button>
-    <button onclick="showPage('messages');loadInbox();updateBottomNav('messages')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;position:relative;" id="navMessages">
-      <span style="font-size:1.2rem">💬</span>
-      <span class="msg-nav-badge" id="msgNavBadge"></span>
-      মেসেজ
-    </button>
-    <button onclick="showPage('notifications');loadNotifications();updateBottomNav('notifications')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;position:relative;" id="navNotifications">
-      <div class="nav-notif-wrap">
-        <span style="font-size:1.2rem">🔔</span>
-        <span class="nav-notif-badge" id="navNotifBadge">0</span>
-      </div>নোটিফিকেশন
     </button>
     <button onclick="goToMyProfile();updateBottomNav('profile')" style="flex:1;padding:0.75rem 0.5rem;background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;" id="navProfile">
       <span style="font-size:1.2rem">👤</span>প্রোফাইল
@@ -1863,24 +2432,6 @@
 </div>
 
 <!-- ══ REEL UPLOAD MODAL ══ -->
-<div class="reel-upload-modal" id="reelUploadModal">
-  <div class="reel-upload-box">
-    <div class="reel-upload-title">
-      <span>🎬 নতুন রিল</span>
-      <button class="modal-close" onclick="closeReelUpload()">✕</button>
-    </div>
-    <video class="reel-video-preview" id="reelVideoPreview" controls playsinline muted></video>
-    <div class="reel-upload-area" id="reelUploadArea" onclick="document.getElementById('reelVideoInput').click()">
-      <span style="font-size:1.8rem">🎬</span>
-      <span>ভিডিও বেছে নিন</span>
-      <span style="font-size:0.75rem;opacity:0.6">MP4, MOV — সর্বোচ্চ ৬০ সেকেন্ড</span>
-    </div>
-    <input type="file" id="reelVideoInput" accept="video/*" style="display:none" onchange="handleReelVideo(event)">
-    <textarea class="reel-caption-input" id="reelCaptionInput" placeholder="ক্যাপশন লিখুন... #হ্যাশট্যাগ" maxlength="200"></textarea>
-    <button class="reel-post-btn" id="reelPostBtn" onclick="publishReel()" disabled>🚀 রিল পোস্ট করুন</button>
-  </div>
-</div>
-
 <!-- ══ REEL COMMENTS DRAWER ══ -->
 <div class="reel-comments-drawer" id="reelCommentsDrawer">
   <div class="reel-comments-handle"></div>
@@ -1893,6 +2444,280 @@
     <textarea class="reel-comment-input" id="reelCommentInput" placeholder="মন্তব্য লিখুন..." rows="1"
       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendReelComment()}"></textarea>
     <button class="reel-comment-send" onclick="sendReelComment()">➤</button>
+  </div>
+</div>
+
+<!-- ══ COIN SHOP MODAL ══ -->
+<div class="mono-modal" id="coinShopModal">
+  <div class="mono-box">
+    <div class="mono-title">
+      🪙 কয়েন কিনুন
+      <button class="modal-close" onclick="closeCoinShop()">✕</button>
+    </div>
+    <div class="mono-sub">কয়েন দিয়ে গিফট পাঠান, পোস্ট বুস্ট করুন এবং ভেরিফিকেশন পান।</div>
+    <div class="wallet-bar">
+      <div>
+        <div class="wallet-balance">🪙 <span id="coinShopBalance">০</span></div>
+        <div class="wallet-label">বর্তমান ব্যালেন্স</div>
+      </div>
+    </div>
+
+    <!-- ── Step 1: Package Selection ── -->
+    <div id="coinStep1">
+      <div class="coin-packages">
+        <div class="coin-pkg" onclick="selectCoinPkg(this,100,9)" data-coins="100" data-price="৳৯">
+          <div class="coin-pkg-icon">🪙</div>
+          <div class="coin-pkg-amount">১০০ কয়েন</div>
+          <div class="coin-pkg-price">৳৯</div>
+        </div>
+        <div class="coin-pkg" onclick="selectCoinPkg(this,500,39)" data-coins="500" data-price="৳৩৯">
+          <div class="coin-pkg-icon">💰</div>
+          <div class="coin-pkg-amount">৫০০ কয়েন</div>
+          <div class="coin-pkg-price">৳৩৯</div>
+          <div class="coin-pkg-badge">সাশ্রয়ী</div>
+        </div>
+        <div class="coin-pkg" onclick="selectCoinPkg(this,1200,79)" data-coins="1200" data-price="৳৭৯">
+          <div class="coin-pkg-icon">💎</div>
+          <div class="coin-pkg-amount">১২০০ কয়েন</div>
+          <div class="coin-pkg-price">৳৭৯</div>
+          <div class="coin-pkg-badge">জনপ্রিয়</div>
+        </div>
+        <div class="coin-pkg" onclick="selectCoinPkg(this,3000,179)" data-coins="3000" data-price="৳১৭৯">
+          <div class="coin-pkg-icon">👑</div>
+          <div class="coin-pkg-amount">৩০০০ কয়েন</div>
+          <div class="coin-pkg-price">৳১৭৯</div>
+          <div class="coin-pkg-badge">সেরা ডিল</div>
+        </div>
+      </div>
+      <button class="mono-confirm-btn" id="coinBuyBtn" onclick="goToCoinPaymentStep()" disabled>প্যাকেজ বেছে নিন</button>
+      <button class="mono-cancel-btn" onclick="closeCoinShop()">বাতিল</button>
+    </div>
+
+    <!-- ── Step 2: bKash Payment + Transaction ID ── -->
+    <div id="coinStep2" style="display:none">
+
+      <!-- Amount summary bar -->
+      <div style="background:rgba(124,110,247,0.1);border:1px solid rgba(124,110,247,0.25);border-radius:12px;padding:0.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:0.75rem;color:var(--muted);font-weight:600">পাঠাতে হবে</div>
+          <div style="font-size:1.3rem;font-weight:800;color:var(--accent)" id="coinStep2Amount">৳৯</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:0.75rem;color:var(--muted);font-weight:600">পাবেন</div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--accent3)">🪙 <span id="coinStep2Coins">১০০</span> কয়েন</div>
+        </div>
+      </div>
+
+      <!-- Payment Method Selector -->
+      <div style="margin-bottom:0.9rem">
+        <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin-bottom:0.5rem;letter-spacing:0.3px">পেমেন্ট পদ্ধতি বেছে নিন</div>
+        <div style="display:flex;gap:0.6rem">
+
+          <!-- bKash option -->
+          <div id="pmBkash" onclick="selectPaymentMethod('bkash')" style="flex:1;border:2px solid rgba(220,53,69,0.35);border-radius:14px;padding:0.75rem 0.5rem;text-align:center;cursor:pointer;transition:all 0.22s;background:rgba(220,53,69,0.06)">
+            <div style="font-size:1.5rem;margin-bottom:0.2rem">🔴</div>
+            <div style="font-weight:800;font-size:0.88rem;color:#e0416a">বিকাশ</div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-top:2px">Personal</div>
+          </div>
+
+          <!-- Nagad option -->
+          <div id="pmNagad" onclick="selectPaymentMethod('nagad')" style="flex:1;border:2px solid rgba(255,140,0,0.3);border-radius:14px;padding:0.75rem 0.5rem;text-align:center;cursor:pointer;transition:all 0.22s;background:rgba(255,140,0,0.05)">
+            <div style="font-size:1.5rem;margin-bottom:0.2rem">🟠</div>
+            <div style="font-weight:800;font-size:0.88rem;color:#ff8c00">নগদ</div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-top:2px">Personal</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Dynamic payment info box (shown after method selected) -->
+      <div id="paymentInfoBox" style="display:none;border-radius:14px;padding:1rem;margin-bottom:0.9rem;text-align:center;transition:all 0.3s">
+        <div id="payInfoIcon" style="font-size:1.4rem;margin-bottom:0.3rem"></div>
+        <div id="payInfoLabel" style="font-weight:700;font-size:0.85rem;margin-bottom:0.4rem"></div>
+        <div id="payInfoNumber" style="font-size:1.45rem;font-weight:800;letter-spacing:2.5px;color:var(--text);margin-bottom:0.4rem"></div>
+        <div id="payInfoType" style="font-size:0.75rem;margin-bottom:0.5rem"></div>
+        <button id="payInfoCopyBtn" onclick="copyPaymentNumber()" style="border-radius:8px;padding:0.3rem 0.9rem;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;border-width:1px;border-style:solid">📋 নম্বর কপি করুন</button>
+      </div>
+
+      <!-- Steps guide (dynamic) -->
+      <div id="payStepsGuide" style="display:none;font-size:0.81rem;color:var(--muted);line-height:1.9;margin-bottom:0.9rem;padding:0 0.25rem">
+        <div>① উপরের নম্বরে <strong id="payStepMethodName" style="color:var(--text)">বিকাশ</strong> <strong style="color:var(--text)">Send Money</strong> করুন</div>
+        <div>② পেমেন্টের পর <strong style="color:var(--text)">Transaction ID</strong> পাবেন</div>
+        <div>③ নিচে সেই ID লিখে সাবমিট করুন</div>
+      </div>
+
+      <!-- Transaction ID input -->
+      <div id="txnInputArea" style="display:none">
+        <div style="font-size:0.82rem;font-weight:700;color:var(--muted);margin-bottom:0.4rem">ট্রানজেকশন আইডি <span style="color:var(--accent2)">*</span></div>
+        <input
+          type="text"
+          id="txnIdInput"
+          class="auth-input"
+          placeholder=""
+          oninput="validateTxnId(this)"
+          autocomplete="off"
+          style="font-size:1rem;letter-spacing:1.2px;text-transform:uppercase"
+        />
+        <div id="txnIdHint" style="font-size:0.76rem;margin-top:0.4rem;color:var(--muted)"></div>
+        <div id="txnIdError" style="font-size:0.78rem;color:var(--accent2);margin-top:0.35rem;display:none"></div>
+      </div>
+
+      <button class="mono-confirm-btn" id="coinSubmitBtn" onclick="submitCoinPurchase()" disabled style="margin-top:0.8rem">✅ সাবমিট করুন</button>
+      <button class="mono-cancel-btn" onclick="backToCoinStep1()">← পিছনে যান</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ PREMIUM MODAL ══ -->
+<div class="mono-modal" id="premiumModal">
+  <div class="mono-box">
+    <div class="mono-title">
+      ⭐ প্রিমিয়াম সদস্যতা
+      <button class="modal-close" onclick="closePremiumModal()">✕</button>
+    </div>
+    <div class="mono-sub">প্রিমিয়াম নিয়ে আনলক করুন এক্সক্লুসিভ ফিচার এবং ভেরিফাইড ব্যাজ।</div>
+    <div class="premium-plans">
+      <div class="premium-plan" onclick="selectPlan(this,'basic',49)">
+        <div class="plan-icon">🌟</div>
+        <div class="plan-info">
+          <div class="plan-name">বেসিক প্রিমিয়াম</div>
+          <div class="plan-features">✓ ভেরিফাইড ব্যাজ · ✓ বেশি স্টোরি · ✓ এক্সক্লুসিভ থিম</div>
+        </div>
+        <div class="plan-price">৳৪৯<br><span style="font-size:0.7rem;color:var(--muted)">/মাস</span></div>
+      </div>
+      <div class="premium-plan popular" onclick="selectPlan(this,'pro',99)">
+        <div class="plan-popular-tag">⚡ সবচেয়ে জনপ্রিয়</div>
+        <div class="plan-icon">💎</div>
+        <div class="plan-info">
+          <div class="plan-name">প্রো প্রিমিয়াম</div>
+          <div class="plan-features">✓ সব বেসিক · ✓ বুস্ট ক্রেডিট · ✓ ক্রিয়েটর বোনাস · ✓ অ্যাড-ফ্রি</div>
+        </div>
+        <div class="plan-price">৳৯৯<br><span style="font-size:0.7rem;color:var(--muted)">/মাস</span></div>
+      </div>
+      <div class="premium-plan" onclick="selectPlan(this,'yearly',799)">
+        <div class="plan-icon">👑</div>
+        <div class="plan-info">
+          <div class="plan-name">বার্ষিক প্ল্যান</div>
+          <div class="plan-features">✓ সব প্রো ফিচার · ✓ ২ মাস ফ্রি · ✓ প্রায়রিটি সাপোর্ট</div>
+        </div>
+        <div class="plan-price">৳৭৯৯<br><span style="font-size:0.7rem;color:var(--muted)">/বছর</span></div>
+      </div>
+    </div>
+    <button class="mono-confirm-btn purple" id="premiumBuyBtn" onclick="buyPremium()" disabled>প্ল্যান বেছে নিন</button>
+    <button class="mono-cancel-btn" onclick="closePremiumModal()">বাতিল</button>
+  </div>
+</div>
+
+<!-- ══ BOOST POST MODAL ══ -->
+<div class="mono-modal" id="boostModal">
+  <div class="mono-box">
+    <div class="mono-title">
+      📢 পোস্ট বুস্ট করুন
+      <button class="modal-close" onclick="closeBoostModal()">✕</button>
+    </div>
+    <div class="mono-sub">আপনার পোস্ট বেশি মানুষের কাছে পৌঁছে দিন।</div>
+    <div class="wallet-bar">
+      <div>
+        <div class="wallet-balance">🪙 <span id="boostWalletBalance">০</span> কয়েন</div>
+        <div class="wallet-label">বর্তমান ব্যালেন্স</div>
+      </div>
+      <button class="wallet-add-btn" onclick="closeBoostModal();openCoinShop()">+ কয়েন</button>
+    </div>
+    <input type="hidden" id="boostTargetPostId" value="">
+    <div class="boost-options">
+      <div class="boost-opt" onclick="selectBoost(this,'starter',50)">
+        <div class="boost-opt-icon">🚀</div>
+        <div class="boost-opt-info">
+          <div class="boost-opt-name">স্টার্টার বুস্ট</div>
+          <div class="boost-opt-desc">১,০০০+ মানুষের কাছে · ১ দিন</div>
+        </div>
+        <div class="boost-opt-cost">🪙 ৫০</div>
+      </div>
+      <div class="boost-opt" onclick="selectBoost(this,'standard',150)">
+        <div class="boost-opt-icon">⚡</div>
+        <div class="boost-opt-info">
+          <div class="boost-opt-name">স্ট্যান্ডার্ড বুস্ট</div>
+          <div class="boost-opt-desc">৫,০০০+ মানুষের কাছে · ৩ দিন</div>
+        </div>
+        <div class="boost-opt-cost">🪙 ১৫০</div>
+      </div>
+      <div class="boost-opt" onclick="selectBoost(this,'mega',400)">
+        <div class="boost-opt-icon">🔥</div>
+        <div class="boost-opt-info">
+          <div class="boost-opt-name">মেগা বুস্ট</div>
+          <div class="boost-opt-desc">২০,০০০+ মানুষের কাছে · ৭ দিন</div>
+        </div>
+        <div class="boost-opt-cost">🪙 ৪০০</div>
+      </div>
+    </div>
+    <button class="mono-confirm-btn" id="boostConfirmBtn" onclick="confirmBoost()" disabled style="background:linear-gradient(135deg,#f76e8f,#f7b731)">বুস্ট বেছে নিন</button>
+    <button class="mono-cancel-btn" onclick="closeBoostModal()">বাতিল</button>
+  </div>
+</div>
+
+<!-- ══ GIFT MODAL ══ -->
+<div class="mono-modal" id="giftModal">
+  <div class="mono-box">
+    <div class="mono-title">
+      🎁 গিফট পাঠান
+      <button class="modal-close" onclick="closeGiftModal()">✕</button>
+    </div>
+    <div class="mono-sub">কয়েন দিয়ে পোস্টে গিফট পাঠান এবং ক্রিয়েটরকে উৎসাহিত করুন!</div>
+    <div class="wallet-bar">
+      <div>
+        <div class="wallet-balance">🪙 <span id="giftWalletBalance">০</span> কয়েন</div>
+        <div class="wallet-label">বর্তমান ব্যালেন্স</div>
+      </div>
+      <button class="wallet-add-btn" onclick="closeGiftModal();openCoinShop()">+ কয়েন</button>
+    </div>
+    <input type="hidden" id="giftTargetPostId" value="">
+    <input type="hidden" id="giftTargetUid" value="">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;margin-bottom:1.25rem">
+      <div class="coin-pkg" onclick="selectGift(this,5,'🌹')" style="padding:0.75rem 0.5rem">
+        <div class="coin-pkg-icon">🌹</div>
+        <div class="coin-pkg-amount" style="font-size:0.88rem">৫ 🪙</div>
+      </div>
+      <div class="coin-pkg" onclick="selectGift(this,10,'💐')" style="padding:0.75rem 0.5rem">
+        <div class="coin-pkg-icon">💐</div>
+        <div class="coin-pkg-amount" style="font-size:0.88rem">১০ 🪙</div>
+      </div>
+      <div class="coin-pkg" onclick="selectGift(this,25,'💎')" style="padding:0.75rem 0.5rem">
+        <div class="coin-pkg-icon">💎</div>
+        <div class="coin-pkg-amount" style="font-size:0.88rem">২৫ 🪙</div>
+      </div>
+      <div class="coin-pkg" onclick="selectGift(this,50,'🏆')" style="padding:0.75rem 0.5rem">
+        <div class="coin-pkg-icon">🏆</div>
+        <div class="coin-pkg-amount" style="font-size:0.88rem">৫০ 🪙</div>
+      </div>
+      <div class="coin-pkg" onclick="selectGift(this,100,'👑')" style="padding:0.75rem 0.5rem">
+        <div class="coin-pkg-icon">👑</div>
+        <div class="coin-pkg-amount" style="font-size:0.88rem">১০০ 🪙</div>
+      </div>
+      <div class="coin-pkg" onclick="selectGift(this,200,'🚀')" style="padding:0.75rem 0.5rem">
+        <div class="coin-pkg-icon">🚀</div>
+        <div class="coin-pkg-amount" style="font-size:0.88rem">২০০ 🪙</div>
+      </div>
+    </div>
+    <button class="mono-confirm-btn" id="giftSendBtn" onclick="sendGift()" disabled style="background:linear-gradient(135deg,#f76e8f,#9b8bf8)">গিফট বেছে নিন</button>
+    <button class="mono-cancel-btn" onclick="closeGiftModal()">বাতিল</button>
+  </div>
+</div>
+
+<!-- ══ VERIFY MODAL ══ -->
+<div class="mono-modal" id="verifyModal">
+  <div class="mono-box">
+    <div class="mono-title">
+      ✅ ভেরিফিকেশন পান
+      <button class="modal-close" onclick="closeVerifyModal()">✕</button>
+    </div>
+    <div class="mono-sub">ভেরিফাইড ব্যাজ পেতে নিচের শর্তগুলো পূরণ করুন।</div>
+    <div class="verify-steps" id="verifyStepsList"></div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.5">
+      আবেদনের জন্য 🪙 ৫০০ কয়েন প্রয়োজন। আবেদনের পর ৩-৫ কার্যদিবসের মধ্যে সিদ্ধান্ত জানানো হবে।
+    </div>
+    <button class="mono-confirm-btn purple" id="verifyApplyBtn" onclick="applyVerification()">✅ আবেদন করুন (🪙 ৫০০)</button>
+    <button class="mono-cancel-btn" onclick="closeVerifyModal()">বাতিল</button>
   </div>
 </div>
 
@@ -1921,6 +2746,51 @@
   let currentUser = null;
   let currentMode = 'login';
   let viewingUid  = null;
+
+  // ── Native Ad Images (rotate on each load) ───────────────────────
+  const NATIVE_AD_IMAGES = [
+    'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&q=80', // শপিং
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80', // অফার
+    'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&q=80', // ডিল
+    'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=600&q=80', // গিফট
+    'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=600&q=80', // সেল
+    'https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=600&q=80', // স্মার্টফোন
+    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80', // প্রোডাক্ট
+    'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80', // ফ্যাশন
+  ];
+
+  const AD_TITLES = [
+    '🔥 আজকের সেরা অফার! সীমিত সময়ের জন্য',
+    '⚡ এক্সক্লুসিভ ডিল — এখনই দেখুন!',
+    '🎁 বিশেষ ছাড় পাচ্ছেন আজকেই',
+    '💥 দারুণ অফার! মিস করবেন না',
+    '🛍️ সেরা পণ্য, সেরা দাম — এখনই কিনুন',
+    '✨ নতুন কালেকশন এসেছে — দেখে নিন',
+  ];
+
+  const AD_LINK = 'https://www.effectivecpmnetwork.com/nsjf8jk0?key=39084b7dc488e9371458306fda3464a2';
+
+  function createNativeAd(imgUrl) {
+    const title = AD_TITLES[Math.floor(Math.random() * AD_TITLES.length)];
+    const div = document.createElement('div');
+    div.className = 'native-ad-card';
+    div.innerHTML = `
+      <div class="native-ad-label">📣 স্পনসর্ড</div>
+      <a href="${AD_LINK}" target="_blank" rel="noopener" class="native-ad-inner">
+        <div class="native-ad-img-wrap">
+          <img src="${imgUrl}" alt="বিজ্ঞাপন" class="native-ad-img">
+          <div class="native-ad-overlay">
+            <div class="native-ad-cta-btn">এখনই দেখুন →</div>
+          </div>
+        </div>
+        <div class="native-ad-content">
+          <div class="native-ad-title">${title}</div>
+          <div class="native-ad-sub">ক্লিক করে বিস্তারিত জানুন</div>
+        </div>
+      </a>
+    `;
+    return div;
+  }
 
   // ── Helpers ──────────────────────────────────────────────────────
   function toBengaliNum(n) {
@@ -1966,6 +2836,7 @@
     document.getElementById('page' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
     document.getElementById('userDropdown').classList.remove('open');
     updateBottomNav(page);
+    if (page === 'reels') reelsLoaded = false; // always refresh reels
   };
 
   window.goToMyProfile = function() {
@@ -2075,4 +2946,2612 @@
   }
 
   // Gender buttons
-  ['gMale','gFemale','gOther'].forEa
+  ['gMale','gFemale','gOther'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      document.querySelectorAll('.gender-opt').forEach(b => b.classList.remove('selected'));
+      document.getElementById(id).classList.add('selected');
+      selectedGender = { gMale:'পুরুষ', gFemale:'মহিলা', gOther:'অন্যান্য' }[id];
+    });
+  });
+
+  // Contact method toggle
+  document.getElementById('ctPhone').addEventListener('click', () => {
+    contactMethod = 'phone';
+    document.getElementById('ctPhone').classList.add('active');
+    document.getElementById('ctEmail').classList.remove('active');
+    document.getElementById('contactPhoneField').style.display = 'block';
+    document.getElementById('contactEmailField').style.display = 'none';
+  });
+  document.getElementById('ctEmail').addEventListener('click', () => {
+    contactMethod = 'email';
+    document.getElementById('ctEmail').classList.add('active');
+    document.getElementById('ctPhone').classList.remove('active');
+    document.getElementById('contactPhoneField').style.display = 'none';
+    document.getElementById('contactEmailField').style.display = 'block';
+  });
+
+  // Password toggles
+  document.getElementById('regPassToggle').addEventListener('click', () => {
+    const el = document.getElementById('regPassword');
+    el.type = el.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('regPassToggle2').addEventListener('click', () => {
+    const el = document.getElementById('regPassword2');
+    el.type = el.type === 'password' ? 'text' : 'password';
+  });
+
+  // Step navigation
+  document.getElementById('step0Next').addEventListener('click', () => {
+    const first = document.getElementById('regFirstName').value.trim();
+    const last  = document.getElementById('regLastName').value.trim();
+    if (!first) { showError('প্রথম নাম দিন।'); return; }
+    regData.firstName = first; regData.lastName = last;
+    regData.name = (first + ' ' + last).trim();
+    regStep = 1; showRegStep(1);
+  });
+
+  document.getElementById('step1Back').addEventListener('click', () => { regStep=0; showRegStep(0); });
+  document.getElementById('step1Next').addEventListener('click', () => {
+    const d = document.getElementById('dobDay').value;
+    const m = document.getElementById('dobMonth').value;
+    const y = document.getElementById('dobYear').value;
+    if (!d || !m || !y) { showError('জন্মতারিখ সম্পূর্ণ দিন।'); return; }
+    if (!selectedGender) { showError('লিঙ্গ বেছে নিন।'); return; }
+    regData.dob = d+'/'+m+'/'+y; regData.gender = selectedGender;
+    regStep = 2; showRegStep(2);
+  });
+
+  document.getElementById('step2Back').addEventListener('click', () => { regStep=1; showRegStep(1); });
+  document.getElementById('step2Next').addEventListener('click', async () => {
+    hideError();
+    if (contactMethod === 'phone') {
+      const phone = document.getElementById('regPhone').value.trim();
+      if (!phone || phone.length < 10) { showError('সঠিক মোবাইল নম্বর দিন।'); return; }
+      const snap = await db.ref('users').once('value');
+      const users = snap.val() || {};
+      if (Object.values(users).find(u => u.phone === phone)) {
+        showError('এই নম্বরে আগেই অ্যাকাউন্ট আছে।'); return;
+      }
+      regData.phone = phone; regData.contactBy = 'phone';
+      regData.authEmail = phone.replace(/\D/g,'') + '@postbook.app';
+    } else {
+      const email = document.getElementById('regEmail').value.trim();
+      if (!email || !email.includes('@')) { showError('সঠিক ইমেইল আইডি দিন।'); return; }
+      const snap = await db.ref('users').once('value');
+      const users = snap.val() || {};
+      if (Object.values(users).find(u => u.email === email)) {
+        showError('এই ইমেইলে আগেই অ্যাকাউন্ট আছে।'); return;
+      }
+      regData.email = email; regData.contactBy = 'email'; regData.authEmail = email;
+    }
+    regStep = 3; showRegStep(3);
+  });
+
+  document.getElementById('step3Back').addEventListener('click', () => { regStep=2; showRegStep(2); });
+  document.getElementById('step3Next').addEventListener('click', () => {
+    const p1 = document.getElementById('regPassword').value;
+    const p2 = document.getElementById('regPassword2').value;
+    if (p1.length < 6) { showError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।'); return; }
+    if (p1 !== p2)     { showError('পাসওয়ার্ড দুটো মিলছে না।'); return; }
+    regData.password = p1;
+    document.getElementById('summName').textContent   = regData.name;
+    document.getElementById('summDob').textContent    = regData.dob;
+    document.getElementById('summGender').textContent = regData.gender;
+    document.getElementById('summContact').textContent = '🔒 গোপন রাখা হবে';
+    regStep = 4; showRegStep(4);
+  });
+
+  document.getElementById('step4Back').addEventListener('click', () => { regStep=3; showRegStep(3); });
+  document.getElementById('finalRegBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('finalRegBtn');
+    btn.disabled = true; btn.textContent = '⏳ অ্যাকাউন্ট তৈরি হচ্ছে...';
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(regData.authEmail, regData.password);
+      await cred.user.updateProfile({ displayName: regData.name });
+      await db.ref('users/' + cred.user.uid).set({
+        name: regData.name, firstName: regData.firstName, lastName: regData.lastName,
+        dob: regData.dob, gender: regData.gender,
+        phone: regData.phone || '', email: regData.email || '',
+        contactBy: regData.contactBy, authEmail: regData.authEmail,
+        bio: '', link: '', createdAt: Date.now()
+      });
+      showToast('🎉 স্বাগতম ' + regData.firstName + '! অ্যাকাউন্ট তৈরি হয়েছে।');
+    } catch(e) {
+      let msg = 'একটি সমস্যা হয়েছে।';
+      if (e.code === 'auth/email-already-in-use') msg = 'এই তথ্যে আগেই অ্যাকাউন্ট আছে।';
+      showError(msg);
+      btn.disabled = false; btn.textContent = '🎉 অ্যাকাউন্ট খুলুন';
+    }
+  });
+
+  window.handleLogout = async function() {
+    await auth.signOut();
+    document.getElementById('userDropdown').classList.remove('open');
+    regStep = 0; regData = {}; selectedGender = ''; contactMethod = 'phone';
+    switchTab('login');
+    showToast('👋 লগআউট হয়েছে');
+  };
+
+  window.toggleUserMenu = function() {
+    document.getElementById('userDropdown').classList.toggle('open');
+  };
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.user-menu-wrap'))
+      document.getElementById('userDropdown')?.classList.remove('open');
+    if (!e.target.closest('.menu-wrap'))
+      document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+  });
+
+  // ── Auth State ────────────────────────────────────────────────────
+  auth.onAuthStateChanged(async function(user) {
+    if (user) {
+      currentUser = user;
+      const name = user.displayName || user.email.split('@')[0];
+      const init = getInitial(name);
+      document.getElementById('authScreen').style.display  = 'none';
+      document.getElementById('appScreen').style.display   = 'block';
+      document.getElementById('dropdownName').textContent  = name;
+      document.getElementById('dropdownEmail').textContent = user.email;
+
+      const snap = await db.ref('users/' + user.uid + '/avatar').once('value');
+      const av = snap.val();
+      if (av) {
+        document.getElementById('headerAvatar').innerHTML  = '<img src="' + av + '" alt="">';
+        document.getElementById('composerAvatar').innerHTML = '<img src="' + av + '" alt="">';
+      } else {
+        document.getElementById('headerAvatar').textContent  = init;
+        document.getElementById('composerAvatar').textContent = init;
+      }
+      startApp();
+      startNotifListener();
+      startMsgBadgeListener();
+      cleanExpiredStories().then(() => loadStories());
+    } else {
+      currentUser = null;
+      document.getElementById('authScreen').style.display = 'flex';
+      document.getElementById('appScreen').style.display  = 'none';
+    }
+  });
+
+  // ── Start App ─────────────────────────────────────────────────────
+  function startApp() {
+    // inject sponsored ad after first feed load
+    setTimeout(() => { try { injectAdIntoFeed(); } catch(e){} }, 4000);
+    db.ref('.info/connected').on('value', snap => {
+      document.getElementById('connDot').className = 'conn-dot' + (snap.val() ? ' online' : '');
+      if (snap.val() && currentUser) {
+        const presRef = db.ref('presence/' + currentUser.uid);
+        presRef.set(true);
+        presRef.onDisconnect().remove();
+      }
+    });
+
+    // ── Incoming Call Listener ─────────────────────────────────────────
+    db.ref('calls').on('value', snap => {
+      const all = snap.val() || {};
+      Object.entries(all).forEach(([cid, callData]) => {
+        if (!callData || callData.callee !== currentUser.uid || callData.status !== 'ringing') return;
+        // Show incoming call UI
+        if (document.getElementById('incomingCallModal')) return; // already showing
+        const callerUid = callData.caller;
+        db.ref('users/' + callerUid).once('value').then(us => {
+          const ud = us.val() || {};
+          const modal = document.createElement('div');
+          modal.id = 'incomingCallModal';
+          modal.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.2rem 1.5rem;z-index:9999;display:flex;flex-direction:column;align-items:center;gap:0.8rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);min-width:280px;';
+          modal.innerHTML = `
+            <div style="font-size:0.8rem;color:var(--muted);">${callData.type === 'video' ? '📹 ভিডিও কল আসছে' : '📞 অডিও কল আসছে'}</div>
+            <div style="font-weight:700;font-size:1rem;color:var(--text);">${escHtml(ud.name||'কেউ')}</div>
+            <div style="display:flex;gap:1rem;">
+              <button onclick="acceptIncomingCall('${cid}','${callerUid}','${callData.type}')" style="padding:0.6rem 1.4rem;background:#22c55e;color:white;border:none;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;">✅ ধরুন</button>
+              <button onclick="rejectIncomingCall('${cid}')" style="padding:0.6rem 1.4rem;background:#ef4444;color:white;border:none;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;">❌ রাখুন</button>
+            </div>`;
+          document.body.appendChild(modal);
+        });
+      });
+    });
+
+    window.acceptIncomingCall = async function(cid, callerUid, type) {
+      document.getElementById('incomingCallModal')?.remove();
+      await db.ref('calls/' + cid).update({ status: 'accepted' });
+      // Open call modal for callee too
+      currentChatUid = callerUid;
+      callType = type;
+      callTimerEl = document.getElementById('callTimer');
+      const snap2 = await db.ref('users/' + callerUid).once('value');
+      const d2 = snap2.val() || {};
+      document.getElementById('callModalAvatar').innerHTML = d2.avatar ? '<img src="' + d2.avatar + '" alt="">' : getInitial(d2.name||'');
+      document.getElementById('callModalName').textContent = d2.name || '';
+      document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল চলছে' : '📞 কল সংযুক্ত';
+      callTimerEl.style.display = 'none';
+      document.getElementById('camBtn').style.display = type === 'video' ? 'flex' : 'none';
+      document.getElementById('callVideoArea').classList.toggle('active', type === 'video');
+      document.getElementById('callModal').classList.add('open');
+      startCallTimer();
+    };
+
+    window.rejectIncomingCall = async function(cid) {
+      document.getElementById('incomingCallModal')?.remove();
+      await db.ref('calls/' + cid).update({ status: 'rejected' });
+      // Notify the caller about missed call
+      try {
+        const callSnap = await db.ref('calls/' + cid).once('value');
+        const callData = callSnap.val();
+        if (callData && callData.caller) {
+          const myName = currentUser.displayName || currentUser.email.split('@')[0];
+          await db.ref('notifications/' + callData.caller).push({
+            type: 'call', fromUid: currentUser.uid, fromName: myName,
+            callType: callData.type || 'audio', ts: Date.now(), read: false
+          });
+        }
+      } catch(e) {}
+      db.ref('calls/' + cid).remove();
+    };
+
+    const input     = document.getElementById('postInput');
+    const charCount = document.getElementById('charCount');
+    input.addEventListener('input', () => {
+      const total = input.value.length;
+      charCount.textContent = toBengaliNum(total) + ' / ৫০০';
+      charCount.className = 'char-count' + (total > 450 ? (total > 490 ? ' over' : ' warn') : '');
+      updatePostBtnState();
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey) createPost();
+    });
+
+    postsRef.on('value', snap => {
+      const feed = document.getElementById('feed');
+      document.getElementById('loadingState')?.remove();
+      const data = snap.val();
+      if (!data) {
+        feed.innerHTML = '<div class="empty-state"><div class="empty-icon">✍️</div><div class="empty-text">এখনো কোনো পোস্ট নেই।</div></div>';
+        return;
+      }
+      const posts = Object.entries(data)
+        .map(([id, v]) => ({ id, ...v }))
+        .sort((a, b) => (b.timestamp||0) - (a.timestamp||0));
+      feed.innerHTML = '';
+      const shuffledAds = [...NATIVE_AD_IMAGES].sort(() => Math.random() - 0.5);
+      let adIdx = 0;
+      posts.forEach((post, i) => {
+        renderPost(post, feed);
+        if ((i + 1) % 3 === 0) {
+          const img = shuffledAds[adIdx % shuffledAds.length];
+          adIdx++;
+          feed.appendChild(createNativeAd(img));
+        }
+      });
+    });
+  }
+
+  // ── Build Post Images HTML ────────────────────────────────────────
+  function buildPostImages(post) {
+    let html = '';
+    if (post.video) {
+      html += '<div class="post-image-wrap" style="background:#000;max-height:320px;position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + post.video + '\')">' +
+        '<video src="' + post.video + '" style="width:100%;max-height:320px;border-radius:14px;display:block;pointer-events:none;"></video>' +
+        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(0,0,0,0.3);">' +
+        '<div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">▶</div>' +
+        '</div></div>';
+    }
+    const imgs = post.images;
+    if (!imgs || !imgs.length) return html;
+    const count = imgs.length;
+    if (count === 1) {
+      return html + '<div class="post-image-wrap"><img src="' + imgs[0] + '" alt="" onclick="openLightbox(\'' + imgs[0] + '\')"></div>';
+    }
+    const show = Math.min(count, 4);
+    const items = imgs.slice(0, show).map((src, i) => {
+      const isLast = i === show - 1 && count > 4;
+      return '<div class="img-item' + (isLast ? ' more-overlay' : '') + '" ' + (isLast ? 'data-more="+' + (count-4) + '"' : '') + '><img src="' + src + '" alt="" onclick="openLightbox(\'' + src + '\')"></div>';
+    }).join('');
+    return html + '<div class="post-images-grid count-' + show + '">' + items + '</div>';
+  }
+
+  // ── Render Post ───────────────────────────────────────────────────
+  function renderPost(post, feed, isOwnerOverride) {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.id = 'card-' + post.id;
+
+    const uid        = currentUser ? currentUser.uid : '';
+    const likedByMe  = post.likedBy && post.likedBy[uid];
+    const likeCount  = post.likes || 0;
+    const shareCount = post.shares || 0;
+    const isOwner    = isOwnerOverride !== undefined ? isOwnerOverride : post.authorUid === uid;
+    const comments   = post.comments ? Object.values(post.comments) : [];
+
+    const avatarHTML = post.authorAvatar
+      ? '<div class="avatar" style="cursor:pointer" onclick="openProfile(\'' + post.authorUid + '\')"><img src="' + post.authorAvatar + '" alt=""></div>'
+      : '<div class="avatar" style="cursor:pointer" onclick="openProfile(\'' + post.authorUid + '\')">' + getInitial(post.author) + '</div>';
+
+    const commentsHTML = comments.map(c =>
+      '<div class="comment-item"><div class="avatar sm">' + getInitial(c.author) + '</div><div class="comment-bubble"><div class="comment-author">' + escHtml(c.author||'ব্যবহারকারী') + '</div><div class="comment-text">' + escHtml(c.text) + '</div></div></div>'
+    ).join('');
+
+    const menuHTML = isOwner ? '<div class="menu-wrap"><button class="post-menu" onclick="toggleMenu(\'' + post.id + '\')">⋯</button><div class="dropdown" id="menu-' + post.id + '"><div class="dropdown-item danger" onclick="deletePost(\'' + post.id + '\')">🗑️ মুছে ফেলুন</div><div class="dropdown-item" onclick="copyPostText(\'' + post.id + '\')">📋 কপি করুন</div></div></div>' : '';
+
+    card.innerHTML =
+      '<div class="post-header">' + avatarHTML +
+      '<div class="post-meta"><div class="post-name" onclick="openProfile(\'' + post.authorUid + '\')">' + escHtml(post.author||'ব্যবহারকারী') + '</div><div class="post-time">' + timeLabel(post.timestamp) + '</div></div>' + menuHTML + '</div>' +
+      '<div class="post-body"' + (!post.text ? ' style="display:none"' : '') + '>' + escHtml(post.text) + '</div>' +
+      buildPostImages(post) +
+      '<div class="post-actions">' +
+        '<button class="action-btn like-btn ' + (likedByMe?'liked':'') + '" onclick="toggleLike(\'' + post.id + '\',' + (!!likedByMe) + ',' + likeCount + ')"><span class="action-icon">' + (likedByMe?'❤️':'🤍') + '</span><span>' + (likeCount > 0 ? toBengaliNum(likeCount)+' লাইক' : 'লাইক') + '</span></button>' +
+        '<button class="action-btn cmt-btn" onclick="toggleComments(\'' + post.id + '\')"><span class="action-icon">💬</span><span>' + (comments.length>0?toBengaliNum(comments.length)+' ':'') + 'মন্তব্য</span></button>' +
+        '<button class="action-btn share-btn" onclick="sharePost(\'' + post.id + '\',' + shareCount + ',\'' + encodeURIComponent(post.text||'') + '\')"><span class="action-icon">↗️</span><span>' + (shareCount>0?toBengaliNum(shareCount)+' শেয়ার':'শেয়ার') + '</span></button>' +
+        '<button class="action-btn gift-btn" onclick="openGiftModal(\'' + post.id + '\',\'' + (post.authorUid||'') + '\')" title="গিফট পাঠান"><span class="action-icon">🎁</span><span>গিফট</span></button>' +
+      '</div>' +
+      '<div class="comment-section" id="cmts-' + post.id + '">' +
+        '<div class="comment-input-row"><div class="avatar sm">' + getInitial(currentUser ? currentUser.displayName : '') + '</div>' +
+        '<textarea class="comment-input" id="cmt-input-' + post.id + '" placeholder="মন্তব্য করুন..." rows="1" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();submitComment(\'' + post.id + '\')}" oninput="autoResize(this)"></textarea>' +
+        '<button class="send-btn" onclick="submitComment(\'' + post.id + '\')">➤</button></div>' +
+        '<div class="comments-list">' + commentsHTML + '</div></div>';
+
+    feed.appendChild(card);
+  }
+
+  // ── Open Profile ──────────────────────────────────────────────────
+  window.openProfile = async function(uid) {
+    if (!uid) return;
+    viewingUid = uid;
+    showPage('profile');
+    const isMe = uid === (currentUser ? currentUser.uid : '');
+
+    document.getElementById('avatarEditBtn').style.display = isMe ? 'flex' : 'none';
+    document.getElementById('addPhotoBtn').style.display   = isMe ? 'block' : 'none';
+    const mBtn = document.getElementById('profileMonetizeBtn');
+    if (mBtn) mBtn.style.display = isMe ? 'flex' : 'none';
+
+    const cover = document.getElementById('profileCover');
+    cover.style.cursor = isMe ? 'pointer' : 'default';
+    cover.onclick = isMe ? () => document.getElementById('coverInput').click() : null;
+
+    const snap = await db.ref('users/' + uid).once('value');
+    const data = snap.val() || {};
+    const name = data.name || 'ব্যবহারকারী';
+
+    // Check verified status and premium
+    const isVerified = data.verified || (data.verifyRequest && data.verifyRequest.status === 'approved');
+    const hasPremium = data.premium && data.premium.active && data.premium.expiresAt > Date.now();
+    let nameHTML = escHtml(name);
+    if (isVerified) nameHTML += ' <span class="verified-badge" title="ভেরিফাইড">✓</span>';
+    if (hasPremium) nameHTML += ' <span class="premium-badge">⭐ প্রিমিয়াম</span>';
+    document.getElementById('profileName').innerHTML = nameHTML;
+    document.getElementById('profileUsername').textContent = '@' + name.toLowerCase().replace(/\s/g,'_');
+
+    const bioWrap = document.getElementById('profileBioWrap');
+    if (data.bio) {
+      bioWrap.innerHTML = '<div class="profile-bio">' + escHtml(data.bio) + '</div>';
+      if (data.link) bioWrap.innerHTML += '<div style="margin-top:4px"><a href="' + escHtml(data.link) + '" target="_blank" style="color:var(--accent);font-size:0.85rem;text-decoration:none">🔗 ' + escHtml(data.link) + '</a></div>';
+    } else {
+      bioWrap.innerHTML = isMe ? '<div class="profile-bio-empty">বায়ো যোগ করুন...</div>' : '';
+    }
+
+    const av = document.getElementById('profileAvatar');
+    av.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(name);
+
+    const coverEl = document.getElementById('profileCover');
+    if (data.cover) {
+      coverEl.innerHTML = '<img src="' + data.cover + '" alt=""><div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>';
+    } else {
+      coverEl.innerHTML = '<div class="profile-cover-overlay"><span>📷 কভার পরিবর্তন</span></div>';
+    }
+
+    const actionsEl = document.getElementById('profileActions');
+    if (isMe) {
+      actionsEl.innerHTML = '<button class="btn-edit-profile" onclick="openEditModal()">✏️ সম্পাদনা</button>';
+    } else {
+      const followSnap = await db.ref('users/' + currentUser.uid + '/following/' + uid).once('value');
+      const isFollowing = !!followSnap.val();
+      actionsEl.innerHTML = '<button class="btn-follow ' + (isFollowing?'following':'') + '" id="followBtn" onclick="toggleFollow(\'' + uid + '\',' + isFollowing + ')">' + (isFollowing?'✓ ফলোয়িং':'+ ফলো করুন') + '</button>' +
+        (isFollowing ? '<button class="btn-message" onclick="openChat(\'' + uid + '\')" style="margin-left:0.5rem">💬 মেসেজ</button>' : '');
+    }
+
+    const followersSnap = await db.ref('users/' + uid + '/followers').once('value');
+    const followingSnap = await db.ref('users/' + uid + '/following').once('value');
+    const followersCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
+    const followingCount = followingSnap.val() ? Object.keys(followingSnap.val()).length : 0;
+    document.getElementById('statFollowers').textContent = toBengaliNum(followersCount);
+    document.getElementById('statFollowing').textContent = toBengaliNum(followingCount);
+
+    loadPhotos(uid, isMe);
+    if (isMe) { refreshWalletUI(); }
+
+    const profileFeed = document.getElementById('profileFeed');
+    profileFeed.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+    const allSnap = await postsRef.once('value');
+    const allData = allSnap.val() || {};
+    const userPosts = Object.entries(allData)
+      .map(([id, v]) => ({ id, ...v }))
+      .filter(p => p.authorUid === uid)
+      .sort((a, b) => (b.timestamp||0) - (a.timestamp||0));
+
+    document.getElementById('statPosts').textContent = toBengaliNum(userPosts.length);
+    profileFeed.innerHTML = '';
+    if (!userPosts.length) {
+      profileFeed.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">কোনো পোস্ট নেই</div></div>';
+    } else {
+      userPosts.forEach(p => renderPost(p, profileFeed, isMe));
+    }
+  };
+
+  // ── Load Photos ───────────────────────────────────────────────────
+  async function loadPhotos(uid, isMe) {
+    const snap = await db.ref('users/' + uid + '/photos').once('value');
+    const grid = document.getElementById('photoGrid');
+    grid.innerHTML = '';
+    if (!snap.val()) return;
+    const photos = Object.entries(snap.val());
+    photos.sort((a,b) => (b[1].ts||0) - (a[1].ts||0));
+    photos.forEach(([pid, pdata]) => {
+      const div = document.createElement('div');
+      div.className = 'photo-item';
+      div.innerHTML = '<img src="' + pdata.url + '" alt="" onclick="openLightbox(\'' + pdata.url + '\')">' +
+        (isMe ? '<button class="photo-del" onclick="deletePhoto(\'' + uid + '\',\'' + pid + '\',event)">✕</button>' : '');
+      grid.appendChild(div);
+    });
+  }
+
+  window.deletePhoto = async function(uid, pid, e) {
+    e.stopPropagation();
+    if (!confirm('এই ছবিটি মুছে ফেলবেন?')) return;
+    await db.ref('users/' + uid + '/photos/' + pid).remove();
+    loadPhotos(uid, true);
+    showToast('🗑️ ছবি মুছে ফেলা হয়েছে');
+  };
+
+  // ── Follow / Unfollow ─────────────────────────────────────────────
+  window.toggleFollow = async function(targetUid, isFollowing) {
+    const myUid = currentUser.uid;
+    const btn = document.getElementById('followBtn');
+    if (isFollowing) {
+      await db.ref('users/' + myUid + '/following/' + targetUid).remove();
+      await db.ref('users/' + targetUid + '/followers/' + myUid).remove();
+      btn.textContent = '+ ফলো করুন';
+      btn.classList.remove('following');
+      btn.onclick = () => toggleFollow(targetUid, false);
+      showToast('আনফলো করা হয়েছে');
+    } else {
+      await db.ref('users/' + myUid + '/following/' + targetUid).set(true);
+      await db.ref('users/' + targetUid + '/followers/' + myUid).set(true);
+      btn.textContent = '✓ ফলোয়িং';
+      btn.classList.add('following');
+      btn.onclick = () => toggleFollow(targetUid, true);
+      const myName = currentUser.displayName || currentUser.email.split('@')[0];
+      await db.ref('notifications/' + targetUid).push({ type: 'follow', fromUid: myUid, fromName: myName, ts: Date.now(), read: false });
+      // Show message button
+      if (!document.getElementById('profileMsgBtn')) {
+        const msgBtn = document.createElement('button');
+        msgBtn.className = 'btn-message'; msgBtn.id = 'profileMsgBtn';
+        msgBtn.textContent = '💬 মেসেজ'; msgBtn.style.marginLeft = '0.5rem';
+        msgBtn.onclick = () => openChat(targetUid);
+        btn.parentNode.appendChild(msgBtn);
+      }
+      showToast('✓ ফলো করা হয়েছে!');
+    }
+    const fs = await db.ref('users/' + targetUid + '/followers').once('value');
+    document.getElementById('statFollowers').textContent = toBengaliNum(fs.val() ? Object.keys(fs.val()).length : 0);
+  };
+
+  window.showFollowers = async function() {
+    document.getElementById('followListTitle').textContent = 'ফলোয়ার';
+    const snap = await db.ref('users/' + viewingUid + '/followers').once('value');
+    renderFollowList(snap.val());
+    document.getElementById('followListModal').classList.add('open');
+  };
+  window.showFollowing = async function() {
+    document.getElementById('followListTitle').textContent = 'ফলোয়িং';
+    const snap = await db.ref('users/' + viewingUid + '/following').once('value');
+    renderFollowList(snap.val());
+    document.getElementById('followListModal').classList.add('open');
+  };
+  async function renderFollowList(uidsObj) {
+    const container = document.getElementById('followListContainer');
+    container.innerHTML = '';
+    if (!uidsObj) { container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem">কেউ নেই</div>'; return; }
+    for (const uid of Object.keys(uidsObj)) {
+      const snap = await db.ref('users/' + uid).once('value');
+      const data = snap.val() || {};
+      const div = document.createElement('div');
+      div.className = 'follow-item';
+      div.onclick = () => { document.getElementById('followListModal').classList.remove('open'); openProfile(uid); };
+      const avatarHTML = data.avatar ? '<div class="avatar sm"><img src="' + data.avatar + '" alt=""></div>' : '<div class="avatar sm">' + getInitial(data.name) + '</div>';
+      div.innerHTML = avatarHTML + '<div><div class="follow-item-name">' + escHtml(data.name||'ব্যবহারকারী') + '</div><div class="follow-item-sub">@' + escHtml((data.name||'user').toLowerCase().replace(/\s/g,'_')) + '</div></div>';
+      container.appendChild(div);
+    }
+  }
+
+  // ── Edit Profile ──────────────────────────────────────────────────
+  window.openEditModal = async function() {
+    const snap = await db.ref('users/' + currentUser.uid).once('value');
+    const data = snap.val() || {};
+    document.getElementById('editName').value = data.name || '';
+    document.getElementById('editBio').value  = data.bio  || '';
+    document.getElementById('editLink').value = data.link || '';
+    document.getElementById('editProfileModal').classList.add('open');
+  };
+  window.closeEditModal = function() { document.getElementById('editProfileModal').classList.remove('open'); };
+  window.saveProfile = async function() {
+    const name = document.getElementById('editName').value.trim();
+    const bio  = document.getElementById('editBio').value.trim();
+    const link = document.getElementById('editLink').value.trim();
+    if (!name) { showToast('নাম দিন', 'var(--like)'); return; }
+    await db.ref('users/' + currentUser.uid).update({ name, bio, link });
+    await currentUser.updateProfile({ displayName: name });
+    closeEditModal();
+    showToast('✓ প্রোফাইল আপডেট হয়েছে!');
+    openProfile(currentUser.uid);
+    document.getElementById('dropdownName').textContent = name;
+  };
+
+  // ── Cover & Avatar Upload ─────────────────────────────────────────
+  window.triggerCoverUpload = function() {
+    if (viewingUid === (currentUser ? currentUser.uid : '')) document.getElementById('coverInput').click();
+  };
+  window.uploadCover = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    showToast('⏳ কভার আপলোড হচ্ছে...');
+    const b64 = await fileToBase64(file, 1200);
+    await db.ref('users/' + currentUser.uid).update({ cover: b64 });
+    showToast('✓ কভার আপডেট হয়েছে!');
+    openProfile(currentUser.uid); e.target.value = '';
+  };
+  window.uploadAvatar = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    const b64 = await fileToBase64(file, 400);
+    await db.ref('users/' + currentUser.uid).update({ avatar: b64 });
+    document.getElementById('headerAvatar').innerHTML  = '<img src="' + b64 + '" alt="">';
+    document.getElementById('composerAvatar').innerHTML = '<img src="' + b64 + '" alt="">';
+    showToast('✓ প্রোফাইল ছবি আপডেট হয়েছে!');
+    openProfile(currentUser.uid); e.target.value = '';
+  };
+  window.uploadPhotos = async function(e) {
+    const files = Array.from(e.target.files); if (!files.length) return;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    for (const file of files) {
+      const b64 = await fileToBase64(file, 900);
+      await db.ref('users/' + currentUser.uid + '/photos').push({ url: b64, ts: Date.now() });
+    }
+    showToast('✓ ' + toBengaliNum(files.length) + 'টি ছবি যোগ হয়েছে!');
+    loadPhotos(currentUser.uid, true); e.target.value = '';
+  };
+
+  // ── Lightbox ──────────────────────────────────────────────────────
+  window.openLightbox = function(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  };
+  window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+
+  // ── Post Actions ──────────────────────────────────────────────────
+  let pendingImages = [];
+  let pendingVideo = null;
+
+  function updatePostBtnState() {
+    const text = document.getElementById('postInput').value.trim();
+    document.getElementById('postBtn').disabled = text.length === 0 && pendingImages.length === 0 && !pendingVideo;
+  }
+
+  window.handlePostVideo = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
+    showUploadProgress('পোস্টের ভিডিও আপলোড হচ্ছে...');
+    try {
+      const url = await uploadToCloudinary(file, 'video', true);
+      updateUploadProgress(100);
+      setTimeout(hideUploadProgress, 500);
+      pendingVideo = url;
+      pendingImages = []; renderImagePreview();
+      const wrap = document.getElementById('imgPreview');
+      wrap.style.display = 'flex';
+      wrap.innerHTML = '<div class="preview-item" style="width:120px;height:80px;background:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;"><span style="font-size:2rem">🎬</span><button class="preview-del" onclick="removePendingVideo()">✕</button></div>';
+      updatePostBtnState();
+      showToast('✓ ভিডিও প্রস্তুত!');
+    } catch(err) {
+      hideUploadProgress();
+      showToast('❌ ভিডিও আপলোড হয়নি!');
+    }
+    e.target.value = '';
+  };
+
+  window.removePendingVideo = function() {
+    pendingVideo = null;
+    renderImagePreview();
+    updatePostBtnState();
+  };
+
+  window.handlePostImages = async function(e) {
+    const files = Array.from(e.target.files); if (!files.length) return;
+    pendingVideo = null;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    for (const file of files) {
+      if (pendingImages.length >= 4) { showToast('সর্বোচ্চ ৪টি ছবি দেওয়া যাবে', 'var(--like)'); break; }
+      try {
+        const url = await uploadToCloudinary(file, 'image');
+        pendingImages.push(url);
+      } catch(err) { showToast('❌ একটি ছবি আপলোড হয়নি'); }
+    }
+    e.target.value = ''; renderImagePreview(); updatePostBtnState(); showToast('✓ ছবি যোগ হয়েছে');
+  };
+
+  function renderImagePreview() {
+    const wrap = document.getElementById('imgPreview');
+    if (!pendingImages.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    wrap.style.display = 'flex'; wrap.innerHTML = '';
+    pendingImages.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      item.innerHTML = '<img src="' + src + '" alt=""><button class="preview-del" onclick="removePreviewImg(' + i + ')">✕</button>';
+      wrap.appendChild(item);
+    });
+  }
+
+  window.removePreviewImg = function(i) { pendingImages.splice(i, 1); renderImagePreview(); updatePostBtnState(); };
+
+  window.createPost = async function() {
+    if (!currentUser) return;
+    const input   = document.getElementById('postInput');
+    const postBtn = document.getElementById('postBtn');
+    const text = input.value.trim();
+    if (!text && pendingImages.length === 0 && !pendingVideo) return;
+    postBtn.disabled = true; postBtn.textContent = 'পোস্ট হচ্ছে...';
+    try {
+      const name = currentUser.displayName || currentUser.email.split('@')[0];
+      const snapA = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
+      await postsRef.push({
+        text: text || '', images: pendingImages.length ? pendingImages : null,
+        video: pendingVideo || null,
+        videoUrl: pendingVideo || null,
+        author: name, authorUid: currentUser.uid, authorAvatar: snapA.val() || '',
+        likes: 0, shares: 0, timestamp: Date.now(), ts: Date.now()
+      });
+      input.value = ''; pendingImages = []; pendingVideo = null; renderImagePreview();
+      document.getElementById('charCount').textContent = '০ / ৫০০';
+      document.getElementById('charCount').className = 'char-count';
+      showToast('✓ পোস্ট সেভ হয়েছে!');
+    } catch(e) { showToast('❌ পোস্ট হয়নি: ' + e.message, 'var(--like)'); }
+    postBtn.textContent = 'পোস্ট করুন'; updatePostBtnState();
+  };
+
+  window.toggleLike = async function(id, currentLiked, currentCount) {
+    if (!currentUser) return;
+    const uid = currentUser.uid;
+    const newLiked = !currentLiked;
+    const newCount = newLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
+    try {
+      const updates = { likes: newCount };
+      updates['likedBy/' + uid] = newLiked ? true : null;
+      await db.ref('posts/' + id).update(updates);
+      if (newLiked) {
+        const postSnap = await db.ref('posts/' + id).once('value');
+        const post = postSnap.val();
+        if (post && post.authorUid && post.authorUid !== uid) {
+          const myName = currentUser.displayName || currentUser.email.split('@')[0];
+          await db.ref('notifications/' + post.authorUid).push({ type: 'like', fromUid: uid, fromName: myName, postId: id, postText: (post.text||'').substring(0,60), ts: Date.now(), read: false });
+        }
+      }
+    } catch(e) { showToast('❌ হয়নি', 'var(--like)'); }
+  };
+
+  window.submitComment = async function(id) {
+    if (!currentUser) return;
+    const inp  = document.getElementById('cmt-input-' + id);
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = ''; inp.style.height = '';
+    const name = currentUser.displayName || currentUser.email.split('@')[0];
+    try {
+      await db.ref('posts/' + id + '/comments').push({ author: name, authorUid: currentUser.uid, text, timestamp: Date.now() });
+      const postSnap = await db.ref('posts/' + id).once('value');
+      const post = postSnap.val();
+      if (post && post.authorUid && post.authorUid !== currentUser.uid) {
+        await db.ref('notifications/' + post.authorUid).push({ type: 'comment', fromUid: currentUser.uid, fromName: name, postId: id, postText: (post.text||'').substring(0,60), commentText: text.substring(0,80), ts: Date.now(), read: false });
+      }
+    } catch(e) { showToast('❌ মন্তব্য হয়নি', 'var(--like)'); }
+  };
+
+  window.sharePost = async function(id, currentShares, encodedText) {
+    const text = decodeURIComponent(encodedText);
+    try {
+      await db.ref('posts/' + id).update({ shares: currentShares + 1 });
+      // Notify post author about the share
+      const postSnap = await db.ref('posts/' + id).once('value');
+      const post = postSnap.val();
+      if (post && post.authorUid && post.authorUid !== (currentUser ? currentUser.uid : '')) {
+        const myName = currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : 'কেউ';
+        await db.ref('notifications/' + post.authorUid).push({
+          type: 'share', fromUid: currentUser.uid, fromName: myName,
+          postId: id, postText: (post.text || '').substring(0, 60),
+          ts: Date.now(), read: false
+        });
+      }
+    } catch(e) {}
+    if (navigator.share) navigator.share({ title: 'PostBook', text }).catch(()=>{});
+    else if (navigator.clipboard) navigator.clipboard.writeText(text);
+    showToast('✓ পোস্ট শেয়ার হয়েছে!');
+  };
+
+  window.deletePost = async function(id) {
+    if (!confirm('এই পোস্টটি মুছে ফেলবেন?')) return;
+    try { await db.ref('posts/' + id).remove(); showToast('🗑️ পোস্ট মুছে ফেলা হয়েছে'); }
+    catch(e) { showToast('❌ মুছা হয়নি', 'var(--like)'); }
+  };
+
+  window.copyPostText = async function(id) {
+    try {
+      const snap = await db.ref('posts/' + id + '/text').once('value');
+      if (snap.val() && navigator.clipboard) navigator.clipboard.writeText(snap.val());
+    } catch(e) {}
+    document.getElementById('menu-' + id)?.classList.remove('open');
+    showToast('📋 কপি হয়েছে!');
+  };
+
+  window.toggleMenu = function(id) {
+    document.querySelectorAll('.dropdown.open').forEach(d => { if (d.id !== 'menu-' + id) d.classList.remove('open'); });
+    document.getElementById('menu-' + id).classList.toggle('open');
+  };
+  window.toggleComments = function(id) {
+    const sec = document.getElementById('cmts-' + id);
+    sec.classList.toggle('open');
+    if (sec.classList.contains('open')) setTimeout(() => document.getElementById('cmt-input-' + id)?.focus(), 100);
+  };
+  window.autoResize = function(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; };
+
+  // ── Bottom Nav ────────────────────────────────────────────────────
+  window.updateBottomNav = function(active) {
+    ['feed','friends','reels','messages','notifications','profile'].forEach(id => {
+      const btn = document.getElementById('nav' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (btn) btn.style.color = id === active ? 'var(--accent)' : 'var(--muted)';
+    });
+  };
+
+  // ── Friends Page ──────────────────────────────────────────────────
+  let allUsersCache = [];
+  let currentFriendsTab = 'all';
+
+  window.loadFriends = async function() {
+    const grid = document.getElementById('friendsGrid');
+    const label = document.getElementById('friendsCountLabel');
+    grid.innerHTML = '<div class="loading-spinner" style="grid-column:1/-1">⏳ লোড হচ্ছে...</div>';
+    label.textContent = 'লোড হচ্ছে...';
+    const snap = await db.ref('users').once('value');
+    const data = snap.val() || {};
+    const followingSnap = await db.ref('users/' + currentUser.uid + '/following').once('value');
+    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
+    const followingMap  = followingSnap.val() || {};
+    const followersMap  = followersSnap.val() || {};
+    allUsersCache = Object.entries(data)
+      .filter(([uid]) => uid !== currentUser.uid)
+      .map(([uid, u]) => ({ uid, name: u.name||'ব্যবহারকারী', email: u.email||'', avatar: u.avatar||'', isFollowing: !!followingMap[uid], isFollower: !!followersMap[uid] }));
+    renderFriendCards();
+  };
+
+  window.switchFriendsTab = function(tab) {
+    currentFriendsTab = tab;
+    ['all','following','followers'].forEach(t => {
+      const btn = document.getElementById('friendsTab' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.className = 'nav-tab' + (t === tab ? ' active' : '');
+    });
+    document.getElementById('friendsSearch').value = '';
+    renderFriendCards();
+  };
+
+  window.filterFriends = function() { renderFriendCards(); };
+
+  function renderFriendCards() {
+    const grid  = document.getElementById('friendsGrid');
+    const label = document.getElementById('friendsCountLabel');
+    const query = (document.getElementById('friendsSearch')?.value || '').toLowerCase();
+    let list = allUsersCache;
+    if (currentFriendsTab === 'following') list = list.filter(u => u.isFollowing);
+    if (currentFriendsTab === 'followers') list = list.filter(u => u.isFollower);
+    if (query) list = list.filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
+    const tabLabel = currentFriendsTab === 'all' ? 'মোট ব্যবহারকারী' : currentFriendsTab === 'following' ? 'ফলোয়িং' : 'ফলোয়ার';
+    label.textContent = toBengaliNum(list.length) + ' জন ' + tabLabel;
+    if (!list.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div><div class="empty-text">কেউ নেই</div></div>'; return; }
+    grid.innerHTML = '';
+    list.forEach(user => {
+      const card = document.createElement('div');
+      card.className = 'friend-card';
+      const avatarHTML = user.avatar ? '<div class="friend-avatar-lg"><img src="' + user.avatar + '" alt=""></div>' : '<div class="friend-avatar-lg">' + getInitial(user.name) + '</div>';
+      card.innerHTML = avatarHTML + '<div class="friend-card-name">' + escHtml(user.name) + '</div><div class="friend-card-sub">@' + escHtml((user.name||'user').toLowerCase().replace(/\s/g,'_')) + '</div><button class="friend-card-btn ' + (user.isFollowing ? 'following' : '') + '" id="fcard-btn-' + user.uid + '" onclick="event.stopPropagation();friendToggleFollow(\'' + user.uid + '\')">' + (user.isFollowing ? '✓ ফলোয়িং' : '+ ফলো করুন') + '</button>';
+      card.onclick = () => { openProfile(user.uid); updateBottomNav('profile'); };
+      grid.appendChild(card);
+    });
+  }
+
+  window.friendToggleFollow = async function(targetUid) {
+    const myUid = currentUser.uid;
+    const user  = allUsersCache.find(u => u.uid === targetUid);
+    if (!user) return;
+    const btn = document.getElementById('fcard-btn-' + targetUid);
+    if (user.isFollowing) {
+      await db.ref('users/' + myUid + '/following/' + targetUid).remove();
+      await db.ref('users/' + targetUid + '/followers/' + myUid).remove();
+      user.isFollowing = false;
+      if (btn) { btn.textContent = '+ ফলো করুন'; btn.classList.remove('following'); }
+      showToast('আনফলো করা হয়েছে');
+    } else {
+      await db.ref('users/' + myUid + '/following/' + targetUid).set(true);
+      await db.ref('users/' + targetUid + '/followers/' + myUid).set(true);
+      user.isFollowing = true;
+      if (btn) { btn.textContent = '✓ ফলোয়িং'; btn.classList.add('following'); }
+      const myName = currentUser.displayName || currentUser.email.split('@')[0];
+      await db.ref('notifications/' + targetUid).push({ type: 'follow', fromUid: myUid, fromName: myName, ts: Date.now(), read: false });
+      showToast('✓ ফলো করা হয়েছে!');
+    }
+    if (currentFriendsTab === 'following') renderFriendCards();
+  };
+
+  // ── Notifications ─────────────────────────────────────────────────
+  const ADMIN_UID = 'REPLACE_WITH_YOUR_UID';
+
+  // ── Browser Push Notification Permission ─────────────────────────
+  let _lastNotifCount = null;
+  let _lastNotifKeys  = null;
+
+  async function requestPushPermission() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'default') {
+      // Ask after short delay so user is settled into the app
+      setTimeout(async () => {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') showToast('🔔 নোটিফিকেশন চালু হয়েছে!');
+      }, 3000);
+    }
+  }
+
+  function sendBrowserNotif(title, body, icon) {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+    // Don't show if app is in focus (user can see it in-app)
+    if (!document.hidden) return;
+    try {
+      const n = new Notification(title, {
+        body: body,
+        icon: icon || 'https://i.ibb.co/zHhVbMP/postbook-icon.png',
+        badge: 'https://i.ibb.co/zHhVbMP/postbook-icon.png',
+        tag: 'postbook-notif-' + Date.now(),
+        vibrate: [200, 100, 200],
+        requireInteraction: false,
+      });
+      n.onclick = () => { window.focus(); n.close(); showPage('notifications'); loadNotifications(); };
+    } catch(e) {}
+  }
+
+  function startNotifListener() {
+    if (!currentUser) return;
+    requestPushPermission();
+
+    db.ref('notifications/' + currentUser.uid).on('value', snap => {
+      const data = snap.val() || {};
+      const allNotifs = Object.entries(data);
+      const unread = allNotifs.filter(([,n]) => !n.read).length;
+
+      // ── Update badges ──────────────────────────────────────────────
+      const badge  = document.getElementById('navNotifBadge');
+      if (badge)  { badge.textContent = unread > 9 ? '9+' : String(unread); badge.className = 'nav-notif-badge' + (unread > 0 ? ' show' : ''); }
+      const hBadge = document.getElementById('headerNotifBadge');
+      if (hBadge) { hBadge.textContent = unread > 9 ? '9+' : String(unread); hBadge.style.display = unread > 0 ? 'flex' : 'none'; }
+
+      // ── Detect newly arrived notifications ─────────────────────────
+      const currentKeys = new Set(allNotifs.map(([k]) => k));
+      if (_lastNotifKeys === null) {
+        // First load — just record existing keys, don't fire notifications
+        _lastNotifKeys = currentKeys;
+        _lastNotifCount = unread;
+        return;
+      }
+
+      // Find keys that didn't exist before
+      const newEntries = allNotifs.filter(([k, n]) => !_lastNotifKeys.has(k) && !n.read);
+      _lastNotifKeys = currentKeys;
+
+      newEntries.forEach(([, n]) => {
+        let title = 'PostBook 🔔';
+        let body  = 'নতুন নোটিফিকেশন';
+
+        if (n.type === 'like') {
+          title = '❤️ নতুন লাইক!';
+          body  = (n.fromName || 'কেউ') + ' আপনার পোস্টে লাইক দিয়েছে' + (n.postText ? ' — "' + n.postText.substring(0,40) + '..."' : '');
+        } else if (n.type === 'comment') {
+          title = '💬 নতুন মন্তব্য!';
+          body  = (n.fromName || 'কেউ') + ' মন্তব্য করেছে' + (n.commentText ? ': "' + n.commentText.substring(0,40) + '"' : '');
+        } else if (n.type === 'share') {
+          title = '↗️ পোস্ট শেয়ার হয়েছে!';
+          body  = (n.fromName || 'কেউ') + ' আপনার পোস্ট শেয়ার করেছে';
+        } else if (n.type === 'follow') {
+          title = '👤 নতুন ফলোয়ার!';
+          body  = (n.fromName || 'কেউ') + ' আপনাকে ফলো করেছে';
+        } else if (n.type === 'message') {
+          title = '✉️ নতুন বার্তা!';
+          body  = (n.fromName || 'কেউ') + ' আপনাকে মেসেজ করেছে' + (n.msgPreview ? ': "' + n.msgPreview.substring(0,40) + '"' : '');
+        } else if (n.type === 'call') {
+          title = '📞 মিসড কল!';
+          body  = (n.fromName || 'কেউ') + ' আপনাকে ' + (n.callType === 'video' ? 'ভিডিও' : 'অডিও') + ' কল করেছিল';
+        } else if (n.type === 'admin' || n.type === 'admin_broadcast') {
+          title = '📢 অ্যাডমিন বার্তা';
+          body  = n.msg || n.message || '';
+        }
+
+        // Show browser notification (only if app is in background)
+        sendBrowserNotif(title, body);
+
+        // Also show in-app floating toast when app IS visible
+        if (!document.hidden) {
+          showInAppNotifToast(title, body);
+        }
+      });
+    });
+  }
+
+  // ── In-app floating notification toast ───────────────────────────
+  function showInAppNotifToast(title, body) {
+    const existing = document.getElementById('inAppNotifToast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'inAppNotifToast';
+    toast.style.cssText = [
+      'position:fixed',
+      'top:1rem',
+      'left:50%',
+      'transform:translateX(-50%) translateY(-120%)',
+      'background:var(--card)',
+      'border:1px solid var(--accent)',
+      'border-radius:16px',
+      'padding:0.85rem 1.1rem',
+      'z-index:99999',
+      'display:flex',
+      'align-items:center',
+      'gap:0.75rem',
+      'box-shadow:0 8px 32px rgba(124,110,247,0.3)',
+      'max-width:320px',
+      'width:calc(100% - 2rem)',
+      'cursor:pointer',
+      'transition:transform 0.4s cubic-bezier(0.16,1,0.3,1)',
+    ].join(';');
+
+    toast.innerHTML = `
+      <div style="font-size:1.4rem;flex-shrink:0">🔔</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:0.88rem;color:var(--text);margin-bottom:2px">${title}</div>
+        <div style="font-size:0.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${body}</div>
+      </div>
+      <button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;flex-shrink:0;padding:0">✕</button>
+    `;
+
+    toast.onclick = (e) => {
+      if (e.target.tagName === 'BUTTON') return;
+      toast.remove();
+      showPage('notifications');
+      loadNotifications();
+    };
+
+    document.body.appendChild(toast);
+    // Animate in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { toast.style.transform = 'translateX(-50%) translateY(0)'; });
+    });
+    // Auto dismiss after 5s
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.style.transform = 'translateX(-50%) translateY(-120%)';
+        setTimeout(() => toast.remove(), 400);
+      }
+    }, 5000);
+  }
+
+  window.loadNotifications = async function() {
+    if (!currentUser) return;
+    const list = document.getElementById('notifList');
+    list.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+    document.getElementById('adminPanel').style.display = currentUser.uid === ADMIN_UID ? 'block' : 'none';
+    const snap = await db.ref('notifications/' + currentUser.uid).once('value');
+    const data = snap.val() || {};
+    const notifs = Object.entries(data).map(([id, v]) => ({ id, ...v })).sort((a, b) => (b.ts||0) - (a.ts||0));
+    const followingSnap = await db.ref('users/' + currentUser.uid + '/following').once('value');
+    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
+    const followingCount = followingSnap.val() ? Object.keys(followingSnap.val()).length : 0;
+    const followersCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
+    const allPostsSnap = await postsRef.once('value');
+    const allPosts = allPostsSnap.val() || {};
+    let totalLikes = 0, totalComments = 0;
+    Object.values(allPosts).forEach(p => { if (p.authorUid === currentUser.uid) { totalLikes += p.likes && typeof p.likes === 'object' ? Object.keys(p.likes).length : (typeof p.likes === 'number' ? p.likes : 0); totalComments += p.comments ? Object.keys(p.comments).length : 0; } });
+    list.innerHTML = '';
+    const summary = document.createElement('div');
+    summary.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.5rem;text-align:center;';
+    summary.innerHTML = '<div><div style="font-size:1.4rem;font-weight:700;color:var(--like)">' + toBengaliNum(totalLikes) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">মোট লাইক</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--comment)">' + toBengaliNum(totalComments) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">মন্তব্য</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--accent3)">' + toBengaliNum(followersCount) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">ফলোয়ার</div></div><div><div style="font-size:1.4rem;font-weight:700;color:var(--accent)">' + toBengaliNum(followingCount) + '</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">ফলোয়িং</div></div>';
+    list.appendChild(summary);
+    if (!notifs.length) { list.innerHTML += '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-text">এখনো কোনো নোটিফিকেশন নেই</div></div>'; return; }
+    notifs.forEach(n => {
+      const isAdminType = n.type === 'admin' || n.type === 'admin_broadcast' || n.type === 'admin_personal';
+      const item = document.createElement('div');
+      item.className = 'notif-item' + (!n.read ? ' unread' : '') + (isAdminType ? ' admin-notif' : '');
+      let iconClass='', iconEmoji='', text='';
+      if (n.type==='like')    { iconClass='like';    iconEmoji='❤️'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনার পোস্টে লাইক দিয়েছে'+(n.postText?' — <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.postText)+'..."</span>':''); }
+      else if (n.type==='comment') { iconClass='comment'; iconEmoji='💬'; text='<strong>'+escHtml(n.fromName)+'</strong> মন্তব্য করেছে'+(n.commentText?': <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.commentText)+'"</span>':''); }
+      else if (n.type==='share')   { iconClass='share';   iconEmoji='↗️'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনার পোস্ট শেয়ার করেছে'+(n.postText?' — <span style="color:var(--muted);font-size:0.85rem">"'+escHtml(n.postText)+'..."</span>':''); }
+      else if (n.type==='follow')  { iconClass='follow';  iconEmoji='👤'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনাকে ফলো করেছে'; }
+      else if (n.type==='message') { iconClass='comment'; iconEmoji='✉️'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনাকে মেসেজ করেছে'+(n.msgPreview||n.preview?': <span style="color:var(--muted);font-size:0.85rem">"'+escHtml((n.msgPreview||n.preview||'').substring(0,60))+'"</span>':''); }
+      else if (n.type==='call')    { iconClass='follow';  iconEmoji='📞'; text='<strong>'+escHtml(n.fromName)+'</strong> আপনাকে '+(n.callType==='video'?'ভিডিও':'অডিও')+' কল করেছিল (মিসড)'; }
+      else if (isAdminType) {
+        iconClass='admin'; iconEmoji = n.icon || '📢';
+        const titlePart = n.title ? '<strong>'+escHtml(n.title)+'</strong><br>' : '';
+        const msgPart = escHtml(n.msg || n.message || '');
+        text='<span style="color:var(--accent2);font-weight:700">📢 অ্যাডমিন বার্তা:</span><br>'+titlePart+msgPart;
+        if (n.link) text += ' <a href="'+escHtml(n.link)+'" target="_blank" style="color:var(--accent);font-size:0.82rem">🔗 দেখুন</a>';
+      }
+      item.innerHTML = '<div class="notif-icon-wrap '+iconClass+'">'+iconEmoji+'</div><div class="notif-body"><div class="notif-text">'+text+'</div><div class="notif-time">'+timeLabel(n.ts)+'</div></div>'+(!n.read?'<div class="notif-unread-dot"></div>':'');
+      item.onclick = async () => {
+        if (!n.read) { await db.ref('notifications/'+currentUser.uid+'/'+n.id).update({read:true}); item.classList.remove('unread'); item.querySelector('.notif-unread-dot')?.remove(); }
+        if (!isAdminType && n.fromUid) openProfile(n.fromUid);
+      };
+      list.appendChild(item);
+    });
+  };
+
+  window.markAllRead = async function() {
+    if (!currentUser) return;
+    const snap = await db.ref('notifications/' + currentUser.uid).once('value');
+    const data = snap.val() || {};
+    const updates = {};
+    Object.keys(data).forEach(k => { updates[k + '/read'] = true; });
+    if (Object.keys(updates).length) await db.ref('notifications/' + currentUser.uid).update(updates);
+    loadNotifications(); showToast('✓ সব নোটিফিকেশন পড়া হয়েছে');
+  };
+
+  window.sendAdminNotif = async function() {
+    if (currentUser.uid !== ADMIN_UID) return;
+    const msg = document.getElementById('adminMsg').value.trim();
+    if (!msg) { showToast('বার্তা লিখুন', 'var(--like)'); return; }
+    const btn = document.getElementById('adminSendBtn');
+    btn.disabled = true; btn.textContent = '⏳ পাঠানো হচ্ছে...';
+    const usersSnap = await db.ref('users').once('value');
+    const users = usersSnap.val() || {};
+    const payload = { type: 'admin', title: 'অ্যাডমিন বার্তা', msg: msg, message: msg, icon: '📢', ts: Date.now(), read: false, sentBy: 'admin', target: 'all' };
+    const promises = Object.keys(users).filter(uid => uid !== ADMIN_UID).map(uid => db.ref('notifications/' + uid).push(payload));
+    await Promise.all(promises);
+    document.getElementById('adminMsg').value = '';
+    btn.disabled = false; btn.textContent = '📢 সবাইকে পাঠান';
+    showToast('✓ সবার কাছে বার্তা পাঠানো হয়েছে!');
+  };
+
+  // ── Story Feature ─────────────────────────────────────────────────
+  const STORY_TTL = 24 * 60 * 60 * 1000;
+  let storyGroups = [], storyGroupIdx = 0, storyIdx = 0, storyTimer = null, storyImgBase64 = null;
+  const STORY_DURATION = 5000;
+
+  async function loadStories() {
+    const now = Date.now();
+    const snap = await db.ref('stories').once('value');
+    const data = snap.val() || {};
+    const byUser = {};
+    Object.entries(data).forEach(([sid, s]) => {
+      if (!s || (now - (s.ts||0)) > STORY_TTL) return;
+      if (!byUser[s.uid]) byUser[s.uid] = { uid: s.uid, name: s.name, avatar: s.avatar||'', stories: [] };
+      byUser[s.uid].stories.push({ id: sid, ...s });
+    });
+    Object.values(byUser).forEach(g => g.stories.sort((a,b) => a.ts - b.ts));
+    const myUid = currentUser.uid;
+    storyGroups = Object.values(byUser).sort((a,b) => {
+      if (a.uid === myUid) return -1; if (b.uid === myUid) return 1;
+      return (b.stories[b.stories.length-1]?.ts||0) - (a.stories[a.stories.length-1]?.ts||0);
+    });
+    renderStoryBar();
+  }
+
+  function renderStoryBar() {
+    const bar = document.getElementById('storyBar');
+    const myUid = currentUser.uid;
+    const seenKey = 'seen_stories_' + myUid;
+    let seen = {};
+    try { seen = JSON.parse(localStorage.getItem(seenKey) || '{}'); } catch(e) {}
+    bar.innerHTML = '<div class="story-item" onclick="openStoryComposer()"><div class="story-add-ring">＋</div><div class="story-name me">স্টোরি</div></div>';
+    storyGroups.forEach((group, gIdx) => {
+      const allSeen = group.stories.every(s => seen[s.id]);
+      const isMe = group.uid === myUid;
+      const shortName = group.name.split(' ')[0];
+      const avatarInner = group.avatar ? '<img src="' + group.avatar + '" alt="">' : '<div class="story-initials">' + getInitial(group.name) + '</div>';
+      const item = document.createElement('div');
+      item.className = 'story-item';
+      item.innerHTML = '<div class="story-ring' + (allSeen?' seen':'') + '"><div class="story-ring-inner">' + avatarInner + '</div></div><div class="story-name' + (isMe?' me':'') + '">' + escHtml(shortName) + '</div>';
+      item.onclick = () => openStoryViewer(gIdx);
+      bar.appendChild(item);
+    });
+  }
+
+  window.openStoryComposer = function() {
+    storyImgBase64 = null;
+    document.getElementById('storyImgPreview').classList.remove('show');
+    document.getElementById('storyImgPreview').src = '';
+    document.getElementById('storyUploadArea').style.display = 'flex';
+    document.getElementById('storyTextInput').value = '';
+    document.getElementById('storyImgInput').value = '';
+    document.getElementById('storyComposerModal').classList.add('open');
+  };
+  window.closeStoryComposer = function() { document.getElementById('storyComposerModal').classList.remove('open'); };
+  window.handleStoryImage = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    showToast('⏳ ছবি প্রস্তুত হচ্ছে...');
+    storyImgBase64 = await fileToBase64(file, 900);
+    const prev = document.getElementById('storyImgPreview');
+    prev.src = storyImgBase64; prev.classList.add('show');
+    document.getElementById('storyUploadArea').style.display = 'none';
+    showToast('✓ ছবি প্রস্তুত');
+  };
+  window.publishStory = async function() {
+    const text = document.getElementById('storyTextInput').value.trim();
+    if (!storyImgBase64 && !text) { showToast('ছবি বা লেখা দিন', 'var(--like)'); return; }
+    const btn = document.getElementById('storyPostBtn');
+    btn.disabled = true; btn.textContent = '⏳ পোস্ট হচ্ছে...';
+    const name = currentUser.displayName || currentUser.email.split('@')[0];
+    const snapAv = await db.ref('users/' + currentUser.uid + '/avatar').once('value');
+    await db.ref('stories').push({ uid: currentUser.uid, name, avatar: snapAv.val()||'', text: text||'', image: storyImgBase64||'', ts: Date.now() });
+    btn.disabled = false; btn.textContent = '🌟 স্টোরি পোস্ট করুন';
+    closeStoryComposer(); showToast('✓ স্টোরি পোস্ট হয়েছে!'); loadStories();
+  };
+
+  window.openStoryViewer = function(gIdx) { storyGroupIdx = gIdx; storyIdx = 0; document.getElementById('storyViewer').classList.add('open'); showStory(); };
+  window.closeStoryViewer = function() { clearTimeout(storyTimer); document.getElementById('storyViewer').classList.remove('open'); renderStoryBar(); };
+
+  function showStory() {
+    clearTimeout(storyTimer);
+    const group = storyGroups[storyGroupIdx];
+    if (!group) { closeStoryViewer(); return; }
+    const story = group.stories[storyIdx];
+    if (!story) { closeStoryViewer(); return; }
+    const seenKey = 'seen_stories_' + currentUser.uid;
+    let seen = {};
+    try { seen = JSON.parse(localStorage.getItem(seenKey) || '{}'); } catch(e) {}
+    seen[story.id] = true;
+    try { localStorage.setItem(seenKey, JSON.stringify(seen)); } catch(e) {}
+    const bar = document.getElementById('storyProgressBar');
+    bar.innerHTML = '';
+    group.stories.forEach((_, i) => {
+      const seg = document.createElement('div'); seg.className = 'story-prog-seg';
+      const fill = document.createElement('div'); fill.className = 'story-prog-fill';
+      if (i < storyIdx) fill.style.width = '100%';
+      seg.appendChild(fill); bar.appendChild(seg);
+      if (i === storyIdx) setTimeout(() => { fill.style.transition = 'width ' + STORY_DURATION + 'ms linear'; fill.style.width = '100%'; }, 50);
+    });
+    const avatarEl = document.getElementById('svAvatar');
+    avatarEl.innerHTML = group.avatar ? '<img src="' + group.avatar + '" alt="">' : getInitial(group.name);
+    document.getElementById('svName').textContent = group.name;
+    document.getElementById('svTime').textContent = timeLabel(story.ts);
+    const delBtn = document.getElementById('svDeleteBtn');
+    delBtn.style.display = (story.uid === currentUser.uid) ? 'block' : 'none';
+    const content = document.getElementById('svContent');
+    content.querySelectorAll('img, .story-viewer-text-only').forEach(el => el.remove());
+    if (story.image) {
+      const img = document.createElement('img'); img.className = 'story-viewer-img'; img.src = story.image;
+      content.insertBefore(img, content.firstChild);
+      if (story.text) { const overlay = document.createElement('div'); overlay.style.cssText = 'position:absolute;bottom:80px;left:0;right:0;padding:1rem 1.25rem;text-align:center;font-size:1.1rem;font-weight:600;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.8);pointer-events:none;'; overlay.textContent = story.text; content.appendChild(overlay); }
+    } else {
+      const textDiv = document.createElement('div'); textDiv.className = 'story-viewer-text-only'; textDiv.textContent = story.text; content.insertBefore(textDiv, content.firstChild);
+    }
+    storyTimer = setTimeout(() => storyNav(1), STORY_DURATION);
+  }
+
+  window.storyNav = function(dir) {
+    clearTimeout(storyTimer);
+    const group = storyGroups[storyGroupIdx];
+    storyIdx += dir;
+    if (storyIdx < 0) { if (storyGroupIdx > 0) { storyGroupIdx--; storyIdx = storyGroups[storyGroupIdx].stories.length - 1; showStory(); } else { closeStoryViewer(); } }
+    else if (storyIdx >= group.stories.length) { if (storyGroupIdx < storyGroups.length - 1) { storyGroupIdx++; storyIdx = 0; showStory(); } else { closeStoryViewer(); } }
+    else { showStory(); }
+  };
+
+  window.deleteCurrentStory = async function() {
+    const group = storyGroups[storyGroupIdx];
+    const story = group?.stories[storyIdx];
+    if (!story || story.uid !== currentUser.uid) return;
+    if (!confirm('এই স্টোরিটি মুছে ফেলবেন?')) return;
+    clearTimeout(storyTimer);
+    await db.ref('stories/' + story.id).remove();
+    showToast('🗑️ স্টোরি মুছে ফেলা হয়েছে');
+    closeStoryViewer(); loadStories();
+  };
+
+  async function cleanExpiredStories() {
+    const now = Date.now();
+    const snap = await db.ref('stories').once('value');
+    const data = snap.val() || {};
+    const removes = [];
+    Object.entries(data).forEach(([sid, s]) => { if (s && (now - (s.ts||0)) > STORY_TTL) removes.push(db.ref('stories/' + sid).remove()); });
+    if (removes.length) await Promise.all(removes);
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── MESSENGER FEATURE ─────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════
+
+  let currentChatUid  = null;  // peer UID
+  let currentChatName = '';
+  let chatListener    = null;  // Firebase listener unsubscribe
+  let callTimerInterval = null;
+  let callSeconds       = 0;
+  let localStream       = null;
+  let isMuted = false, isCamOff = false;
+
+  // chatId = sorted UIDs joined by '_'
+  function getChatId(uid1, uid2) {
+    return [uid1, uid2].sort().join('_');
+  }
+
+  // ── Inbox ─────────────────────────────────────────────────────────
+  window.loadInbox = async function() {
+    const list = document.getElementById('inboxList');
+    list.innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+    const myUid = currentUser.uid;
+
+    // Load all chats where myUid participates
+    const snap = await db.ref('chats').once('value');
+    const all  = snap.val() || {};
+
+    const myChats = Object.entries(all)
+      .filter(([cid]) => cid.includes(myUid))
+      .map(([cid, data]) => {
+        const msgs = data.messages ? Object.values(data.messages) : [];
+        const last = msgs.sort((a,b) => (b.ts||0)-(a.ts||0))[0];
+        const peerUid = cid.replace(myUid, '').replace('_','');
+        const unread  = msgs.filter(m => m.senderUid !== myUid && !m.read).length;
+        return { cid, peerUid, last, unread };
+      })
+      .sort((a,b) => (b.last?.ts||0) - (a.last?.ts||0));
+
+    if (!myChats.length) {
+      list.innerHTML = '<div class="inbox-empty"><div class="empty-icon">💬</div><div>এখনো কোনো মেসেজ নেই।<br><span style="font-size:0.85rem">কাউকে ফলো করে মেসেজ পাঠান।</span></div></div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    for (const chat of myChats) {
+      const usnap = await db.ref('users/' + chat.peerUid).once('value');
+      const udata = usnap.val() || {};
+      const presSnap = await db.ref('presence/' + chat.peerUid).once('value');
+      const isOnline = !!presSnap.val();
+      const item  = document.createElement('div');
+      item.className = 'inbox-item' + (chat.unread > 0 ? ' unread' : '');
+      const avInner = udata.avatar
+        ? '<img src="' + udata.avatar + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
+        : getInitial(udata.name);
+      const avHTML = '<div class="inbox-av-wrap' + (isOnline ? ' is-online' : '') + '"><div class="inbox-avatar">' + avInner + '</div><span class="online-dot"></span></div>';
+      const preview = chat.last ? (chat.last.senderUid === myUid ? 'আপনি: ' : '') + (chat.last.img ? '📷 ছবি' : (chat.last.text||'').substring(0,40)) : 'মেসেজ শুরু করুন';
+      const onlineLabel = isOnline ? '<span style="font-size:0.7rem;color:#22c55e;font-weight:600;">● অনলাইন</span>' : '';
+      item.innerHTML = avHTML +
+        '<div class="inbox-info"><div class="inbox-name">' + escHtml(udata.name||'ব্যবহারকারী') + ' ' + onlineLabel + '</div><div class="inbox-preview">' + escHtml(preview) + '</div></div>' +
+        '<div class="inbox-meta"><div class="inbox-time">' + (chat.last ? timeLabel(chat.last.ts) : '') + '</div>' +
+        (chat.unread > 0 ? '<div class="inbox-badge">' + chat.unread + '</div>' : '') + '</div>';
+      item.onclick = () => openChat(chat.peerUid);
+      list.appendChild(item);
+    }
+  };
+
+  // ── Open Chat ──────────────────────────────────────────────────────
+  window.openChat = async function(peerUid) {
+    currentChatUid = peerUid;
+    const snap = await db.ref('users/' + peerUid).once('value');
+    const data  = snap.val() || {};
+    currentChatName = data.name || 'ব্যবহারকারী';
+
+    // Header
+    const avEl = document.getElementById('chatPeerAvatar');
+    avEl.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(currentChatName);
+    document.getElementById('chatPeerName').textContent   = currentChatName;
+    document.getElementById('chatPeerStatus').textContent = 'অনলাইন';
+
+    // Open window
+    document.getElementById('chatWindow').classList.add('open');
+    document.getElementById('chatMessages').innerHTML = '<div class="loading-spinner">⏳ লোড হচ্ছে...</div>';
+
+    // Listen to messages
+    const cid     = getChatId(currentUser.uid, peerUid);
+    const msgsRef = db.ref('chats/' + cid + '/messages');
+
+    if (chatListener) chatListener();  // detach old
+    msgsRef.on('value', snap => {
+      const data = snap.val() || {};
+      const msgs = Object.entries(data).map(([k,v]) => ({id:k,...v})).sort((a,b) => (a.ts||0)-(b.ts||0));
+      renderMessages(msgs);
+      // Mark received as read
+      msgs.filter(m => m.senderUid !== currentUser.uid && !m.read).forEach(m => {
+        msgsRef.child(m.id).update({ read: true });
+      });
+    });
+    chatListener = () => msgsRef.off();
+
+    // Reset input
+    const inp = document.getElementById('chatTextInput');
+    inp.value = ''; inp.style.height = '';
+    setTimeout(() => inp.focus(), 300);
+  };
+
+  window.closeChatWindow = function() {
+    if (chatListener) { chatListener(); chatListener = null; }
+    document.getElementById('chatWindow').classList.remove('open');
+    currentChatUid = null;
+  };
+
+  function renderMessages(msgs) {
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = '';
+    if (!msgs.length) {
+      container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem;font-size:0.88rem">কথা শুরু করুন! 👋</div>';
+      return;
+    }
+    let lastDate = '';
+    msgs.forEach(m => {
+      const isMine = m.senderUid === currentUser.uid;
+      // Date divider
+      const d = new Date(m.ts||0);
+      const dateStr = d.toLocaleDateString('bn-BD', {day:'numeric',month:'short'});
+      if (dateStr !== lastDate) {
+        const div = document.createElement('div');
+        div.className = 'chat-date-divider';
+        div.textContent = dateStr;
+        container.appendChild(div);
+        lastDate = dateStr;
+      }
+      const row = document.createElement('div');
+      row.className = 'msg-row' + (isMine ? ' mine' : '');
+      const timeStr = d.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
+      let bubbleContent = '';
+      if (m.img)  bubbleContent += '<img class="msg-img" src="' + m.img + '" alt="" onclick="openLightbox(\'' + m.img + '\')">';
+      if (m.video) bubbleContent += '<div style="position:relative;cursor:pointer;" onclick="openVideoPlayer(\'' + m.video + '\')">' +
+        '<video class="msg-video" src="' + m.video + '" style="pointer-events:none;"></video>' +
+        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,0,0,0.3);">' +
+        '<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">▶</div>' +
+        '</div></div>';
+      if (m.text) bubbleContent += escHtml(m.text);
+      bubbleContent += '<span class="msg-time' + (isMine?' mine':'') + '">' + timeStr + '</span>';
+      if (isMine && m.read) bubbleContent += '<div class="msg-seen">✓✓ দেখেছে</div>';
+      row.innerHTML = '<div class="msg-bubble ' + (isMine?'mine':'theirs') + '">' + bubbleContent + '</div>';
+      container.appendChild(row);
+    });
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // ── Send Message ──────────────────────────────────────────────────
+  window.sendMessage = async function() {
+    if (!currentChatUid) return;
+    const inp  = document.getElementById('chatTextInput');
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = ''; inp.style.height = '';
+    const cid = getChatId(currentUser.uid, currentChatUid);
+    await db.ref('chats/' + cid + '/messages').push({
+      senderUid: currentUser.uid,
+      text, ts: Date.now(), read: false
+    });
+    // Notify peer
+    const myName = currentUser.displayName || currentUser.email.split('@')[0];
+    await db.ref('notifications/' + currentChatUid).push({
+      type:'message', fromUid:currentUser.uid, fromName:myName,
+      preview:text.substring(0,60), msgPreview:text.substring(0,60), ts:Date.now(), read:false
+    });
+  };
+
+  // ── Send Image ────────────────────────────────────────────────────
+  const CLOUDINARY_CLOUD = 'dvfsjkwgb';
+  const CLOUDINARY_PRESET = 'tara_media';
+
+  function showUploadProgress(title) {
+    document.getElementById('uploadProgressTitle').textContent = title || 'আপলোড হচ্ছে...';
+    document.getElementById('uploadProgressSub').textContent = 'একটু অপেক্ষা করুন';
+    document.getElementById('uploadBarFill').style.width = '0%';
+    document.getElementById('uploadPercent').textContent = '০%';
+    document.getElementById('uploadProgressOverlay').classList.add('show');
+  }
+  function updateUploadProgress(pct) {
+    document.getElementById('uploadBarFill').style.width = pct + '%';
+    document.getElementById('uploadPercent').textContent = toBengaliNum(Math.round(pct)) + '%';
+    if (pct >= 100) document.getElementById('uploadProgressSub').textContent = 'প্রায় শেষ...';
+  }
+  function hideUploadProgress() {
+    document.getElementById('uploadProgressOverlay').classList.remove('show');
+  }
+
+  async function uploadToCloudinary(file, resourceType, showProgress) {
+    return new Promise((resolve, reject) => {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`);
+      if (showProgress) {
+        xhr.upload.onprogress = function(e) {
+          if (e.lengthComputable) updateUploadProgress((e.loaded / e.total) * 100);
+        };
+      }
+      xhr.onload = function() {
+        const data = JSON.parse(xhr.responseText);
+        if (data.secure_url) resolve(data.secure_url);
+        else reject(new Error('Upload failed'));
+      };
+      xhr.onerror = () => reject(new Error('Network error'));
+      xhr.send(fd);
+    });
+  }
+
+  window.sendImage = async function(e) {
+    const file = e.target.files[0]; if (!file || !currentChatUid) return;
+    showToast('⏳ ছবি আপলোড হচ্ছে...');
+    try {
+      const url = await uploadToCloudinary(file, 'image');
+      const cid = getChatId(currentUser.uid, currentChatUid);
+      await db.ref('chats/' + cid + '/messages').push({
+        senderUid: currentUser.uid, img: url, ts: Date.now(), read: false
+      });
+      e.target.value = '';
+      showToast('✓ ছবি পাঠানো হয়েছে!');
+    } catch(err) {
+      showToast('❌ ছবি পাঠানো যায়নি!');
+    }
+  };
+
+  window.sendVideo = async function(e) {
+    const file = e.target.files[0]; if (!file || !currentChatUid) return;
+    if (file.size > 100 * 1024 * 1024) { showToast('❌ ভিডিও ১০০MB এর বেশি হবে না!'); e.target.value=''; return; }
+    showUploadProgress('ভিডিও আপলোড হচ্ছে...');
+    try {
+      const url = await uploadToCloudinary(file, 'video', true);
+      updateUploadProgress(100);
+      setTimeout(hideUploadProgress, 500);
+      const cid = getChatId(currentUser.uid, currentChatUid);
+      await db.ref('chats/' + cid + '/messages').push({
+        senderUid: currentUser.uid, video: url, ts: Date.now(), read: false
+      });
+      e.target.value = '';
+      showToast('✓ ভিডিও পাঠানো হয়েছে!');
+    } catch(err) {
+      hideUploadProgress();
+      showToast('❌ ভিডিও পাঠানো যায়নি!');
+    }
+  };
+
+  // ── Message Nav Badge ─────────────────────────────────────────────
+  function startMsgBadgeListener() {
+    if (!currentUser) return;
+    db.ref('chats').on('value', snap => {
+      const all = snap.val() || {};
+      let totalUnread = 0;
+      Object.entries(all).forEach(([cid, data]) => {
+        if (!cid.includes(currentUser.uid)) return;
+        const msgs = data.messages ? Object.values(data.messages) : [];
+        totalUnread += msgs.filter(m => m.senderUid !== currentUser.uid && !m.read).length;
+      });
+      const badge = document.getElementById('msgNavBadge');
+      if (badge) {
+        badge.textContent = totalUnread > 9 ? '9+' : String(totalUnread);
+        badge.className = 'msg-nav-badge' + (totalUnread > 0 ? ' show' : '');
+      }
+      const hBadge = document.getElementById('headerMsgBadge');
+      if (hBadge) { hBadge.textContent = totalUnread > 9 ? '9+' : String(totalUnread); hBadge.style.display = totalUnread > 0 ? 'flex' : 'none'; }
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── CALL FEATURE (WebRTC simulation — signaling via Firebase) ─────
+  // ══════════════════════════════════════════════════════════════════
+
+  let callType = 'audio'; // 'audio' | 'video'
+  let callTimerEl = null;
+
+  window.startCall = async function(type) {
+    callType = type;
+    callTimerEl = document.getElementById('callTimer');
+    // UI setup
+    const modal = document.getElementById('callModal');
+    const avEl  = document.getElementById('callModalAvatar');
+    const snap  = await db.ref('users/' + currentChatUid).once('value');
+    const data  = snap.val() || {};
+    avEl.innerHTML = data.avatar ? '<img src="' + data.avatar + '" alt="">' : getInitial(data.name||currentChatName);
+    document.getElementById('callModalName').textContent   = data.name || currentChatName;
+    document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল হচ্ছে...' : '📞 অডিও কল হচ্ছে...';
+    callTimerEl.style.display = 'none';
+    document.getElementById('camBtn').style.display  = type === 'video' ? 'flex' : 'none';
+    document.getElementById('callVideoArea').classList.toggle('active', type === 'video');
+    modal.classList.add('open');
+
+    // Try to get media
+    try {
+      const constraints = { audio: true, video: type === 'video' };
+      localStream = await navigator.mediaDevices.getUserMedia(constraints);
+      if (type === 'video') {
+        document.getElementById('localVideo').srcObject = localStream;
+      }
+    } catch(err) {
+      document.getElementById('callModalStatus').textContent = '⚠️ মাইক/ক্যামেরা অ্যাক্সেস পাওয়া যায়নি';
+    }
+
+    // Write call signal to Firebase — timer starts only when peer accepts
+    const callRef = db.ref('calls/' + getChatId(currentUser.uid, currentChatUid));
+    await callRef.set({ caller: currentUser.uid, callee: currentChatUid, type, status: 'ringing', ts: Date.now() });
+    callRef.onDisconnect().remove();
+
+    // Listen for acceptance
+    callRef.on('value', snap => {
+      const d = snap.val();
+      if (!d) return;
+      if (d.status === 'accepted') {
+        document.getElementById('callModalStatus').textContent = type === 'video' ? '📹 ভিডিও কল চলছে' : '📞 কল সংযুক্ত';
+        startCallTimer();
+        callRef.off(); // stop listening
+      }
+      if (d.status === 'rejected' || d.status === 'ended') {
+        endCall();
+        callRef.off();
+      }
+    });
+
+    // Fallback: if peer is online and no answer in 30s, auto-end
+    setTimeout(() => {
+      db.ref('calls/' + getChatId(currentUser.uid, currentChatUid)).once('value').then(s => {
+        if (s.val() && s.val().status === 'ringing') endCall();
+      });
+    }, 30000);
+  };
+
+  function startCallTimer() {
+    callSeconds = 0;
+    callTimerEl.style.display = 'block';
+    callTimerInterval = setInterval(() => {
+      callSeconds++;
+      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
+      const s = String(callSeconds%60).padStart(2,'0');
+      callTimerEl.textContent = m + ':' + s;
+    }, 1000);
+  }
+
+  window.endCall = function() {
+    clearInterval(callTimerInterval);
+    if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+    document.getElementById('localVideo').srcObject  = null;
+    document.getElementById('remoteVideo').srcObject = null;
+    document.getElementById('callModal').classList.remove('open');
+    document.getElementById('callVideoArea').classList.remove('active');
+    isMuted = false; isCamOff = false;
+    document.getElementById('muteBtn').textContent = '🎤';
+    document.getElementById('muteBtn').className = 'call-ctrl-btn mute';
+    document.getElementById('camBtn').textContent  = '📷';
+    document.getElementById('camBtn').className  = 'call-ctrl-btn cam';
+    // Remove call signal from Firebase
+    if (currentChatUid) db.ref('calls/' + getChatId(currentUser.uid, currentChatUid)).remove();
+    if (callSeconds > 0) {
+      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
+      const s = String(callSeconds%60).padStart(2,'0');
+      const durText = (callType==='video'?'📹':'📞') + ' কল শেষ — সময়: ' + m + ':' + s;
+      if (currentChatUid) {
+        db.ref('chats/' + getChatId(currentUser.uid, currentChatUid) + '/messages').push({
+          senderUid: currentUser.uid, text: durText, ts: Date.now(), read: false
+        });
+      }
+    }
+    showToast('📵 কল শেষ হয়েছে');
+  };
+
+  window.toggleMute = function() {
+    if (!localStream) return;
+    isMuted = !isMuted;
+    localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+    const btn = document.getElementById('muteBtn');
+    btn.textContent = isMuted ? '🔇' : '🎤';
+    btn.className = 'call-ctrl-btn ' + (isMuted ? 'muted' : 'mute');
+  };
+
+  window.toggleCam = function() {
+    if (!localStream) return;
+    isCamOff = !isCamOff;
+    localStream.getVideoTracks().forEach(t => t.enabled = !isCamOff);
+    const btn = document.getElementById('camBtn');
+    btn.textContent = isCamOff ? '🚫' : '📷';
+    btn.className = 'call-ctrl-btn ' + (isCamOff ? 'cam-off' : 'cam');
+  };
+
+  // ── Fullscreen Video Player ───────────────────────────────────────
+  window.openVideoPlayer = function(url) {
+    const modal = document.getElementById('videoPlayerModal');
+    const video = document.getElementById('fullscreenVideo');
+    video.src = url;
+    modal.classList.add('open');
+    video.play();
+  };
+  window.closeVideoPlayer = function() {
+    const modal = document.getElementById('videoPlayerModal');
+    const video = document.getElementById('fullscreenVideo');
+    video.pause();
+    video.src = '';
+    modal.classList.remove('open');
+  };
+  // Close on back button (Android)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeVideoPlayer();
+  });
+
+  // ── Emoji Picker ──────────────────────────────────────────────────
+  window.toggleEmojiPicker = function(e) {
+    e.stopPropagation();
+    const picker = document.getElementById('emojiPicker');
+    picker.classList.toggle('open');
+  };
+  window.insertEmoji = function(emoji) {
+    const inp = document.getElementById('chatTextInput');
+    const start = inp.selectionStart;
+    const end   = inp.selectionEnd;
+    inp.value = inp.value.substring(0, start) + emoji + inp.value.substring(end);
+    inp.selectionStart = inp.selectionEnd = start + emoji.length;
+    inp.focus();
+    autoResize(inp);
+    // keep picker open for quick multi-emoji sending
+  };
+  document.addEventListener('click', function(e) {
+    const picker = document.getElementById('emojiPicker');
+    if (picker && !picker.contains(e.target) && e.target.id !== 'emojiToggleBtn') {
+      picker.classList.remove('open');
+    }
+  });
+
+  // ══════════════════════════════════════════════════════════════════
+  // ── REELS FEATURE ─────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════
+
+  let reelsData = [];
+  let currentReelCommentId = null;
+  let reelsMuted = false;
+  let reelsLoaded = false;
+
+  // ── Load Reels (from posts that have video) ───────────────────────
+  window.loadReels = async function() {
+    reelsLoaded = true;
+    const container = document.getElementById('reelsContainer');
+    container.innerHTML = '<div class="reels-loading">⏳ লোড হচ্ছে...</div>';
+
+    db.ref('posts').orderByChild('ts').on('value', async snap => {
+      const raw = snap.val() || {};
+      // Check both videoUrl and video fields
+      const allReels = Object.entries(raw)
+        .map(([id, p]) => ({ id, ...p, videoUrl: p.videoUrl || p.video || null }))
+        .filter(p => p.videoUrl && p.videoUrl.length > 0);
+      // Shuffle so same video doesn't appear first every time
+      reelsData = allReels.sort(() => Math.random() - 0.5);
+
+      if (!reelsData.length) {
+        container.innerHTML = `
+          <div class="reels-empty">
+            <div class="reels-empty-icon">🎬</div>
+            <div class="reels-empty-text">এখনো কোনো ভিডিও পোস্ট নেই</div>
+            <div class="reels-empty-sub">পোস্টে ভিডিও যোগ করলে এখানে দেখা যাবে</div>
+          </div>`;
+        return;
+      }
+
+      // Fetch user info for each reel
+      const uids = [...new Set(reelsData.map(r => r.authorUid || r.uid))];
+      const userMap = {};
+      await Promise.all(uids.map(async uid => {
+        const s = await db.ref('users/' + uid).once('value');
+        userMap[uid] = s.val() || {};
+      }));
+
+      container.innerHTML = '';
+      reelsData.forEach(reel => {
+        const authorUid = reel.authorUid || reel.uid;
+        const user = userMap[authorUid] || {};
+        const avatarHtml = user.avatar
+          ? `<img src="${user.avatar}" alt="">`
+          : getInitial(user.name || 'আ');
+        const likeCount = reel.likes ? Object.keys(reel.likes).length : 0;
+        const commentCount = reel.comments ? Object.keys(reel.comments).length : 0;
+        const isLiked = reel.likes && currentUser && reel.likes[currentUser.uid];
+        const viewCount = reel.views || 0;
+
+        const item = document.createElement('div');
+        item.className = 'reel-item';
+        item.id = 'reel-' + reel.id;
+        item.innerHTML = `
+          <video class="reel-video" src="${reel.videoUrl}" playsinline loop preload="metadata" onclick="toggleReelPlay(this)"></video>
+          <div class="reel-overlay"></div>
+
+          <!-- Mute toggle -->
+          <div class="reel-mute-indicator" id="muteInd-${reel.id}" onclick="toggleReelMute()" title="মিউট">🔊</div>
+
+          <!-- Tap to play/pause -->
+          <div class="reel-tap-play" onclick="toggleReelPlay(this.previousElementSibling ? this.previousElementSibling.previousElementSibling.previousElementSibling : null)">
+            <div class="reel-play-icon" id="playIcon-${reel.id}">▶️</div>
+          </div>
+
+          <!-- Bottom info -->
+          <div class="reel-info">
+            <div class="reel-user" onclick="openProfile('${authorUid}');updateBottomNav('profile')">
+              <div class="reel-avatar">${avatarHtml}</div>
+              <div class="reel-username">${escHtml(user.name || 'ব্যবহারকারী')}</div>
+            </div>
+            <div class="reel-caption" id="caption-${reel.id}" onclick="expandCaption('${reel.id}')">${escHtml(reel.text || reel.caption || '')}</div>
+            <div class="reel-time">${timeLabel(reel.ts)}</div>
+          </div>
+
+          <!-- Right actions -->
+          <div class="reel-actions">
+            <button class="reel-action-btn" style="cursor:default;pointer-events:none">
+              <div class="reel-action-icon">👁️</div>
+              <div class="reel-action-count" id="reelViewCount-${reel.id}">${toBengaliNum(viewCount)}</div>
+            </button>
+            <button class="reel-action-btn ${isLiked ? 'liked' : ''}" id="reelLikeBtn-${reel.id}" onclick="toggleReelLike('${reel.id}')">
+              <div class="reel-action-icon">${isLiked ? '❤️' : '🤍'}</div>
+              <div class="reel-action-count" id="reelLikeCount-${reel.id}">${toBengaliNum(likeCount)}</div>
+            </button>
+            <button class="reel-action-btn" onclick="openReelComments('${reel.id}')">
+              <div class="reel-action-icon">💬</div>
+              <div class="reel-action-count" id="reelCmtCount-${reel.id}">${toBengaliNum(commentCount)}</div>
+            </button>
+            <button class="reel-action-btn" onclick="shareReel('${reel.id}')">
+              <div class="reel-action-icon">↗️</div>
+              <div class="reel-action-count">শেয়ার</div>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      // Auto-play first reel
+      setTimeout(() => autoPlayVisible(), 300);
+    });
+  };
+
+  // ── Auto-play on scroll ───────────────────────────────────────────
+  const viewedReels = new Set(); // track already-counted views this session
+
+  function autoPlayVisible() {
+    const container = document.getElementById('reelsContainer');
+    if (!container) return;
+    const videos = container.querySelectorAll('.reel-video');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const video = entry.target;
+        if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+          videos.forEach(v => { if (v !== video) { v.pause(); } });
+          video.muted = reelsMuted;
+          video.play().catch(() => { video.muted = true; video.play(); });
+
+          // Record view — once per session per reel
+          const reelItem = video.closest('.reel-item');
+          if (reelItem) {
+            const reelId = reelItem.id.replace('reel-', '');
+            if (reelId && !viewedReels.has(reelId)) {
+              viewedReels.add(reelId);
+              // Increment view count in Firebase after 2 seconds of watching
+              setTimeout(async () => {
+                if (!viewedReels.has(reelId)) return; // already removed (unlikely)
+                try {
+                  const viewRef = db.ref('posts/' + reelId + '/views');
+                  const snap = await viewRef.once('value');
+                  const newCount = (snap.val() || 0) + 1;
+                  await viewRef.set(newCount);
+                  // Update UI
+                  const el = document.getElementById('reelViewCount-' + reelId);
+                  if (el) el.textContent = toBengaliNum(newCount);
+                } catch(e) {}
+              }, 2000);
+            }
+          }
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.6 });
+
+    videos.forEach(v => observer.observe(v));
+  }
+
+  // ── Play/Pause tap ────────────────────────────────────────────────
+  window.toggleReelPlay = function(video) {
+    if (!video) return;
+    const item = video.closest('.reel-item');
+    const iconEl = item ? item.querySelector('.reel-play-icon') : null;
+    if (video.paused) {
+      video.play();
+      if (iconEl) { iconEl.classList.add('show'); setTimeout(() => iconEl.classList.remove('show'), 600); }
+    } else {
+      video.pause();
+      if (iconEl) { iconEl.textContent = '▶️'; iconEl.classList.add('show'); setTimeout(() => iconEl.classList.remove('show'), 600); }
+    }
+  };
+
+  // ── Mute toggle ───────────────────────────────────────────────────
+  window.toggleReelMute = function() {
+    reelsMuted = !reelsMuted;
+    const videos = document.querySelectorAll('.reel-video');
+    videos.forEach(v => { v.muted = reelsMuted; });
+    document.querySelectorAll('.reel-mute-indicator').forEach(el => {
+      el.textContent = reelsMuted ? '🔇' : '🔊';
+    });
+  };
+
+  // ── Expand caption ────────────────────────────────────────────────
+  window.expandCaption = function(id) {
+    const el = document.getElementById('caption-' + id);
+    if (el) el.classList.toggle('expanded');
+  };
+
+  // ── Like Reel ─────────────────────────────────────────────────────
+  window.toggleReelLike = async function(reelId) {
+    if (!currentUser) return;
+    const ref = db.ref('posts/' + reelId + '/likes/' + currentUser.uid);
+    const snap = await ref.once('value');
+    const btn = document.getElementById('reelLikeBtn-' + reelId);
+    const icon = btn ? btn.querySelector('.reel-action-icon') : null;
+    const countEl = document.getElementById('reelLikeCount-' + reelId);
+
+    if (snap.val()) {
+      await ref.remove();
+      if (btn) btn.classList.remove('liked');
+      if (icon) icon.textContent = '🤍';
+    } else {
+      await ref.set(true);
+      if (btn) btn.classList.add('liked');
+      if (icon) icon.textContent = '❤️';
+    }
+    // Update count
+    const s2 = await db.ref('posts/' + reelId + '/likes').once('value');
+    const c = s2.val() ? Object.keys(s2.val()).length : 0;
+    if (countEl) countEl.textContent = toBengaliNum(c);
+  };
+
+  // ── Comments ──────────────────────────────────────────────────────
+  window.openReelComments = async function(reelId) {
+    currentReelCommentId = reelId;
+    const drawer = document.getElementById('reelCommentsDrawer');
+    const list = document.getElementById('reelCommentsList');
+    drawer.classList.add('open');
+    list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem;">⏳ লোড হচ্ছে...</div>';
+
+    db.ref('posts/' + reelId + '/comments').orderByChild('ts').on('value', async snap => {
+      const cmts = snap.val() || {};
+      const arr = Object.entries(cmts).map(([id, c]) => ({ id, ...c })).sort((a,b) => a.ts - b.ts);
+      if (!arr.length) { list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1.5rem;">এখনো কোনো মন্তব্য নেই</div>'; return; }
+
+      // Fetch user names
+      const uids = [...new Set(arr.map(c => c.uid))];
+      const uMap = {};
+      await Promise.all(uids.map(async uid => {
+        const s = await db.ref('users/' + uid + '/name').once('value');
+        uMap[uid] = s.val() || 'ব্যবহারকারী';
+      }));
+
+      list.innerHTML = arr.map(c => `
+        <div class="reel-comment-item">
+          <div class="avatar sm" style="flex-shrink:0">${getInitial(uMap[c.uid])}</div>
+          <div class="reel-comment-bubble">
+            <div class="reel-comment-author">${escHtml(uMap[c.uid])}</div>
+            <div class="reel-comment-text">${escHtml(c.text)}</div>
+          </div>
+        </div>`).join('');
+      list.scrollTop = list.scrollHeight;
+    });
+  };
+
+  window.closeReelComments = function() {
+    currentReelCommentId = null;
+    document.getElementById('reelCommentsDrawer').classList.remove('open');
+    document.getElementById('reelCommentsList').innerHTML = '';
+  };
+
+  window.sendReelComment = async function() {
+    if (!currentReelCommentId || !currentUser) return;
+    const inp = document.getElementById('reelCommentInput');
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+    await db.ref('posts/' + currentReelCommentId + '/comments').push({
+      uid: currentUser.uid, text, ts: Date.now()
+    });
+    // Update comment count display
+    const s = await db.ref('posts/' + currentReelCommentId + '/comments').once('value');
+    const c = s.val() ? Object.keys(s.val()).length : 0;
+    const el = document.getElementById('reelCmtCount-' + currentReelCommentId);
+    if (el) el.textContent = toBengaliNum(c);
+  };
+
+  // ── Share Reel ────────────────────────────────────────────────────
+  window.shareReel = function(reelId) {
+    if (navigator.share) {
+      navigator.share({ title: 'PostBook Reel', url: window.location.href });
+    } else {
+      showToast('🔗 লিংক কপি হয়েছে!');
+    }
+  };
+
+  // Upload disabled — reels come from posts automatically
+  window.openReelUpload = function() {};
+  window.closeReelUpload = function() {};
+
+  // Close comments drawer on outside tap
+  document.addEventListener('click', function(e) {
+    const drawer = document.getElementById('reelCommentsDrawer');
+    if (drawer && drawer.classList.contains('open')) {
+      if (!drawer.contains(e.target) && !e.target.closest('.reel-action-btn')) {
+        closeReelComments();
+      }
+    }
+  });
+
+
+  // ══════════════════════════════════════════════════════════════════
+  // ══ MONETIZATION SYSTEM ══════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════════════
+
+  let selectedCoinPkg = null;   // {coins, price}
+  let selectedPlanData = null;  // {type, price}
+  let selectedBoostData = null; // {type, cost}
+  let selectedGiftData = null;  // {coins, emoji}
+
+  // ── Wallet helpers ────────────────────────────────────────────────
+  async function getWalletCoins() {
+    if (!currentUser) return 0;
+    const snap = await db.ref('users/' + currentUser.uid + '/wallet/coins').once('value');
+    return snap.val() || 0;
+  }
+  async function addCoins(amount) {
+    if (!currentUser) return;
+    const ref = db.ref('users/' + currentUser.uid + '/wallet/coins');
+    const snap = await ref.once('value');
+    await ref.set((snap.val() || 0) + amount);
+    refreshWalletUI();
+  }
+  async function spendCoins(amount) {
+    const cur = await getWalletCoins();
+    if (cur < amount) { showToast('⚠️ পর্যাপ্ত কয়েন নেই! আগে কিনুন।', 'var(--accent2)'); return false; }
+    await db.ref('users/' + currentUser.uid + '/wallet/coins').set(cur - amount);
+    refreshWalletUI();
+    return true;
+  }
+  async function refreshWalletUI() {
+    const coins = await getWalletCoins();
+    const bn = toBengaliNum(coins);
+    const els = ['walletBalance','coinShopBalance','boostWalletBalance','giftWalletBalance'];
+    els.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = bn; });
+    // Update header coin badge
+    const hcb = document.getElementById('headerCoinBadge');
+    if (hcb) hcb.textContent = '🪙 ' + bn;
+  }
+
+  // ── Coin Shop ─────────────────────────────────────────────────────
+  window.openCoinShop = async function() {
+    selectedCoinPkg = null;
+    document.querySelectorAll('.coin-pkg').forEach(p => p.classList.remove('selected'));
+    const btn = document.getElementById('coinBuyBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'প্যাকেজ বেছে নিন'; }
+    // Reset to step 1
+    const s1 = document.getElementById('coinStep1');
+    const s2 = document.getElementById('coinStep2');
+    if (s1) s1.style.display = 'block';
+    if (s2) s2.style.display = 'none';
+    await refreshWalletUI();
+    document.getElementById('coinShopModal').classList.add('open');
+  };
+  window.closeCoinShop = function() {
+    document.getElementById('coinShopModal').classList.remove('open');
+    selectedCoinPkg = null;
+    selectedPaymentMethod = null;
+    // Reset to step 1
+    const s1 = document.getElementById('coinStep1');
+    const s2 = document.getElementById('coinStep2');
+    if (s1) s1.style.display = 'block';
+    if (s2) s2.style.display = 'none';
+  };
+  window.selectCoinPkg = function(el, coins, price) {
+    document.querySelectorAll('#coinShopModal .coin-pkg').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedCoinPkg = { coins: parseInt(coins), price };
+    const btn = document.getElementById('coinBuyBtn');
+    btn.disabled = false;
+    btn.textContent = '🪙 ' + toBengaliNum(coins) + ' কয়েন কিনুন — ৳' + price;
+  };
+  // ── Payment method config ─────────────────────────────────────────
+  const PAYMENT_METHODS = {
+    bkash: {
+      number: '01791310431',
+      label: 'বিকাশ পার্সোনাল',
+      icon: '🔴',
+      color: '#e0416a',
+      bgColor: 'rgba(220,53,69,0.1)',
+      borderColor: 'rgba(220,53,69,0.35)',
+      btnBg: 'rgba(220,53,69,0.18)',
+      btnBorder: 'rgba(220,53,69,0.4)',
+      typeLabel: 'Personal · Send Money',
+      methodName: 'বিকাশ',
+      // bKash TxnID: exactly 10 alphanumeric uppercase chars
+      regex: /^[A-Z0-9]{10}$/,
+      maxlen: 10,
+      placeholder: 'যেমন: 8AB12CD3EF',
+      hint: 'বিকাশের ১০ অক্ষরের TrxID দিন (A-Z ও 0-9)',
+      errLen: 'বিকাশ TrxID অবশ্যই ১০ অক্ষরের হতে হবে',
+      errChar: 'শুধু ইংরেজি অক্ষর (A-Z) ও সংখ্যা (0-9) দিন',
+      filter: v => v.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    },
+    nagad: {
+      number: '01791310431',
+      label: 'নগদ পার্সোনাল',
+      icon: '🟠',
+      color: '#ff8c00',
+      bgColor: 'rgba(255,140,0,0.1)',
+      borderColor: 'rgba(255,140,0,0.35)',
+      btnBg: 'rgba(255,140,0,0.18)',
+      btnBorder: 'rgba(255,140,0,0.4)',
+      typeLabel: 'Personal · Send Money',
+      methodName: 'নগদ',
+      // নগদ TxnID: exactly 8 alphanumeric uppercase chars (e.g. 75BV28GF)
+      regex: /^[A-Z0-9]{8}$/,
+      maxlen: 8,
+      placeholder: 'যেমন: 75BV28GF',
+      hint: 'নগদের ৮ অক্ষরের TrxID দিন (A-Z ও 0-9)',
+      errLen: 'নগদ TrxID অবশ্যই ৮ অক্ষরের হতে হবে',
+      errChar: 'শুধু ইংরেজি অক্ষর (A-Z) ও সংখ্যা (0-9) দিন',
+      filter: v => v.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    }
+  };
+  let selectedPaymentMethod = null;
+
+  // Go to Step 2 (payment)
+  window.goToCoinPaymentStep = function() {
+    if (!selectedCoinPkg) return;
+    document.getElementById('coinStep2Amount').textContent = '৳' + selectedCoinPkg.price;
+    document.getElementById('coinStep2Coins').textContent = toBengaliNum(selectedCoinPkg.coins);
+    // Reset method selection
+    selectedPaymentMethod = null;
+    document.getElementById('paymentInfoBox').style.display = 'none';
+    document.getElementById('payStepsGuide').style.display = 'none';
+    document.getElementById('txnInputArea').style.display = 'none';
+    document.getElementById('coinSubmitBtn').disabled = true;
+    const input = document.getElementById('txnIdInput');
+    if (input) { input.value = ''; input.style.borderColor = ''; }
+    document.getElementById('txnIdError').style.display = 'none';
+    // Reset method card borders
+    document.getElementById('pmBkash').style.borderColor = 'rgba(220,53,69,0.35)';
+    document.getElementById('pmBkash').style.background = 'rgba(220,53,69,0.06)';
+    document.getElementById('pmNagad').style.borderColor = 'rgba(255,140,0,0.3)';
+    document.getElementById('pmNagad').style.background = 'rgba(255,140,0,0.05)';
+    document.getElementById('coinStep1').style.display = 'none';
+    document.getElementById('coinStep2').style.display = 'block';
+  };
+
+  window.backToCoinStep1 = function() {
+    selectedPaymentMethod = null;
+    document.getElementById('coinStep2').style.display = 'none';
+    document.getElementById('coinStep1').style.display = 'block';
+  };
+
+  window.selectPaymentMethod = function(method) {
+    const cfg = PAYMENT_METHODS[method];
+    if (!cfg) return;
+    selectedPaymentMethod = method;
+
+    // Highlight selected card
+    const bkashCard = document.getElementById('pmBkash');
+    const nagadCard = document.getElementById('pmNagad');
+    if (method === 'bkash') {
+      bkashCard.style.borderColor = '#e0416a';
+      bkashCard.style.background = 'rgba(220,53,69,0.15)';
+      nagadCard.style.borderColor = 'rgba(255,140,0,0.3)';
+      nagadCard.style.background = 'rgba(255,140,0,0.05)';
+    } else {
+      nagadCard.style.borderColor = '#ff8c00';
+      nagadCard.style.background = 'rgba(255,140,0,0.15)';
+      bkashCard.style.borderColor = 'rgba(220,53,69,0.35)';
+      bkashCard.style.background = 'rgba(220,53,69,0.06)';
+    }
+
+    // Show payment info box
+    const box = document.getElementById('paymentInfoBox');
+    box.style.background = cfg.bgColor;
+    box.style.border = '1.5px solid ' + cfg.borderColor;
+    document.getElementById('payInfoIcon').textContent = cfg.icon;
+    document.getElementById('payInfoLabel').style.color = cfg.color;
+    document.getElementById('payInfoLabel').textContent = cfg.label;
+    document.getElementById('payInfoNumber').textContent = cfg.number;
+    document.getElementById('payInfoType').style.color = cfg.color;
+    document.getElementById('payInfoType').textContent = cfg.typeLabel;
+    const copyBtn = document.getElementById('payInfoCopyBtn');
+    copyBtn.style.background = cfg.btnBg;
+    copyBtn.style.borderColor = cfg.btnBorder;
+    copyBtn.style.color = cfg.color;
+    copyBtn.textContent = '📋 নম্বর কপি করুন';
+    box.style.display = 'block';
+
+    // Steps guide
+    document.getElementById('payStepMethodName').textContent = cfg.methodName;
+    document.getElementById('payStepsGuide').style.display = 'block';
+
+    // TxnID input
+    const input = document.getElementById('txnIdInput');
+    input.placeholder = cfg.placeholder;
+    input.maxLength = cfg.maxlen;
+    input.value = '';
+    input.style.borderColor = '';
+    document.getElementById('txnIdHint').textContent = cfg.hint;
+    document.getElementById('txnIdError').style.display = 'none';
+    document.getElementById('txnInputArea').style.display = 'block';
+    document.getElementById('coinSubmitBtn').disabled = true;
+  };
+
+  window.copyPaymentNumber = function() {
+    if (!selectedPaymentMethod) return;
+    const num = PAYMENT_METHODS[selectedPaymentMethod].number;
+    navigator.clipboard.writeText(num).then(() => {
+      const btn = document.getElementById('payInfoCopyBtn');
+      btn.textContent = '✅ কপি হয়েছে!';
+      setTimeout(() => { btn.textContent = '📋 নম্বর কপি করুন'; }, 2000);
+    });
+  };
+
+  // Legacy (kept for safety)
+  window.copyBkashNumber = window.copyPaymentNumber;
+
+  window.validateTxnId = function(input) {
+    if (!selectedPaymentMethod) return;
+    const cfg = PAYMENT_METHODS[selectedPaymentMethod];
+    // Filter allowed chars
+    input.value = cfg.filter(input.value);
+    const val = input.value;
+    const errEl = document.getElementById('txnIdError');
+    const hintEl = document.getElementById('txnIdHint');
+    const submitBtn = document.getElementById('coinSubmitBtn');
+
+    if (val.length === 0) {
+      errEl.style.display = 'none';
+      hintEl.style.display = 'block';
+      submitBtn.disabled = true;
+      input.style.borderColor = '';
+      return;
+    }
+
+    const valid = cfg.regex.test(val);
+    if (!valid) {
+      const isLenIssue = val.length < cfg.maxlen;
+      errEl.textContent = isLenIssue
+        ? '❌ ' + cfg.errLen + ' (' + val.length + '/' + cfg.maxlen + ')'
+        : '❌ ' + cfg.errChar;
+      errEl.style.display = 'block';
+      hintEl.style.display = 'none';
+      submitBtn.disabled = true;
+      input.style.borderColor = 'rgba(247,110,143,0.6)';
+    } else {
+      errEl.style.display = 'none';
+      hintEl.style.display = 'block';
+      submitBtn.disabled = false;
+      input.style.borderColor = 'rgba(110,247,200,0.6)';
+    }
+  };
+
+  window.submitCoinPurchase = async function() {
+    if (!selectedCoinPkg || !currentUser || !selectedPaymentMethod) return;
+    const cfg = PAYMENT_METHODS[selectedPaymentMethod];
+    const txnId = document.getElementById('txnIdInput').value.trim();
+    const filtered = cfg.filter(txnId);
+    if (!cfg.regex.test(filtered)) {
+      showToast('❌ সঠিক Transaction ID দিন!', 'var(--accent2)');
+      return;
+    }
+    const submitBtn = document.getElementById('coinSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ পাঠানো হচ্ছে...';
+
+    // Duplicate TxnID check
+    const dupSnap = await db.ref('coinPurchaseRequests').orderByChild('txnId').equalTo(filtered).once('value');
+    if (dupSnap.val()) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '✅ সাবমিট করুন';
+      const errEl = document.getElementById('txnIdError');
+      errEl.textContent = '⛔ এই Transaction ID আগেই ব্যবহার হয়েছে!';
+      errEl.style.display = 'block';
+      document.getElementById('txnIdInput').style.borderColor = 'rgba(247,110,143,0.6)';
+      return;
+    }
+
+    await db.ref('coinPurchaseRequests').push({
+      uid: currentUser.uid,
+      displayName: currentUser.displayName || '',
+      email: currentUser.email || '',
+      coins: selectedCoinPkg.coins,
+      price: selectedCoinPkg.price,
+      paymentMethod: selectedPaymentMethod,
+      paymentNumber: cfg.number,
+      txnId: filtered,
+      status: 'pending',
+      ts: Date.now()
+    });
+
+    closeCoinShop();
+    showToast('✅ আবেদন পাঠানো হয়েছে! অ্যাডমিন যাচাই করলে কয়েন পাবেন।', 'var(--accent3)');
+    selectedCoinPkg = null;
+    selectedPaymentMethod = null;
+  };
+
+  window.buyCoinPackage = function() { goToCoinPaymentStep(); };
+
+  // ── Premium ───────────────────────────────────────────────────────
+  window.openPremiumModal = function() {
+    selectedPlanData = null;
+    document.querySelectorAll('.premium-plan').forEach(p => p.classList.remove('selected'));
+    const btn = document.getElementById('premiumBuyBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'প্ল্যান বেছে নিন'; }
+    document.getElementById('premiumModal').classList.add('open');
+  };
+  window.closePremiumModal = function() {
+    document.getElementById('premiumModal').classList.remove('open');
+    selectedPlanData = null;
+  };
+  window.selectPlan = function(el, type, price) {
+    document.querySelectorAll('.premium-plan').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPlanData = { type, price };
+    const btn = document.getElementById('premiumBuyBtn');
+    btn.disabled = false;
+    btn.textContent = '⭐ ' + el.querySelector('.plan-name').textContent + ' — ৳' + price;
+  };
+  window.buyPremium = async function() {
+    if (!selectedPlanData || !currentUser) return;
+    const btn = document.getElementById('premiumBuyBtn');
+    btn.disabled = true; btn.textContent = '⏳ সক্রিয় হচ্ছে...';
+    const expiry = Date.now() + (selectedPlanData.type === 'yearly' ? 365 : 30) * 86400000;
+    await db.ref('users/' + currentUser.uid + '/premium').set({
+      plan: selectedPlanData.type, price: selectedPlanData.price,
+      activatedAt: Date.now(), expiresAt: expiry, active: true
+    });
+    closePremiumModal();
+    showToast('🌟 প্রিমিয়াম সক্রিয় হয়েছে!', 'var(--accent3)');
+    loadMonetizePage();
+  };
+
+  // ── Boost ─────────────────────────────────────────────────────────
+  window.openBoostModal = async function(postId) {
+    selectedBoostData = null;
+    document.querySelectorAll('.boost-opt').forEach(o => o.classList.remove('selected'));
+    const btn = document.getElementById('boostConfirmBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'বুস্ট বেছে নিন'; }
+    const inp = document.getElementById('boostTargetPostId');
+    if (inp) inp.value = postId || '';
+    await refreshWalletUI();
+    document.getElementById('boostModal').classList.add('open');
+  };
+  window.closeBoostModal = function() {
+    document.getElementById('boostModal').classList.remove('open');
+    selectedBoostData = null;
+  };
+  window.selectBoost = function(el, type, cost) {
+    document.querySelectorAll('.boost-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedBoostData = { type, cost };
+    const btn = document.getElementById('boostConfirmBtn');
+    btn.disabled = false;
+    btn.textContent = '📢 ' + el.querySelector('.boost-opt-name').textContent + ' — 🪙 ' + toBengaliNum(cost);
+  };
+  window.confirmBoost = async function() {
+    if (!selectedBoostData || !currentUser) return;
+    const ok = await spendCoins(selectedBoostData.cost);
+    if (!ok) return;
+    const postId = document.getElementById('boostTargetPostId').value;
+    const boostRef = db.ref('boosts').push();
+    await boostRef.set({
+      uid: currentUser.uid, postId: postId || null,
+      type: selectedBoostData.type, cost: selectedBoostData.cost,
+      ts: Date.now(),
+      expiresAt: Date.now() + (selectedBoostData.type==='mega' ? 7 : selectedBoostData.type==='standard' ? 3 : 1) * 86400000
+    });
+    // Mark post as boosted
+    if (postId) await db.ref('posts/' + postId + '/boosted').set(true);
+    closeBoostModal();
+    showToast('🚀 পোস্ট বুস্ট হয়েছে!', 'var(--accent3)');
+  };
+
+  // ── Gift ──────────────────────────────────────────────────────────
+  window.openGiftModal = async function(postId, authorUid) {
+    selectedGiftData = null;
+    document.querySelectorAll('#giftModal .coin-pkg').forEach(p => p.classList.remove('selected'));
+    const btn = document.getElementById('giftSendBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'গিফট বেছে নিন'; }
+    document.getElementById('giftTargetPostId').value = postId || '';
+    document.getElementById('giftTargetUid').value = authorUid || '';
+    await refreshWalletUI();
+    document.getElementById('giftModal').classList.add('open');
+  };
+  window.closeGiftModal = function() {
+    document.getElementById('giftModal').classList.remove('open');
+    selectedGiftData = null;
+  };
+  window.selectGift = function(el, coins, emoji) {
+    document.querySelectorAll('#giftModal .coin-pkg').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedGiftData = { coins, emoji };
+    const btn = document.getElementById('giftSendBtn');
+    btn.disabled = false;
+    btn.textContent = emoji + ' ' + toBengaliNum(coins) + ' কয়েন গিফট পাঠান';
+  };
+  window.sendGift = async function() {
+    if (!selectedGiftData || !currentUser) return;
+    const ok = await spendCoins(selectedGiftData.coins);
+    if (!ok) return;
+    const postId = document.getElementById('giftTargetPostId').value;
+    const authorUid = document.getElementById('giftTargetUid').value;
+    // Credit coins to author
+    if (authorUid && authorUid !== currentUser.uid) {
+      const authorRef = db.ref('users/' + authorUid + '/wallet/coins');
+      const snap = await authorRef.once('value');
+      await authorRef.set((snap.val() || 0) + selectedGiftData.coins);
+      // Notify author
+      const myName = currentUser.displayName || 'কেউ';
+      await db.ref('notifications/' + authorUid).push({
+        type: 'gift', fromUid: currentUser.uid, fromName: myName,
+        emoji: selectedGiftData.emoji, coins: selectedGiftData.coins,
+        postId, ts: Date.now(), read: false
+      });
+    }
+    // Record gift on post
+    if (postId) {
+      await db.ref('posts/' + postId + '/gifts').push({
+        fromUid: currentUser.uid, coins: selectedGiftData.coins,
+        emoji: selectedGiftData.emoji, ts: Date.now()
+      });
+    }
+    closeGiftModal();
+    showToast(selectedGiftData.emoji + ' গিফট পাঠানো হয়েছে!', '#f7b731');
+  };
+
+  // ── Verify ────────────────────────────────────────────────────────
+  window.openVerifyModal = async function() {
+    if (!currentUser) return;
+    const userSnap = await db.ref('users/' + currentUser.uid).once('value');
+    const data = userSnap.val() || {};
+    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
+    const followerCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
+    const postsSnap = await db.ref('posts').orderByChild('authorUid').equalTo(currentUser.uid).once('value');
+    const postCount = postsSnap.val() ? Object.keys(postsSnap.val()).length : 0;
+    const coins = await getWalletCoins();
+    const hasBio = !!(data.bio && data.bio.length > 10);
+    const hasAvatar = !!data.avatar;
+    const hasEnoughFollowers = followerCount >= 10;
+    const hasEnoughPosts = postCount >= 5;
+    const hasCoins = coins >= 500;
+
+    const steps = [
+      { icon: '📸', name: 'প্রোফাইল ছবি', desc: 'প্রোফাইলে ছবি আপলোড করুন', done: hasAvatar },
+      { icon: '📝', name: 'বায়ো লিখুন', desc: 'অন্তত ১০ অক্ষরের বায়ো লিখুন', done: hasBio },
+      { icon: '👥', name: 'ফলোয়ার ≥ ১০', desc: toBengaliNum(followerCount) + ' ফলোয়ার আছে', done: hasEnoughFollowers },
+      { icon: '📮', name: 'পোস্ট ≥ ৫', desc: toBengaliNum(postCount) + ' পোস্ট আছে', done: hasEnoughPosts },
+      { icon: '🪙', name: '৫০০ কয়েন', desc: toBengaliNum(coins) + ' কয়েন আছে (আবেদন ফি)', done: hasCoins },
+    ];
+    const list = document.getElementById('verifyStepsList');
+    list.innerHTML = steps.map(s => `
+      <div class="verify-step">
+        <div class="verify-step-icon">${s.icon}</div>
+        <div class="verify-step-info">
+          <div class="verify-step-name">${s.name}</div>
+          <div class="verify-step-desc">${s.desc}</div>
+        </div>
+        <div class="verify-step-status ${s.done ? 'done' : 'pending'}">${s.done ? '✓' : '○'}</div>
+      </div>`).join('');
+    const allDone = steps.every(s => s.done);
+    const applyBtn = document.getElementById('verifyApplyBtn');
+    applyBtn.disabled = !allDone;
+    if (!allDone) applyBtn.textContent = '⚠️ সব শর্ত পূরণ করুন';
+    document.getElementById('verifyModal').classList.add('open');
+  };
+  window.closeVerifyModal = function() { document.getElementById('verifyModal').classList.remove('open'); };
+  window.applyVerification = async function() {
+    if (!currentUser) return;
+    const ok = await spendCoins(500);
+    if (!ok) return;
+    await db.ref('users/' + currentUser.uid + '/verifyRequest').set({
+      requestedAt: Date.now(), status: 'pending'
+    });
+    closeVerifyModal();
+    showToast('✅ আবেদন গৃহীত হয়েছে! ৩-৫ দিনের মধ্যে জানানো হবে।', 'var(--accent3)');
+  };
+
+  // ── Monetize Page ─────────────────────────────────────────────────
+  let vmSelectedMethod = 'nagad';
+  window.switchVmMethod = function(m) {
+    vmSelectedMethod = m;
+    document.querySelectorAll('.vm-method-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('vmTab' + m.charAt(0).toUpperCase() + m.slice(1)).classList.add('active');
+    document.getElementById('vmNumberLabel').textContent = (m === 'nagad' ? 'নগদ' : 'বিকাশ') + ' নম্বর';
+    document.getElementById('vmPayNumber').placeholder = '01XXXXXXXXX';
+  };
+
+  window.activateVideoMonetize = async function() {
+    if (!currentUser) return;
+    const num = document.getElementById('vmPayNumber').value.trim();
+    const name = document.getElementById('vmPayName').value.trim();
+    if (!num || num.length < 11) { showToast('⚠️ সঠিক মোবাইল নম্বর দিন', 'var(--accent2)'); return; }
+    if (!name) { showToast('⚠️ একাউন্টের নাম দিন', 'var(--accent2)'); return; }
+    await db.ref('users/' + currentUser.uid + '/videoMonetize').set({
+      active: true, method: vmSelectedMethod, number: num, accountName: name, activatedAt: Date.now()
+    });
+    showToast('🎉 ভিডিও মনিটাইজেশন চালু হয়েছে!', 'var(--accent3)');
+    loadMonetizePage();
+  };
+
+  window.withdrawVideoEarning = async function() {
+    if (!currentUser) return;
+    const vmSnap = await db.ref('users/' + currentUser.uid + '/videoMonetize').once('value');
+    const vm = vmSnap.val() || {};
+    const earning = parseFloat(document.getElementById('vmTotalEarning').textContent) || 0;
+    if (earning < 200) { showToast('⚠️ ন্যূনতম ৳২০০ হলে তুলতে পারবেন', 'var(--accent2)'); return; }
+    await db.ref('withdrawRequests/' + currentUser.uid).push({
+      ts: Date.now(), type: 'video', amount: earning,
+      method: vm.method || 'nagad', number: vm.number || '', status: 'pending'
+    });
+    showToast('⏳ উত্তোলনের অনুরোধ পাঠানো হয়েছে!', 'var(--accent3)');
+  };
+
+  window.loadMonetizePage = async function() {
+    if (!currentUser) return;
+    await refreshWalletUI();
+
+    // Creator stats
+    const postsSnap = await db.ref('posts').orderByChild('authorUid').equalTo(currentUser.uid).once('value');
+    const posts = postsSnap.val() ? Object.values(postsSnap.val()) : [];
+    let totalLikes = 0, totalComments = 0, totalViews = 0, totalWatchTime = 0;
+    posts.forEach(p => {
+      totalLikes += p.likes ? Object.keys(p.likes).length : 0;
+      totalComments += p.comments ? Object.keys(p.comments).length : 0;
+      totalViews += p.views || 0;
+      totalWatchTime += p.watchTime || 0; // in minutes
+    });
+    const followersSnap = await db.ref('users/' + currentUser.uid + '/followers').once('value');
+    const followerCount = followersSnap.val() ? Object.keys(followersSnap.val()).length : 0;
+
+    document.getElementById('creatorTotalLikes').textContent = toBengaliNum(totalLikes);
+    document.getElementById('creatorTotalComments').textContent = toBengaliNum(totalComments);
+    document.getElementById('creatorTotalPosts').textContent = toBengaliNum(posts.length);
+    document.getElementById('creatorTotalFollowers').textContent = toBengaliNum(followerCount);
+
+    // Earning
+    const earning = (totalLikes * 0.5 + totalComments * 1 + followerCount * 2).toFixed(2);
+    document.getElementById('creatorEarning').textContent = earning;
+    const pct = Math.min((parseFloat(earning) / 500) * 100, 100);
+    document.getElementById('creatorProgressFill').style.width = pct + '%';
+    const wBtn = document.getElementById('withdrawBtn');
+    if (wBtn) wBtn.disabled = parseFloat(earning) < 500;
+
+    // ── Gift coins received ──
+    let giftCoinsReceived = 0;
+    const giftSnap = await db.ref('users/' + currentUser.uid + '/wallet/coins').once('value');
+    // We count gifts from posts
+    for (const p of posts) {
+      if (p.gifts) {
+        Object.values(p.gifts).forEach(g => { giftCoinsReceived += g.coins || 0; });
+      }
+    }
+    document.getElementById('giftTotalCoins').textContent = toBengaliNum(giftCoinsReceived);
+    document.getElementById('giftTotalTaka').textContent = (giftCoinsReceived / 100).toFixed(2);
+
+    // ── Video Monetize criteria ──
+    const TARGET_FOLLOWERS = 1500;
+    const TARGET_VIEWS     = 100000;
+    const TARGET_WATCHTIME = 350; // minutes
+
+    const criteria = [
+      {
+        icon: '👥', name: 'ফলোয়ার',
+        desc: toBengaliNum(followerCount) + ' / ' + toBengaliNum(TARGET_FOLLOWERS) + ' ফলোয়ার',
+        current: followerCount, target: TARGET_FOLLOWERS
+      },
+      {
+        icon: '👁️', name: 'ভিউস',
+        desc: toBengaliNum(totalViews) + ' / ১,০০,০০০ ভিউস',
+        current: totalViews, target: TARGET_VIEWS
+      },
+      {
+        icon: '⏱️', name: 'ওয়াচ টাইম',
+        desc: toBengaliNum(totalWatchTime) + ' / ৩৫০ মিনিট ওয়াচ টাইম',
+        current: totalWatchTime, target: TARGET_WATCHTIME
+      }
+    ];
+
+    const allMet = criteria.every(c => c.current >= c.target);
+    const list = document.getElementById('vmCriteria');
+    list.innerHTML = criteria.map(c => {
+      const done = c.current >= c.target;
+      const pct = Math.min((c.current / c.target) * 100, 100).toFixed(1);
+      return `<div class="vm-criterion ${done ? 'done' : ''}">
+        <div class="vm-crit-icon">${c.icon}</div>
+        <div class="vm-crit-info">
+          <div class="vm-crit-name">${c.name}</div>
+          <div class="vm-crit-sub">${c.desc}</div>
+          <div class="vm-crit-bar-wrap"><div class="vm-crit-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="vm-crit-check">${done ? '✅' : '○'}</div>
+      </div>`;
+    }).join('');
+
+    // Check existing video monetize status
+    const vmSnap = await db.ref('users/' + currentUser.uid + '/videoMonetize').once('value');
+    const vm = vmSnap.val();
+
+    const vmActiveBox = document.getElementById('vmActiveBox');
+    const vmPaymentSetup = document.getElementById('vmPaymentSetup');
+    const vmEarnSummary = document.getElementById('vmEarnSummary');
+
+    if (vm && vm.active) {
+      // Already active
+      vmActiveBox.style.display = 'block';
+      vmPaymentSetup.style.display = 'none';
+      vmEarnSummary.style.display = 'block';
+      // Video earning: ৳0.001 per view
+      const videoEarning = (totalViews * 0.001).toFixed(2);
+      document.getElementById('vmTotalEarning').textContent = videoEarning;
+      const vPct = Math.min((parseFloat(videoEarning) / 200) * 100, 100);
+      document.getElementById('vmProgressFill').style.width = vPct + '%';
+      document.getElementById('vmWithdrawBtn').disabled = parseFloat(videoEarning) < 200;
+    } else if (allMet) {
+      // Criteria met, show payment setup
+      vmActiveBox.style.display = 'none';
+      vmPaymentSetup.style.display = 'block';
+      vmEarnSummary.style.display = 'none';
+    } else {
+      vmActiveBox.style.display = 'none';
+      vmPaymentSetup.style.display = 'none';
+      vmEarnSummary.style.display = 'none';
+    }
+
+    // Premium status
+    const premSnap = await db.ref('users/' + currentUser.uid + '/premium').once('value');
+    const prem = premSnap.val();
+    const premContent = document.getElementById('premiumStatusContent');
+    if (prem && prem.active && prem.expiresAt > Date.now()) {
+      const planNames = {basic:'বেসিক',pro:'প্রো',yearly:'বার্ষিক'};
+      premContent.innerHTML = '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem"><span class="premium-badge">⭐ প্রিমিয়াম</span> <span style="font-size:0.85rem;color:var(--accent3)">সক্রিয়</span></div>' +
+        '<div style="font-size:0.85rem;color:var(--muted)">প্ল্যান: ' + (planNames[prem.plan]||prem.plan) + ' · মেয়াদ: ' + new Date(prem.expiresAt).toLocaleDateString('bn-BD') + '</div>';
+    } else {
+      premContent.innerHTML = 'আপনি এখনো প্রিমিয়াম সদস্য নন। প্রিমিয়াম নিলে পাবেন:<br>✓ ভেরিফাইড ব্যাজ · ✓ আনলিমিটেড রিল · ✓ এক্সক্লুসিভ থিম · ✓ প্রায়রিটি সাপোর্ট<br><br><button class="mono-confirm-btn purple" onclick="openPremiumModal()" style="margin-top:0">⭐ প্রিমিয়াম নিন</button>';
+    }
+  };
+
+  window.withdrawCreatorFund = async function() {
+    showToast('⏳ উত্তোলনের অনুরোধ পাঠানো হয়েছে! ৭ কার্যদিবসের মধ্যে আপনার মোবাইল ব্যাংকিংয়ে পাঠানো হবে।', 'var(--accent3)');
+    await db.ref('withdrawRequests/' + currentUser.uid).push({ ts: Date.now(), status: 'pending' });
+  };
+
+  // ── Sponsored Ad in Feed ──────────────────────────────────────────
+  function injectAdIntoFeed() {
+    const feed = document.getElementById('feed');
+    if (!feed) return;
+    const ad = document.createElement('div');
+    ad.className = 'ad-card';
+    ad.innerHTML = `
+      <div class="ad-card-label">📣 বিজ্ঞাপন</div>
+      <div class="ad-card-title">PostBook Premium — আজই নিন!</div>
+      <div class="ad-card-body">ভেরিফাইড ব্যাজ, আনলিমিটেড রিল, এক্সক্লুসিভ থিম এবং আরো অনেক কিছু পান প্রিমিয়াম সদস্যতায়।</div>
+      <button class="ad-card-cta" onclick="showPage('monetize');loadMonetizePage();openPremiumModal()">⭐ প্রিমিয়াম দেখুন</button>
+    `;
+    // Insert after 3rd post
+    const cards = feed.querySelectorAll('.post-card');
+    if (cards.length >= 3) {
+      cards[2].after(ad);
+    } else {
+      feed.appendChild(ad);
+    }
+  }
+
+  // ── Auth Button Bindings ──────────────────────────────────────────
+  document.getElementById('tabLogin').addEventListener('click', () => switchTab('login'));
+  document.getElementById('tabRegister').addEventListener('click', () => switchTab('register'));
+  document.getElementById('authBtn').addEventListener('click', handleAuth);
+  document.getElementById('passToggleBtn').addEventListener('click', () => {
+    const el = document.getElementById('authPassword');
+    el.type = el.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('authPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+
+</script>
+
+<!-- ══ Adsterra SocialBar Ad ══ -->
+<script src="https://pl29343229.effectivecpmnetwork.com/cd/8a/35/cd8a35f4ba8777f833a60d110d64e996.js"></script>
+</body>
+</html>
